@@ -1,0 +1,9 @@
+*.log
+*.pid
+.idea
+.DS_Store
+.#*
+
+node_modules/
+dist/
+i18n/emoji
