@@ -73,6 +73,7 @@ Store.prototype = {
  *
  * Actions are designed to be Fire and Forget. So callbacks (which are used in pub-sub)
  * are not allowed in Actions.
+ *
  */
 export const Actions = {
   /**
