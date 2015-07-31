@@ -23,6 +23,7 @@
     "css-loader": "^0.15.6",
     "eslint": "^0.24.1",
     "event-emitter": "^0.3.3",
+    "flux": "^2.0.3",
     "http-server": "^0.8.0",
     "less": "^2.5.1",
     "less-loader": "^2.2.0",
