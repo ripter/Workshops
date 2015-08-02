@@ -1,7 +1,6 @@
 import React from 'react';
 
-class Input extends React.Component {
-
+class Button extends React.Component {
   render() {
     const type = this.props.type;
 
@@ -27,4 +26,4 @@ Input.propTypes = {
   type: React.PropTypes.string.isRequired
   , action: React.PropTypes.func.isRequired
 };
-export default Input;
+export default Button;
