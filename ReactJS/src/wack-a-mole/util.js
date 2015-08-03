@@ -21,8 +21,14 @@ export function randomIndex(length) {
 }
 
 export function randomValidTile(state, tiles) {
+  const doesTileExist = hasTileWithState(state, tiles);
   let isValidTile = false;
-  let idx = 0;
+  let idx = -1;
+  
+  // make sure we have tile to find
+  if (!doesTileExist) {
+    return idx;
+  }
 
   // find an empty tile
   while (!isValidTile) {
@@ -31,4 +37,13 @@ export function randomValidTile(state, tiles) {
   }
   
   return idx;
+}
+
+// returns true if there is at least one tile with the state.
+export function hasTileWithState(state, tiles) {
+  let hasTile = tiles.findIndex((item) => {
+    return item === state;
+  });
+
+  return hasTile !== -1;
 }

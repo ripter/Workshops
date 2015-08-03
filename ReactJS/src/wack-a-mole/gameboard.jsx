@@ -36,7 +36,7 @@ const Gameboard = React.createClass({
                     key={idx}
                     id={idx}
                     hasMole={hasMole} 
-                    action={action.hit}
+                    action={action.hit.bind(action)}
                   />
                   );
               })}

@@ -71,6 +71,11 @@ GameStore.prototype = {
     const numberPopped = this.numberPopped || 0;
     let tiles = this.tiles;
     const idx = util.randomValidTile(NOT_POPPED, tiles);
+    
+    // make sure we have a valid index
+    if (idx === -1) {
+      return tiles;
+    }
 
     // pop it!
     this.numberPopped = numberPopped + 1;
@@ -84,6 +89,12 @@ GameStore.prototype = {
     let tiles = this.tiles;
     const idx = util.randomValidTile(POPPED, tiles);
 
+    // make sure we have a valid index
+    if (idx === -1) {
+      return tiles;
+    }
+
+    // unpop it!
     this.numberPopped = numberPopped - 1;
     this.lastUnpop = timestamp;
     tiles[idx] = NOT_POPPED;
@@ -91,8 +102,10 @@ GameStore.prototype = {
   }
   
   , hit(idx) {
+    const numberPopped = this.numberPopped || 0;
     let tiles = this.tiles;
     
+    this.numberPopped = numberPopped - 1;
     tiles[idx] = NOT_POPPED;
     this.score += 1;
   }
