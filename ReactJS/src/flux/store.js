@@ -40,14 +40,13 @@ Store.prototype = {
   , emitChange() {
     this.eventEmitter.emit(CHANGE_EVENT);
   }
-  
+
   /**
    * Called by dispatcher when an action method is called.
    * Unlike a pub-sub, this method is called for every action, not just
-   * the actions it cares about. 
+   * the actions it cares about.
    */
   , onAction(action) {
-    console.log('ACTION!', action);
     switch(action.type) {
       case ACTIONS.MESSAGE.CHANGE:
         this.message = action.message;
@@ -66,7 +65,7 @@ Store.prototype = {
 /**
  * Actions provide a reliable way to dispatch events.
  * In reality they are just a wrapper around the dispatch call.
- * But the dispatch call just takes an object. It is difficult to document and 
+ * But the dispatch call just takes an object. It is difficult to document and
  * reason about. Wrapping them in action functions provides a form of documentation/spec.
  * The wrapping function can also do validation to make sure everything is correct before
  * dispatching.
@@ -78,7 +77,7 @@ Store.prototype = {
 export const Actions = {
   /**
    * Set the message.
-   * @param {String} message - the message to set. 
+   * @param {String} message - the message to set.
    */
   setMessage(message) {
     dispatcher.dispatch({
@@ -86,7 +85,7 @@ export const Actions = {
       , message: `Action.setMessage('${message}')`
     });
   }
-  
+
   /**
    * Set the theme
    * @param {String} theme - the theme to use. (default, success, etc)
@@ -104,5 +103,3 @@ export const Actions = {
  * In a production application you shouldn't do this, but it great for debugging/learning.
  */
 window.Actions = Actions;
-
-

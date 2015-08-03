@@ -16,24 +16,23 @@ const Tile = React.createClass({
       tile: true
       , 'tile--is-mole': hasMole
     });
-      
+
     return (
-      <div 
+      <div
         className={className}
         onClick={this.handleClick}
       >
       </div>
     );
   }
-    
+
   , handleClick() {
     const hasMole = this.props.hasMole;
     const id = this.props.id;
     const action = this.props.action;
-      
+
     // need a mole to hit
     if (!hasMole) { return; }
-      
     // trigger the hit
     action(id);
   }

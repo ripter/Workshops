@@ -12,7 +12,7 @@ import Button from './button.jsx';
 // For ease of learning, we are including the store directly.
 // We could also pass a store in the props instead.
 // Create a store to use for all instances of Controller
-const store = new Store();
+const sampleStore = new Store();
 
 
 let Controller = React.createClass({
@@ -28,29 +28,29 @@ let Controller = React.createClass({
               Pick a theme:
 
               <div>
-                <Button 
-                  type="default" 
+                <Button
+                  type="default"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="success" 
+                <Button
+                  type="success"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="warning" 
+                <Button
+                  type="warning"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="danger" 
+                <Button
+                  type="danger"
                   action={Actions.setTheme}
                 />
 
                 {
-                // Actions has two functions, 
+                // Actions has two functions,
                 //  can you create a button that calls the other one?
                 }
               </div>
@@ -66,7 +66,7 @@ let Controller = React.createClass({
       </div>
     );
   }
-    
+
   , getState() {
     const store = this.props.store;
 
@@ -74,9 +74,9 @@ let Controller = React.createClass({
     return {
       message: store.message
       , theme: store.theme
-    }
+    };
   }
-    
+
 
   , onStoreChange() {
     this.setState(this.getState());
@@ -89,20 +89,20 @@ let Controller = React.createClass({
   // Called when the component is mounted to the DOM
   , componentWillMount() {
     const store = this.props.store;
-    
+
     // Now that we are mounted to the DOM, start listening for changes.
     store.onChange(this.onStoreChange);
   }
-    
+
   // Called when the component is unmounted from the DOM
   , componentWillUnmount() {
     const store = this.props.store;
-    
+
     // Cleanup our refrences now that we have been removed from the DOM.
     // If we left this refrence, we could cause a memory leak.
     store.offChange(this.onStoreChange);
   }
-    
+
   // Called once before componentWillMount
   , getInitialState() {
     return this.getState();
@@ -112,7 +112,7 @@ let Controller = React.createClass({
   // Any references will be shared accross all instances.
   , getDefaultProps() {
     return {
-      store: store
+      store: sampleStore
     };
   }
 });

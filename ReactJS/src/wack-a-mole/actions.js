@@ -1,4 +1,3 @@
-
 export const ACTIONS = {
   NEW: 'NEW'
   , HIT: 'HIT'
@@ -16,7 +15,7 @@ Action.prototype = {
       type: ACTIONS.NEW
     });
   }
-  
+
   , hit(idx) {
     this.dispatcher.dispatch({
       type: ACTIONS.HIT
@@ -24,4 +23,3 @@ Action.prototype = {
     });
   }
 };
-

@@ -7,11 +7,11 @@ const POPPED = true;
 const NOT_POPPED = false;
 
 
-
 export function GameStore() {
   this.MAX_MOLES = 1;
   this.lastFrame = 0;
   this.waitTime = 1000;
+  this.numberPopped = 0;
   this.eventEmitter = new EventEmitter({});
   this.reset();
 }
@@ -21,7 +21,7 @@ GameStore.prototype = {
       const lastFrame = this.lastFrame;
       const waitTime = this.waitTime;
       const canPlayNextFrame = util.canPlayNextFrame(lastFrame, waitTime, timestamp);
-      
+
       // throttle the speed
       if (!canPlayNextFrame) {
         this.run();
@@ -44,34 +44,36 @@ GameStore.prototype = {
       this.run();
     });
   }
-  
+
+  // Returns true if we can pop up a mole.
   , canPopMole(timestamp) {
-    const numberPopped = this.numberPopped || 0;
+    const numberPopped = this.numberPopped;
     const maxPoped = this.MAX_MOLES;
-    
+
     // don't pop past max.
     if (numberPopped === maxPoped) {
       return false;
     }
-    
+
     return true;
   }
-  
+
+  // Returns true if we can unpop a mole.
   , canUnpopMole(timestamp) {
     const numberPopped = this.numberPopped || 0;
-    
+
     if (numberPopped === 0) {
       return false;
     }
 
     return true;
   }
-  
+
   , popMole(timestamp) {
     const numberPopped = this.numberPopped || 0;
     let tiles = this.tiles;
     const idx = util.randomValidTile(NOT_POPPED, tiles);
-    
+
     // make sure we have a valid index
     if (idx === -1) {
       return tiles;
@@ -83,7 +85,7 @@ GameStore.prototype = {
     tiles[idx] = POPPED;
     return tiles;
   }
-  
+
   , unpopMole(timestamp) {
     const numberPopped = this.numberPopped || 0;
     let tiles = this.tiles;
@@ -96,15 +98,14 @@ GameStore.prototype = {
 
     // unpop it!
     this.numberPopped = numberPopped - 1;
-    this.lastUnpop = timestamp;
     tiles[idx] = NOT_POPPED;
     return tiles;
   }
-  
+
   , hit(idx) {
     const numberPopped = this.numberPopped || 0;
     let tiles = this.tiles;
-    
+
     this.numberPopped = numberPopped - 1;
     tiles[idx] = NOT_POPPED;
     this.score += 1;
@@ -121,6 +122,12 @@ GameStore.prototype = {
                   false, false, false];
   }
 
+
+  //
+  // Store Methods
+  // Methods used for React+Flux
+  //
+
   /**
    * Return a copy of our public properties
    */
@@ -130,7 +137,7 @@ GameStore.prototype = {
       , score: this.score
     };
   }
-  
+
   /**
    * Adds func as a listener for change events.
    * @param {Function} func - The function to add.
@@ -153,7 +160,7 @@ GameStore.prototype = {
   , emitChange() {
     this.eventEmitter.emit(CHANGE_EVENT);
   }
-  
+
   /**
    * Register a dispatcher and listen for actions.
    */
@@ -166,6 +173,7 @@ GameStore.prototype = {
           break;
         case ACTIONS.HIT:
           this.hit(action.idx);
+          this.emitChange();
           break;
       }
     });

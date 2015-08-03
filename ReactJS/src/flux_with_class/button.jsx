@@ -13,7 +13,7 @@ class Button extends React.Component {
       </button>
     );
   }
-    
+
   handleClick() {
     const type = this.props.type;
     const action = this.props.action;
@@ -22,7 +22,7 @@ class Button extends React.Component {
   }
 }
 
-Input.propTypes = {
+Button.propTypes = {
   type: React.PropTypes.string.isRequired
   , action: React.PropTypes.func.isRequired
 };

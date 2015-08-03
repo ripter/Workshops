@@ -28,14 +28,14 @@ const Gameboard = React.createClass({
         <div className="row">
           <div className="col-md-6">
             <h1>Score: {this.state.score}</h1>
-        
+
             <div className="gameboard__board">
               {this.state.tiles.map((hasMole, idx) => {
                 return (
                   <Tile
                     key={idx}
                     id={idx}
-                    hasMole={hasMole} 
+                    hasMole={hasMole}
                     action={action.hit.bind(action)}
                   />
                   );
@@ -44,9 +44,13 @@ const Gameboard = React.createClass({
           </div>
 
           <div className="col-md-6">
-            Classic Wack-A-Mole.
+            <h1>
+              Classic Wack-A-Mole.
+            </h1>
 
-            <button 
+            <p>Click on the green squares to get a point.</p>
+
+            <button
               className="btn btn-warning"
               onClick={this.handleNewClick}
             >
@@ -57,11 +61,11 @@ const Gameboard = React.createClass({
       </div>
     );
   }
-    
+
   , handleNewClick() {
     action.new();
   }
-    
+
   , onChange() {
     this.setState(getState());
   }
@@ -73,11 +77,11 @@ const Gameboard = React.createClass({
   , getInitialState() {
     return getState();
   }
-    
+
   , componentWillMount() {
-    store.onChange(this.onChange);      
+    store.onChange(this.onChange);
   }
-    
+
   , componentWillUnmount() {
     store.offChange(this.onChange);
   }

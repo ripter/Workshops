@@ -41,9 +41,8 @@ export class Store {
   emitChange() {
     this.eventEmitter.emit(CHANGE_EVENT);
   }
-  
+
   onAction(action) {
-    console.log('ACTION!', action);
     switch(action.type) {
       case ACTIONS.MESSAGE.CHANGE:
         this.message = action.message;
@@ -65,7 +64,7 @@ export const Actions = {
       , message: `Action.setMessage('${message}')`
     });
   }
-  
+
   , setTheme(theme) {
     dispatcher.dispatch({
       type: ACTIONS.THEME.CHANGE
@@ -74,5 +73,3 @@ export const Actions = {
   }
 };
 window.Actions = Actions;
-
-

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Button = React.createClass({
-  propTypes:  {
+  propTypes: {
     type: React.PropTypes.string.isRequired
     , action: React.PropTypes.func.isRequired
   }

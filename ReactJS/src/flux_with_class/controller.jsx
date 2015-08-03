@@ -14,7 +14,7 @@ import Button from './button.jsx';
 class Controller extends React.Component {
   constructor() {
     super();
-      
+
     // create the store
     this.store = new Store();
     // Whenever the store emits a change, update our state
@@ -35,29 +35,29 @@ class Controller extends React.Component {
               Pick a theme:
 
               <div>
-                <Button 
-                  type="default" 
+                <Button
+                  type="default"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="success" 
+                <Button
+                  type="success"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="warning" 
+                <Button
+                  type="warning"
                   action={Actions.setTheme}
                 />
-                <Button 
-                  type="danger" 
+                <Button
+                  type="danger"
                   action={Actions.setTheme}
                 />
 
                 {
-                // Actions has two functions, 
+                // Actions has two functions,
                 //  can you create a button that calls the other one?
                 }
               </div>
@@ -73,14 +73,14 @@ class Controller extends React.Component {
       </div>
     );
   }
-    
+
   getState() {
     return {
       message: this.store.message
       , theme: this.store.theme
-    }
+    };
   }
-    
+
   //
   // Lifecycle Events
   //
