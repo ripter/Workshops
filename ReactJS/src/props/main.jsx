@@ -14,7 +14,7 @@ JSProps.aProp = 'A changed value!';
 
 // // HTML props aka attributes
 // let HTMLProps = (
-//     <a 
+//     <a
 //       href="href is a prop"
 //       class="class is also a prop"
 //     >
@@ -42,11 +42,11 @@ const PropExample = React.createClass({
           <div className="col-md-6">
             <h2>React Component</h2>
 
-            <input 
-              id="react-input" 
+            <input
+              id="react-input"
               type={typeProp}
-            /> 
-        
+            />
+
           </div>
           <div className="col-md-6">
             <p>Try changing the properties in the source</p>

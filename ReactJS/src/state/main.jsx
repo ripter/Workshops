@@ -12,11 +12,11 @@ const StateExample = React.createClass({
           <div className="col-md-6">
             <h2>React Component</h2>
 
-            <input 
-              id="react-input" 
+            <input
+              id="react-input"
               type={typeProp}
-            /> 
-        
+            />
+
           </div>
           <div className="col-md-6">
             <p>Changing the source file all day sucks. State gives us the ability to dynamically change props.</p>
@@ -24,8 +24,8 @@ const StateExample = React.createClass({
             <p>
               Try these:
               <ul>
-                <li> 
-                  <button 
+                <li>
+                  <button
                     className="btn btn-default"
                     onClick={this.handleClick('radio')}
                   >
@@ -33,7 +33,7 @@ const StateExample = React.createClass({
                   </button>
                 </li>
                 <li>
-                  <button 
+                  <button
                     className="btn btn-primary"
                     onClick={this.handleClick('button')}
                   >
@@ -41,7 +41,7 @@ const StateExample = React.createClass({
                   </button>
                 </li>
                 <li>
-                  <button 
+                  <button
                     className="btn btn-success"
                     onClick={this.handleClick('date')}
                   >
@@ -49,7 +49,7 @@ const StateExample = React.createClass({
                   </button>
                 </li>
                 <li>
-                  <button 
+                  <button
                     className="btn btn-warning"
                     onClick={this.handleClick('color')}
                   >
@@ -57,7 +57,7 @@ const StateExample = React.createClass({
                   </button>
                 </li>
                 <li>
-                  <button 
+                  <button
                     className="btn btn-danger"
                     onClick={this.handleClick('file')}
                   >
@@ -71,7 +71,7 @@ const StateExample = React.createClass({
       </div>
     );
   }
-    
+
   , handleClick(type) {
     // instead of making a function for each button, I'm using a closure.
     return (evt) => {
@@ -81,7 +81,7 @@ const StateExample = React.createClass({
       });
     };
   }
-    
+
   , getInitialState() {
     return {
       typeProp: 'text'

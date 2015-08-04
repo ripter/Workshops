@@ -8,7 +8,7 @@ const Controller = React.createClass({
   render() {
     const bgStyle = STYLES[this.state.styleIndex];
     let lifecycleExample = <LifecycleExample backgroundStyle={bgStyle} />;
-      
+
     if (!this.state.shouldRenderExample) {
       lifecycleExample = '';
     }
@@ -23,7 +23,7 @@ const Controller = React.createClass({
           <p>
             <button onClick={this.toggleRender} className="btn btn-default">
               <code>
-                shouldRenderExample: 
+                shouldRenderExample:
                 {this.state.shouldRenderExample.toString()}
               </code>
             </button>
@@ -31,7 +31,7 @@ const Controller = React.createClass({
           <p>
             <button onClick={this.cycleStyle} className="btn btn-default">
               <code>
-                backgroundStyle: 
+                backgroundStyle:
                 {STYLES[this.state.styleIndex]}
               </code>
             </button>
@@ -40,32 +40,32 @@ const Controller = React.createClass({
       </div>
     );
   }
-    
+
   , toggleRender() {
     this.setState({
       shouldRenderExample: !this.state.shouldRenderExample
     });
   }
-    
+
   , cycleStyle() {
     let index = this.state.styleIndex;
-      
+
     // Incriment, if we go do far, we will cycle back
     index += 1;
     if (index === STYLES.length) {
       index = 0;
     }
-      
+
     this.setState({
       styleIndex: index
     });
   }
-    
+
   , getInitialState() {
     return {
       shouldRenderExample: true
       , styleIndex: 1
-    }
+    };
   }
 });
 export default Controller;
