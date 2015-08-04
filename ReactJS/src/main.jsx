@@ -4,8 +4,9 @@ import React from 'react';
 // React doesn't have the notion of controllers.
 // We are using the term controller to mean a component that is tied to a store.
 //import Controller from './flux/controller.jsx';
-import Controller from './flux_with_class/controller.jsx';
+//import Controller from './flux_with_class/controller.jsx';
 //import Controller from './wack-a-mole/gameboard.jsx';
+import Controller from './props/main.jsx';
 
 
 // Webpack let's us include less like it was a JS library

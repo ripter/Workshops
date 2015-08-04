@@ -31,6 +31,9 @@ const Gameboard = React.createClass({
 
             <div className="gameboard__board">
               {this.state.tiles.map((hasMole, idx) => {
+                // We need to bind the action before passing it
+                // because it saved the dispatcher in this, which means
+                // the context has to be correct for it to work.
                 return (
                   <Tile
                     key={idx}
