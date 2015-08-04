@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dispatcher} from 'flux';
+import './polyfill.js';
 
 import Tile from './tile.jsx';
 import GameStore from './store.js';
