@@ -47,7 +47,6 @@ const PropExample = React.createClass({
               type={typeProp}
             /> 
         
-            Text after input
           </div>
           <div className="col-md-6">
             <p>Try changing the properties in the source</p>

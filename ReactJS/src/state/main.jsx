@@ -3,8 +3,8 @@ import React from 'react';
 
 const StateExample = React.createClass({
   render() {
-    // You can set the prop here, or directly on the tag (like className).
-    const typeProp = 'text';
+    // Use state to get the value
+    const typeProp = this.state.typeProp;
 
     return (
       <div>
@@ -17,10 +17,9 @@ const StateExample = React.createClass({
               type={typeProp}
             /> 
         
-            Text after input
           </div>
           <div className="col-md-6">
-            <p>Try changing the properties in the source</p>
+            <p>Changing the source file all day sucks. State gives us the ability to dynamically change props.</p>
             <p> Input changes a lot depending on its type.</p>
             <p>
               Try these:
@@ -44,7 +43,7 @@ const StateExample = React.createClass({
                 <li>
                   <button 
                     className="btn btn-success"
-                    onClick={this.handleClick}
+                    onClick={this.handleClick('date')}
                   >
                     <code>type="date"</code>
                   </button>
@@ -52,7 +51,7 @@ const StateExample = React.createClass({
                 <li>
                   <button 
                     className="btn btn-warning"
-                    onClick={this.handleClick}
+                    onClick={this.handleClick('color')}
                   >
                     <code>type="color"</code>
                   </button>
@@ -60,7 +59,7 @@ const StateExample = React.createClass({
                 <li>
                   <button 
                     className="btn btn-danger"
-                    onClick={this.handleClick}
+                    onClick={this.handleClick('file')}
                   >
                     <code>type="file"</code>
                   </button>
@@ -76,7 +75,16 @@ const StateExample = React.createClass({
   , handleClick(type) {
     // instead of making a function for each button, I'm using a closure.
     return (evt) => {
-      console.log('type', type); 
+      // Update the state!
+      this.setState({
+        typeProp: type
+      });
+    };
+  }
+    
+  , getInitialState() {
+    return {
+      typeProp: 'text'
     };
   }
 });
