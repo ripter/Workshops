@@ -33,6 +33,9 @@ JSProps.aProp = 'A changed value!';
 
 const PropExample = React.createClass({
   render() {
+    // You can set the prop here, or directly on the tag (like className).
+    const typeProp = 'text';
+
     return (
       <div>
         <div className="row">
@@ -41,14 +44,14 @@ const PropExample = React.createClass({
 
             <input 
               id="react-input" 
-              type="text" 
+              type={typeProp}
             /> 
         
             Text after input
           </div>
           <div className="col-md-6">
             <p>Try changing the properties in the source</p>
-            <p> Input changes a lot depending on it's type.</p>
+            <p> Input changes a lot depending on its type.</p>
             <p>
               Try these:
               <ul>
