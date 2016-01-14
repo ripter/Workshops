@@ -1,0 +1,11 @@
+{
+  "name": "raw_todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "Chris Richards",
+  "license": "ISC"
+}
