@@ -15,6 +15,7 @@ js: dist/main.js
 clean:
 	npm cache clean
 	-rm -R node_modules/
+	-rm server.PID
 
 lint:
 	$(BIN)/eslint --ext .js,.jsx src/
@@ -36,6 +37,9 @@ test:
 
 server.PID:
 	$(BIN)/http-server ./dist -p 3000 --silent & echo $$! > $@
+	#if you are having issues, try this one
+	#$(BIN)/http-server ./dist -p 3000
 
 stop: server.PID
-	kill `cat $<` && rm $<
+	-kill `cat server.PID`
+	-rm server.PID
