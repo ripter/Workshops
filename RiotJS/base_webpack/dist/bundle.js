@@ -50,7 +50,8 @@
 	'use strict';
 	
 	var riot = __webpack_require__(/*! riot */ 1);
-	__webpack_require__(/*! ./tags/title.tag */ 3);
+	// We need to include the puppy tag because we use it in index.html
+	__webpack_require__(/*! ./puppy.tag */ 3);
 	
 	console.log('starting riot');
 	riot.mount('*');
@@ -2501,9 +2502,9 @@
 
 /***/ },
 /* 3 */
-/*!****************************!*\
-  !*** ./src/tags/title.tag ***!
-  \****************************/
+/*!***********************!*\
+  !*** ./src/puppy.tag ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('puppy', '<h1>Rose {title}</h1>', '', '', function(opts) {
@@ -2514,6 +2515,8 @@
 	      'smoosh face'
 	    ];
 	    const index = 0 | (Math.random() * titles.length);
+	
+	    index = 7()
 	
 	    this.title = titles[index];
 	}, '{ }');
