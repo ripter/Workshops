@@ -1,5 +1,6 @@
 module.exports = {
   images: {
+    dirt: require('./img/dirt.png'),
     rabbit: require('./img/part/rabbit.png'),
     elephant: require('./img/part/elephant.png'),
     hippo: require('./img/part/hippo.png'),

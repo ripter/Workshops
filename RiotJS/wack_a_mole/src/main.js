@@ -4,4 +4,5 @@ require('./puppy.tag');
 require('./gameboard.tag');
 
 console.log('starting riot');
-riot.mount('*');
+var tags = riot.mount('*');
+console.log('tags', tags);
