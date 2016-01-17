@@ -1,12 +1,14 @@
+require('./mole.tag');
 
 <gameboard>
   <h1>Gameboard </h1>
 
   <div class="board">
     <div each={squares} >
-      <img src="{src}" alt="bunny" height="128" width="128" />
+      <Mole src="{src}" />
     </div>
   </div>
+
 
   <script>
     'use strict';
@@ -17,6 +19,10 @@
       {src: assets.images.elephant}, {src: assets.images.monkey}, {src: assets.images.panda},
       {src: assets.images.pig}, {src: assets.images.snake}, {src: assets.images.parrot},
     ];
+
+    this.on('all', function() {
+      console.log('board: EVENT:', arguments);
+    });
 
   </script>
 

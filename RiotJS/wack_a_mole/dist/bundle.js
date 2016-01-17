@@ -54,9 +54,9 @@
 	__webpack_require__(/*! ./puppy.tag */ 3);
 	__webpack_require__(/*! ./gameboard.tag */ 4);
 	
-	console.log('starting riot');
+	console.log('main: starting riot');
 	var tags = riot.mount('*');
-	console.log('tags', tags);
+	console.log('main: tags', tags);
 
 /***/ },
 /* 1 */
@@ -2530,10 +2530,11 @@
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {
-	riot.tag2('gameboard', '<h1>Gameboard </h1> <div class="board"> <div each="{squares}"> <img riot-src="{src}" alt="bunny" height="128" width="128"> </div> </div>', '.board { width: 426px; margin-left: auto; margin-right: auto; } .board div { float: left; }', '', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(/*! ./mole.tag */ 5);
+	
+	riot.tag2('gameboard', '<h1>Gameboard </h1> <div class="board"> <div each="{squares}"> <mole riot-src="{src}"></mole> </div> </div>', '.board { width: 426px; margin-left: auto; margin-right: auto; } .board div { float: left; }', '', function(opts) {
 	    'use strict';
-	    const assets = __webpack_require__(/*! ./assets.js */ 5);
+	    const assets = __webpack_require__(/*! ./assets.js */ 6);
 	
 	    this.squares = [
 	      {src: assets.images.dirt}, {src: assets.images.giraffe}, {src: assets.images.hippo},
@@ -2541,12 +2542,31 @@
 	      {src: assets.images.pig}, {src: assets.images.snake}, {src: assets.images.parrot},
 	    ];
 	
+	    this.on('all', function() {
+	      console.log('board: EVENT:', arguments);
+	    });
+	
 	}, '{ }');
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 5 */
+/*!**********************!*\
+  !*** ./src/mole.tag ***!
+  \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{src}" alt="mole" height="128" width="128">', '', '', function(opts) {
+	    this.on('all', function() {
+	      console.log('mole: EVENT:', arguments);
+	    });
+	}, '{ }');
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
+
+/***/ },
+/* 6 */
 /*!***********************!*\
   !*** ./src/assets.js ***!
   \***********************/
@@ -2556,21 +2576,21 @@
 	
 	module.exports = {
 	  images: {
-	    dirt: __webpack_require__(/*! ./img/dirt.png */ 6),
-	    rabbit: __webpack_require__(/*! ./img/part/rabbit.png */ 7),
-	    elephant: __webpack_require__(/*! ./img/part/elephant.png */ 8),
-	    hippo: __webpack_require__(/*! ./img/part/hippo.png */ 9),
-	    monkey: __webpack_require__(/*! ./img/part/monkey.png */ 10),
-	    panda: __webpack_require__(/*! ./img/part/panda.png */ 11),
-	    pig: __webpack_require__(/*! ./img/part/pig.png */ 12),
-	    snake: __webpack_require__(/*! ./img/part/snake.png */ 13),
-	    giraffe: __webpack_require__(/*! ./img/part/giraffe.png */ 14),
-	    parrot: __webpack_require__(/*! ./img/part/parrot.png */ 15)
+	    dirt: __webpack_require__(/*! ./img/dirt.png */ 7),
+	    rabbit: __webpack_require__(/*! ./img/part/rabbit.png */ 8),
+	    elephant: __webpack_require__(/*! ./img/part/elephant.png */ 9),
+	    hippo: __webpack_require__(/*! ./img/part/hippo.png */ 10),
+	    monkey: __webpack_require__(/*! ./img/part/monkey.png */ 11),
+	    panda: __webpack_require__(/*! ./img/part/panda.png */ 12),
+	    pig: __webpack_require__(/*! ./img/part/pig.png */ 13),
+	    snake: __webpack_require__(/*! ./img/part/snake.png */ 14),
+	    giraffe: __webpack_require__(/*! ./img/part/giraffe.png */ 15),
+	    parrot: __webpack_require__(/*! ./img/part/parrot.png */ 16)
 	  }
 	};
 
 /***/ },
-/* 6 */
+/* 7 */
 /*!**************************!*\
   !*** ./src/img/dirt.png ***!
   \**************************/
@@ -2579,7 +2599,7 @@
 	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
 
 /***/ },
-/* 7 */
+/* 8 */
 /*!*********************************!*\
   !*** ./src/img/part/rabbit.png ***!
   \*********************************/
@@ -2588,7 +2608,7 @@
 	module.exports = __webpack_require__.p + "img/rabbit-71a30b2d78d4427e8b4554ce2d15d275.png";
 
 /***/ },
-/* 8 */
+/* 9 */
 /*!***********************************!*\
   !*** ./src/img/part/elephant.png ***!
   \***********************************/
@@ -2597,7 +2617,7 @@
 	module.exports = __webpack_require__.p + "img/elephant-a79a7507669af3bb066e6ae60010bf38.png";
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!********************************!*\
   !*** ./src/img/part/hippo.png ***!
   \********************************/
@@ -2606,7 +2626,7 @@
 	module.exports = __webpack_require__.p + "img/hippo-d0c451145932e3a7cc8acb9bcc0e8faa.png";
 
 /***/ },
-/* 10 */
+/* 11 */
 /*!*********************************!*\
   !*** ./src/img/part/monkey.png ***!
   \*********************************/
@@ -2615,7 +2635,7 @@
 	module.exports = __webpack_require__.p + "img/monkey-78ddefbb44189666c703e8a02e89e8ed.png";
 
 /***/ },
-/* 11 */
+/* 12 */
 /*!********************************!*\
   !*** ./src/img/part/panda.png ***!
   \********************************/
@@ -2624,7 +2644,7 @@
 	module.exports = __webpack_require__.p + "img/panda-6abbdc77bdbf904dc5d8ef7bd701bf9e.png";
 
 /***/ },
-/* 12 */
+/* 13 */
 /*!******************************!*\
   !*** ./src/img/part/pig.png ***!
   \******************************/
@@ -2633,7 +2653,7 @@
 	module.exports = __webpack_require__.p + "img/pig-90d2bccf6f4c8cbc49bd81cd276bca3d.png";
 
 /***/ },
-/* 13 */
+/* 14 */
 /*!********************************!*\
   !*** ./src/img/part/snake.png ***!
   \********************************/
@@ -2642,7 +2662,7 @@
 	module.exports = __webpack_require__.p + "img/snake-53263331c5f9502b1bd9ab3e5d511f95.png";
 
 /***/ },
-/* 14 */
+/* 15 */
 /*!**********************************!*\
   !*** ./src/img/part/giraffe.png ***!
   \**********************************/
@@ -2651,7 +2671,7 @@
 	module.exports = __webpack_require__.p + "img/giraffe-70c99cdb1227169d88e0acd3bd43a0ee.png";
 
 /***/ },
-/* 15 */
+/* 16 */
 /*!*********************************!*\
   !*** ./src/img/part/parrot.png ***!
   \*********************************/
