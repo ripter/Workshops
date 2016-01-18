@@ -15,7 +15,10 @@ module.exports = {
       { test: /\.tag$/, exclude: /node_modules/, loader: 'riotjs-loader', query: { type: 'none' } }
     ],
     loaders: [
-      {test: /\.js?$/, exclude: /node_modules/, loader: 'babel', query: {presets: ['es2015', 'es2015-riot']}},
+      {test: /\.js?$/, exclude: /node_modules/, loader: 'babel-loader', query: {
+        presets: ['es2015', 'es2015-riot'],
+        plugins: ['external-helpers-2']
+      }},
       {test: /\.png$/, loader: 'file?name=img/[name]-[hash].[ext]'}
     ]
   }

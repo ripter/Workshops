@@ -2530,20 +2530,44 @@
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(/*! ./mole.tag */ 5);
+	/* WEBPACK VAR INJECTION */(function(riot) {
+	__webpack_require__(/*! ./mole.tag */ 5);
 	
-	riot.tag2('gameboard', '<h1>Gameboard </h1> <div class="board"> <div each="{squares}"> <mole riot-src="{src}"></mole> </div> </div>', '.board { width: 426px; margin-left: auto; margin-right: auto; } .board div { float: left; }', '', function(opts) {
+	riot.tag2('gameboard', '<h1>Gameboard </h1> <div class="board"> <mole each="{squares}" data="{this}"></mole> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; } gameboard > .board > mole { float: left; }', '', function(opts) {
 	    'use strict';
-	    const assets = __webpack_require__(/*! ./assets.js */ 6);
+	    const State = __webpack_require__(/*! ./state.js */ 6);
+	    const assets = __webpack_require__(/*! ./assets.js */ 7);
 	
-	    this.squares = [
-	      {src: assets.images.dirt}, {src: assets.images.giraffe}, {src: assets.images.hippo},
-	      {src: assets.images.elephant}, {src: assets.images.monkey}, {src: assets.images.panda},
-	      {src: assets.images.pig}, {src: assets.images.snake}, {src: assets.images.parrot},
-	    ];
+	    let state = this.state = new State(9, assets.images.dirt, [
+	      assets.images.giraffe,
+	      assets.images.hippo,
+	      assets.images.elephant,
+	      assets.images.monkey,
+	      assets.images.panda,
+	      assets.images.pig,
+	      assets.images.snake,
+	      assets.images.parrot,
+	      assets.images.rabbit,
+	    ]);
 	
-	    this.on('all', function() {
+	    // this.squares = state.toGameboard();
+	
+	    this.on('all', () => {
 	      console.log('board: EVENT:', arguments);
+	    });
+	
+	    this.on('mount', () => {
+	      console.log('board: EVENT: mount', arguments);
+	      // start the game!
+	      state.start();
+	    });
+	
+	    state.on('tick', (delta) => {
+	        console.log('tick', delta);
+	        // When the game clock ticks, we update.
+	        this.update({
+	          squares: state.toJSON()
+	        });
 	    });
 	
 	}, '{ }');
@@ -2557,9 +2581,17 @@
   \**********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{src}" alt="mole" height="128" width="128">', '', '', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole img { height: 128px; width: 128px; } mole > .mole { display: none; } mole.popped > .mole { display: block; } mole > .dirt { display: block; } mole.popped > .dirt { display: none; }', 'class="{popped: isPopped}"', function(opts) {
 	    this.on('all', function() {
 	      console.log('mole: EVENT:', arguments);
+	    });
+	
+	    this.on('mount', () => {
+	      console.log('mole: mount:', this.isPopped, this);
+	    });
+	
+	    this.on('update', () => {
+	      console.log('mole: update:', this.isPopped, this);
 	    });
 	}, '{ }');
 	
@@ -2567,6 +2599,112 @@
 
 /***/ },
 /* 6 */
+/*!**********************!*\
+  !*** ./src/state.js ***!
+  \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var riot = __webpack_require__(/*! riot */ 1);
+	var requestAnimationFrame = window.requestAnimationFrame;
+	
+	var TICK_SPEED = 1000;
+	
+	// State for the gameboard
+	function State(boardSize, dirtSrc, molesSrc) {
+	  this.boardSize = boardSize;
+	  this.moles = [];
+	  this.dirtSrc = dirtSrc;
+	  this.molesSrc = molesSrc;
+	
+	  // add events
+	  riot.observable(this);
+	
+	  this.resetBoard();
+	  this.start();
+	}
+	State.prototype = {
+	  // Creates a new random mole
+	  // return mole
+	
+	  createMole: function createMole() {
+	    var dirtSrc = this.dirtSrc;
+	    var molesSrc = this.molesSrc;
+	
+	    var index = 0 | Math.random() * molesSrc.length;
+	
+	    return {
+	      dirtSrc: dirtSrc,
+	      moleSrc: molesSrc[index],
+	      isPopped: false
+	    };
+	  },
+	
+	  // Resets the gameboard with new moles.
+	  resetBoard: function resetBoard() {
+	    var dirtSrc = this.dirtSrc;
+	    var molesSrc = this.molesSrc;
+	
+	    var moles = [];
+	    var len = this.boardSize;
+	
+	    while (len--) {
+	      moles.push(this.createMole());
+	    }
+	
+	    this.moles = moles;
+	  },
+	
+	  // Start the Game Timer and the Action!
+	  start: function start(update) {
+	    // Start the loop!
+	    requestAnimationFrame(this.tick.bind(this));
+	  },
+	
+	  // Called on every frame, emits 'tick' event at TICK_SPEED
+	  tick: function tick(timestamp) {
+	    var delta = timestamp - this.lastTick;
+	
+	    // skip if it hasn't been long enough.
+	    if (delta < TICK_SPEED) {
+	      requestAnimationFrame(this.tick.bind(this));
+	      return;
+	    }
+	
+	    this.update(delta);
+	
+	    this.trigger('tick', 'delta', delta, 'timestamp', timestamp, this);
+	    this.lastTick = timestamp;
+	    if (!window.pause) {
+	      requestAnimationFrame(this.tick.bind(this));
+	    }
+	  },
+	  update: function update() {
+	    var index = 0 | Math.random() * this.moles.length;
+	    var active = this.active || 0;
+	    var moles = this.moles;
+	
+	    // Flip to dirt
+	    moles[active].isPopped = false;
+	    // Flip new one.
+	    moles[index].isPopped = true;
+	    // save the change
+	    this.active = index;
+	    this.moles = moles;
+	  },
+	
+	  // Returns the gameboard for the UI
+	  toJSON: function toJSON() {
+	    var moles = this.moles;
+	
+	    return JSON.parse(JSON.stringify(moles));
+	  }
+	};
+	module.exports = State;
+
+/***/ },
+/* 7 */
 /*!***********************!*\
   !*** ./src/assets.js ***!
   \***********************/
@@ -2576,21 +2714,21 @@
 	
 	module.exports = {
 	  images: {
-	    dirt: __webpack_require__(/*! ./img/dirt.png */ 7),
-	    rabbit: __webpack_require__(/*! ./img/part/rabbit.png */ 8),
-	    elephant: __webpack_require__(/*! ./img/part/elephant.png */ 9),
-	    hippo: __webpack_require__(/*! ./img/part/hippo.png */ 10),
-	    monkey: __webpack_require__(/*! ./img/part/monkey.png */ 11),
-	    panda: __webpack_require__(/*! ./img/part/panda.png */ 12),
-	    pig: __webpack_require__(/*! ./img/part/pig.png */ 13),
-	    snake: __webpack_require__(/*! ./img/part/snake.png */ 14),
-	    giraffe: __webpack_require__(/*! ./img/part/giraffe.png */ 15),
-	    parrot: __webpack_require__(/*! ./img/part/parrot.png */ 16)
+	    dirt: __webpack_require__(/*! ./img/dirt.png */ 8),
+	    rabbit: __webpack_require__(/*! ./img/part/rabbit.png */ 9),
+	    elephant: __webpack_require__(/*! ./img/part/elephant.png */ 10),
+	    hippo: __webpack_require__(/*! ./img/part/hippo.png */ 11),
+	    monkey: __webpack_require__(/*! ./img/part/monkey.png */ 12),
+	    panda: __webpack_require__(/*! ./img/part/panda.png */ 13),
+	    pig: __webpack_require__(/*! ./img/part/pig.png */ 14),
+	    snake: __webpack_require__(/*! ./img/part/snake.png */ 15),
+	    giraffe: __webpack_require__(/*! ./img/part/giraffe.png */ 16),
+	    parrot: __webpack_require__(/*! ./img/part/parrot.png */ 17)
 	  }
 	};
 
 /***/ },
-/* 7 */
+/* 8 */
 /*!**************************!*\
   !*** ./src/img/dirt.png ***!
   \**************************/
@@ -2599,7 +2737,7 @@
 	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
 
 /***/ },
-/* 8 */
+/* 9 */
 /*!*********************************!*\
   !*** ./src/img/part/rabbit.png ***!
   \*********************************/
@@ -2608,7 +2746,7 @@
 	module.exports = __webpack_require__.p + "img/rabbit-71a30b2d78d4427e8b4554ce2d15d275.png";
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!***********************************!*\
   !*** ./src/img/part/elephant.png ***!
   \***********************************/
@@ -2617,7 +2755,7 @@
 	module.exports = __webpack_require__.p + "img/elephant-a79a7507669af3bb066e6ae60010bf38.png";
 
 /***/ },
-/* 10 */
+/* 11 */
 /*!********************************!*\
   !*** ./src/img/part/hippo.png ***!
   \********************************/
@@ -2626,7 +2764,7 @@
 	module.exports = __webpack_require__.p + "img/hippo-d0c451145932e3a7cc8acb9bcc0e8faa.png";
 
 /***/ },
-/* 11 */
+/* 12 */
 /*!*********************************!*\
   !*** ./src/img/part/monkey.png ***!
   \*********************************/
@@ -2635,7 +2773,7 @@
 	module.exports = __webpack_require__.p + "img/monkey-78ddefbb44189666c703e8a02e89e8ed.png";
 
 /***/ },
-/* 12 */
+/* 13 */
 /*!********************************!*\
   !*** ./src/img/part/panda.png ***!
   \********************************/
@@ -2644,7 +2782,7 @@
 	module.exports = __webpack_require__.p + "img/panda-6abbdc77bdbf904dc5d8ef7bd701bf9e.png";
 
 /***/ },
-/* 13 */
+/* 14 */
 /*!******************************!*\
   !*** ./src/img/part/pig.png ***!
   \******************************/
@@ -2653,7 +2791,7 @@
 	module.exports = __webpack_require__.p + "img/pig-90d2bccf6f4c8cbc49bd81cd276bca3d.png";
 
 /***/ },
-/* 14 */
+/* 15 */
 /*!********************************!*\
   !*** ./src/img/part/snake.png ***!
   \********************************/
@@ -2662,7 +2800,7 @@
 	module.exports = __webpack_require__.p + "img/snake-53263331c5f9502b1bd9ab3e5d511f95.png";
 
 /***/ },
-/* 15 */
+/* 16 */
 /*!**********************************!*\
   !*** ./src/img/part/giraffe.png ***!
   \**********************************/
@@ -2671,7 +2809,7 @@
 	module.exports = __webpack_require__.p + "img/giraffe-70c99cdb1227169d88e0acd3bd43a0ee.png";
 
 /***/ },
-/* 16 */
+/* 17 */
 /*!*********************************!*\
   !*** ./src/img/part/parrot.png ***!
   \*********************************/
