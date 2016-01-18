@@ -1,6 +1,6 @@
 <mole class={popped: isPopped}>
-    <img src="{dirtSrc}" class="dirt" alt="dirt"  />
-    <img src="{moleSrc}" class="mole" alt="mole"  />
+  <img src="{dirtSrc}" class="dirt" alt="dirt"  />
+  <img src="{moleSrc}" class="mole" alt="mole"  />
 
   <script>
     this.on('all', function() {
@@ -17,23 +17,16 @@
   </script>
 
   <style>
-    mole img {
+    mole {
+      background-image: url({dirtSrc});
       height: 128px;
       width: 128px;
     }
 
-    mole > .mole {
-      display: none;
-    }
-    mole.popped > .mole {
-      display: block;
-    }
+    mole > .mole {display: none;}
+    mole.popped > .mole {display: block;}
 
-    mole > .dirt {
-      display: block;
-    }
-    mole.popped > .dirt {
-      display: none;
-    }
+    mole > .dirt {display: block;}
+    mole.popped > .dirt {display: none;}
   </style>
 </mole>

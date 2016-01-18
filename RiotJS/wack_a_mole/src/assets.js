@@ -1,14 +1,14 @@
 module.exports = {
   images: {
     dirt: require('./img/dirt.png'),
-    rabbit: require('./img/part/rabbit.png'),
-    elephant: require('./img/part/elephant.png'),
-    hippo: require('./img/part/hippo.png'),
-    monkey: require('./img/part/monkey.png'),
-    panda: require('./img/part/panda.png'),
-    pig: require('./img/part/pig.png'),
-    snake: require('./img/part/snake.png'),
-    giraffe: require('./img/part/giraffe.png'),
-    parrot: require('./img/part/parrot.png')
+    rabbit: require('./img/moles/rabbit.png'),
+    elephant: require('./img/moles/elephant.png'),
+    hippo: require('./img/moles/hippo.png'),
+    monkey: require('./img/moles/monkey.png'),
+    panda: require('./img/moles/panda.png'),
+    pig: require('./img/moles/pig.png'),
+    snake: require('./img/moles/snake.png'),
+    giraffe: require('./img/moles/giraffe.png'),
+    parrot: require('./img/moles/parrot.png')
   }
 }

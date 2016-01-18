@@ -64,7 +64,7 @@ State.prototype = {
     this.trigger('tick', 'delta', delta, 'timestamp', timestamp, this);
     this.lastTick = timestamp;
     if (!window.pause) {
-      requestAnimationFrame(this.tick.bind(this));
+      // requestAnimationFrame(this.tick.bind(this));
     }
   },
 

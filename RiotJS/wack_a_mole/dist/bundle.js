@@ -2581,7 +2581,7 @@
   \**********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole img { height: 128px; width: 128px; } mole > .mole { display: none; } mole.popped > .mole { display: block; } mole > .dirt { display: block; } mole.popped > .dirt { display: none; }', 'class="{popped: isPopped}"', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { background-image: url({dirtSrc}); height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
 	    this.on('all', function() {
 	      console.log('mole: EVENT:', arguments);
 	    });
@@ -2677,7 +2677,7 @@
 	    this.trigger('tick', 'delta', delta, 'timestamp', timestamp, this);
 	    this.lastTick = timestamp;
 	    if (!window.pause) {
-	      requestAnimationFrame(this.tick.bind(this));
+	      // requestAnimationFrame(this.tick.bind(this));
 	    }
 	  },
 	  update: function update() {
@@ -2715,15 +2715,15 @@
 	module.exports = {
 	  images: {
 	    dirt: __webpack_require__(/*! ./img/dirt.png */ 8),
-	    rabbit: __webpack_require__(/*! ./img/part/rabbit.png */ 9),
-	    elephant: __webpack_require__(/*! ./img/part/elephant.png */ 10),
-	    hippo: __webpack_require__(/*! ./img/part/hippo.png */ 11),
-	    monkey: __webpack_require__(/*! ./img/part/monkey.png */ 12),
-	    panda: __webpack_require__(/*! ./img/part/panda.png */ 13),
-	    pig: __webpack_require__(/*! ./img/part/pig.png */ 14),
-	    snake: __webpack_require__(/*! ./img/part/snake.png */ 15),
-	    giraffe: __webpack_require__(/*! ./img/part/giraffe.png */ 16),
-	    parrot: __webpack_require__(/*! ./img/part/parrot.png */ 17)
+	    rabbit: __webpack_require__(/*! ./img/moles/rabbit.png */ 9),
+	    elephant: __webpack_require__(/*! ./img/moles/elephant.png */ 10),
+	    hippo: __webpack_require__(/*! ./img/moles/hippo.png */ 11),
+	    monkey: __webpack_require__(/*! ./img/moles/monkey.png */ 12),
+	    panda: __webpack_require__(/*! ./img/moles/panda.png */ 13),
+	    pig: __webpack_require__(/*! ./img/moles/pig.png */ 14),
+	    snake: __webpack_require__(/*! ./img/moles/snake.png */ 15),
+	    giraffe: __webpack_require__(/*! ./img/moles/giraffe.png */ 16),
+	    parrot: __webpack_require__(/*! ./img/moles/parrot.png */ 17)
 	  }
 	};
 
@@ -2738,84 +2738,84 @@
 
 /***/ },
 /* 9 */
-/*!*********************************!*\
-  !*** ./src/img/part/rabbit.png ***!
-  \*********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/rabbit-71a30b2d78d4427e8b4554ce2d15d275.png";
-
-/***/ },
-/* 10 */
-/*!***********************************!*\
-  !*** ./src/img/part/elephant.png ***!
-  \***********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/elephant-a79a7507669af3bb066e6ae60010bf38.png";
-
-/***/ },
-/* 11 */
-/*!********************************!*\
-  !*** ./src/img/part/hippo.png ***!
-  \********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/hippo-d0c451145932e3a7cc8acb9bcc0e8faa.png";
-
-/***/ },
-/* 12 */
-/*!*********************************!*\
-  !*** ./src/img/part/monkey.png ***!
-  \*********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/monkey-78ddefbb44189666c703e8a02e89e8ed.png";
-
-/***/ },
-/* 13 */
-/*!********************************!*\
-  !*** ./src/img/part/panda.png ***!
-  \********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/panda-6abbdc77bdbf904dc5d8ef7bd701bf9e.png";
-
-/***/ },
-/* 14 */
-/*!******************************!*\
-  !*** ./src/img/part/pig.png ***!
-  \******************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/pig-90d2bccf6f4c8cbc49bd81cd276bca3d.png";
-
-/***/ },
-/* 15 */
-/*!********************************!*\
-  !*** ./src/img/part/snake.png ***!
-  \********************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/snake-53263331c5f9502b1bd9ab3e5d511f95.png";
-
-/***/ },
-/* 16 */
 /*!**********************************!*\
-  !*** ./src/img/part/giraffe.png ***!
+  !*** ./src/img/moles/rabbit.png ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__.p + "img/giraffe-70c99cdb1227169d88e0acd3bd43a0ee.png";
+	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
 
 /***/ },
-/* 17 */
+/* 10 */
+/*!************************************!*\
+  !*** ./src/img/moles/elephant.png ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
+
+/***/ },
+/* 11 */
 /*!*********************************!*\
-  !*** ./src/img/part/parrot.png ***!
+  !*** ./src/img/moles/hippo.png ***!
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__.p + "img/parrot-ec5501e1319a2716b7a7695be3fa54f1.png";
+	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
+
+/***/ },
+/* 12 */
+/*!**********************************!*\
+  !*** ./src/img/moles/monkey.png ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
+
+/***/ },
+/* 13 */
+/*!*********************************!*\
+  !*** ./src/img/moles/panda.png ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
+
+/***/ },
+/* 14 */
+/*!*******************************!*\
+  !*** ./src/img/moles/pig.png ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
+
+/***/ },
+/* 15 */
+/*!*********************************!*\
+  !*** ./src/img/moles/snake.png ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
+
+/***/ },
+/* 16 */
+/*!***********************************!*\
+  !*** ./src/img/moles/giraffe.png ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
+
+/***/ },
+/* 17 */
+/*!**********************************!*\
+  !*** ./src/img/moles/parrot.png ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
 
 /***/ }
 /******/ ]);
