@@ -2530,27 +2530,34 @@
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {
-	__webpack_require__(/*! ./mole.tag */ 5);
+	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(/*! ./mole.tag */ 5);
 	
-	riot.tag2('gameboard', '<h1>Gameboard </h1> <div class="board"> <mole each="{squares}" data="{this}"></mole> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; } gameboard > .board > mole { float: left; }', '', function(opts) {
+	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <mole each="{squares}" data="{this}" onclick="{onClick}"></mole> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; } gameboard > .board > mole { float: left; }', '', function(opts) {
 	    'use strict';
 	    const State = __webpack_require__(/*! ./state.js */ 6);
 	    const assets = __webpack_require__(/*! ./assets.js */ 7);
 	
+	    // Create the inital state of the game
 	    let state = this.state = new State(9, assets.images.dirt, [
-	      assets.images.giraffe,
-	      assets.images.hippo,
-	      assets.images.elephant,
-	      assets.images.monkey,
-	      assets.images.panda,
-	      assets.images.pig,
-	      assets.images.snake,
-	      assets.images.parrot,
-	      assets.images.rabbit,
+	      assets.images.giraffe, assets.images.hippo, assets.images.elephant,
+	      assets.images.monkey, assets.images.panda, assets.images.pig,
+	      assets.images.snake, assets.images.parrot, assets.images.rabbit,
 	    ]);
 	
+	    // Listen for the state tick event
+	    state.on('tick', (delta) => {
+	      // When the game clock ticks, we update.
+	      this.update(state.toJSON());
+	    });
+	
 	    // this.squares = state.toGameboard();
+	    this.onClick = (evt) => {
+	      const item = evt.item;
+	      const index = this.squares.indexOf(item);
+	
+	      console.log('click', this, item);
+	      state.hit(index);
+	    }
 	
 	    this.on('all', () => {
 	      console.log('board: EVENT:', arguments);
@@ -2562,13 +2569,11 @@
 	      state.start();
 	    });
 	
-	    state.on('tick', (delta) => {
-	        console.log('tick', delta);
-	        // When the game clock ticks, we update.
-	        this.update({
-	          squares: state.toJSON()
-	        });
-	    });
+	    // this.on('update', () => {
+	    //   var curr = state.toJSON();
+	    //   this.score = curr.score;
+	    //   this.squares = curr.squares;
+	    // });
 	
 	}, '{ }');
 	
@@ -2581,18 +2586,7 @@
   \**********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { background-image: url({dirtSrc}); height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
-	    this.on('all', function() {
-	      console.log('mole: EVENT:', arguments);
-	    });
-	
-	    this.on('mount', () => {
-	      console.log('mole: mount:', this.isPopped, this);
-	    });
-	
-	    this.on('update', () => {
-	      console.log('mole: update:', this.isPopped, this);
-	    });
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
 	}, '{ }');
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
@@ -2617,6 +2611,7 @@
 	  this.moles = [];
 	  this.dirtSrc = dirtSrc;
 	  this.molesSrc = molesSrc;
+	  this.score = 0;
 	
 	  // add events
 	  riot.observable(this);
@@ -2662,6 +2657,24 @@
 	    requestAnimationFrame(this.tick.bind(this));
 	  },
 	
+	  // Call to register a hit on the index
+	  hit: function hit(index) {
+	    var points = 10;
+	    var mole = this.moles[index];
+	    // ignore if the mole hasn't popped
+	    if (!mole.isPopped) {
+	      return;
+	    }
+	
+	    this.score += points;
+	    mole.isPopped = false;
+	
+	    this.moles[index] = mole;
+	    // force another tick.
+	    // this.update();
+	    // this.trigger('tick', this);
+	  },
+	
 	  // Called on every frame, emits 'tick' event at TICK_SPEED
 	  tick: function tick(timestamp) {
 	    var delta = timestamp - this.lastTick;
@@ -2672,14 +2685,17 @@
 	      return;
 	    }
 	
-	    this.update(delta);
+	    this.update();
 	
-	    this.trigger('tick', 'delta', delta, 'timestamp', timestamp, this);
+	    this.trigger('tick', this);
 	    this.lastTick = timestamp;
 	    if (!window.pause) {
-	      // requestAnimationFrame(this.tick.bind(this));
+	      requestAnimationFrame(this.tick.bind(this));
 	    }
 	  },
+	
+	  // Update is called every tick
+	  // Called before the tick event is emitted.
 	  update: function update() {
 	    var index = 0 | Math.random() * this.moles.length;
 	    var active = this.active || 0;
@@ -2697,8 +2713,12 @@
 	  // Returns the gameboard for the UI
 	  toJSON: function toJSON() {
 	    var moles = this.moles;
+	    var score = this.score;
 	
-	    return JSON.parse(JSON.stringify(moles));
+	    return JSON.parse(JSON.stringify({
+	      squares: moles,
+	      score: score
+	    }));
 	  }
 	};
 	module.exports = State;

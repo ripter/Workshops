@@ -9,6 +9,7 @@ function State(boardSize, dirtSrc, molesSrc) {
   this.moles = [];
   this.dirtSrc = dirtSrc;
   this.molesSrc = molesSrc;
+  this.score = 0;
 
   // add events
   riot.observable(this);
@@ -49,6 +50,22 @@ State.prototype = {
     requestAnimationFrame(this.tick.bind(this));
   },
 
+  // Call to register a hit on the index
+  hit(index) {
+    const points = 10;
+    let mole = this.moles[index];
+    // ignore if the mole hasn't popped
+    if (!mole.isPopped) { return; }
+
+    this.score += points;
+    mole.isPopped = false;
+
+    this.moles[index] = mole;
+    // force another tick.
+    // this.update();
+    // this.trigger('tick', this);
+  },
+
   // Called on every frame, emits 'tick' event at TICK_SPEED
   tick(timestamp) {
     const delta = timestamp - this.lastTick;
@@ -59,15 +76,17 @@ State.prototype = {
       return;
     }
 
-    this.update(delta);
+    this.update();
 
-    this.trigger('tick', 'delta', delta, 'timestamp', timestamp, this);
+    this.trigger('tick', this);
     this.lastTick = timestamp;
     if (!window.pause) {
-      // requestAnimationFrame(this.tick.bind(this));
+      requestAnimationFrame(this.tick.bind(this));
     }
   },
 
+  // Update is called every tick
+  // Called before the tick event is emitted.
   update() {
     const index = 0 | Math.random() * this.moles.length;
     let active = this.active || 0;
@@ -84,9 +103,12 @@ State.prototype = {
 
   // Returns the gameboard for the UI
   toJSON() {
-    const {moles} = this;
+    const {moles, score} = this;
 
-    return JSON.parse(JSON.stringify(moles));
+    return JSON.parse(JSON.stringify({
+      squares: moles,
+      score: score
+    }));
   }
 
 };
