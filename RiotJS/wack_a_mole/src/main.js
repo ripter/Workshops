@@ -3,6 +3,7 @@ const riot = require('riot');
 require('./puppy.tag');
 require('./gameboard.tag');
 
-console.log('main: starting riot');
-var tags = riot.mount('*');
-console.log('main: tags', tags);
+// render all the tags
+const tags = riot.mount('*');
+// for debugging
+window.tags = tags;

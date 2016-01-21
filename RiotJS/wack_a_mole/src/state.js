@@ -21,11 +21,11 @@ State.prototype = {
   // Creates a new random mole
   // return mole
   createMole() {
-    const {dirtSrc, molesSrc} = this;
+    const { dirtSrc, molesSrc } = this;
     const index = 0 | Math.random() * molesSrc.length;
 
     return {
-      dirtSrc: dirtSrc,
+      dirtSrc,
       moleSrc: molesSrc[index],
       isPopped: false
     };
@@ -33,11 +33,10 @@ State.prototype = {
 
   // Resets the gameboard with new moles.
   resetBoard() {
-    const {dirtSrc, molesSrc} = this;
-    let moles = [];
+    const moles = [];
     let len = this.boardSize;
 
-    while(len--) {
+    while (len--) {
       moles.push(this.createMole());
     }
 
@@ -45,7 +44,7 @@ State.prototype = {
   },
 
   // Start the Game Timer and the Action!
-  start(update) {
+  start() {
     // Start the loop!
     requestAnimationFrame(this.tick.bind(this));
   },
@@ -53,7 +52,7 @@ State.prototype = {
   // Call to register a hit on the index
   hit(index) {
     const points = 10;
-    let mole = this.moles[index];
+    const mole = this.moles[index];
     // ignore if the mole hasn't popped
     if (!mole.isPopped) { return; }
 
@@ -89,8 +88,8 @@ State.prototype = {
   // Called before the tick event is emitted.
   update() {
     const index = 0 | Math.random() * this.moles.length;
-    let active = this.active || 0;
-    let moles = this.moles;
+    const active = this.active || 0;
+    const moles = this.moles;
 
     // Flip to dirt
     moles[active].isPopped = false;
@@ -103,11 +102,11 @@ State.prototype = {
 
   // Returns the gameboard for the UI
   toJSON() {
-    const {moles, score} = this;
+    const { moles, score } = this;
 
     return JSON.parse(JSON.stringify({
       squares: moles,
-      score: score
+      score
     }));
   }
 

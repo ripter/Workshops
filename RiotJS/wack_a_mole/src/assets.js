@@ -11,4 +11,4 @@ module.exports = {
     giraffe: require('./img/moles/giraffe.png'),
     parrot: require('./img/moles/parrot.png')
   }
-}
+};

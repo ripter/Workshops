@@ -31,27 +31,14 @@ require('./mole.tag');
       const item = evt.item;
       const index = this.squares.indexOf(item);
 
-      console.log('click', this, item);
       state.hit(index);
+      this.update(state.toJSON());
     }
 
-    this.on('all', () => {
-      console.log('board: EVENT:', arguments);
-    });
-
     this.on('mount', () => {
-      console.log('board: EVENT: mount', arguments);
       // start the game!
       state.start();
     });
-
-    // this.on('update', () => {
-    //   var curr = state.toJSON();
-    //   this.score = curr.score;
-    //   this.squares = curr.squares;
-    // });
-
-
 
   </script>
 

@@ -54,9 +54,10 @@
 	__webpack_require__(/*! ./puppy.tag */ 3);
 	__webpack_require__(/*! ./gameboard.tag */ 4);
 	
-	console.log('main: starting riot');
+	// render all the tags
 	var tags = riot.mount('*');
-	console.log('main: tags', tags);
+	// for debugging
+	window.tags = tags;
 
 /***/ },
 /* 1 */
@@ -2555,25 +2556,14 @@
 	      const item = evt.item;
 	      const index = this.squares.indexOf(item);
 	
-	      console.log('click', this, item);
 	      state.hit(index);
+	      this.update(state.toJSON());
 	    }
 	
-	    this.on('all', () => {
-	      console.log('board: EVENT:', arguments);
-	    });
-	
 	    this.on('mount', () => {
-	      console.log('board: EVENT: mount', arguments);
 	      // start the game!
 	      state.start();
 	    });
-	
-	    // this.on('update', () => {
-	    //   var curr = state.toJSON();
-	    //   this.score = curr.score;
-	    //   this.squares = curr.squares;
-	    // });
 	
 	}, '{ }');
 	
@@ -2638,9 +2628,6 @@
 	
 	  // Resets the gameboard with new moles.
 	  resetBoard: function resetBoard() {
-	    var dirtSrc = this.dirtSrc;
-	    var molesSrc = this.molesSrc;
-	
 	    var moles = [];
 	    var len = this.boardSize;
 	
@@ -2652,7 +2639,7 @@
 	  },
 	
 	  // Start the Game Timer and the Action!
-	  start: function start(update) {
+	  start: function start() {
 	    // Start the loop!
 	    requestAnimationFrame(this.tick.bind(this));
 	  },
