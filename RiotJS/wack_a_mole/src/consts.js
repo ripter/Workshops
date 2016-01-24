@@ -1,8 +1,17 @@
 
 export const TIMER = {
-  TICK: 'TIMER.TICK'
+  TICK: 'TIMER.TICK',
+  START: 'TIMER.START'
 };
 
 export const MOLE = {
-  TOGGLE: 'MOLE.TOGGLE'
+  HIT: 'MOLE.HIT'
 };
+
+export const ACTION = {
+  CLICKED: 'ACTION.CLICKED',
+  MOLE: {
+    HIDE: 'ACTION.MOLE.HIDE',
+    SHOW: 'ACTION.MOLE.SHOW'
+  }
+}

@@ -14,7 +14,7 @@ export const images = {
 // Since they never change, we can have the best of both worlds.
 const imageKeys = Object.keys(images);
 
-export function randomMole() {
+export function randomMoleImage() {
   const index = 0 | Math.random() * (imageKeys.length-1) + 1;
 
   return images[imageKeys[index]];

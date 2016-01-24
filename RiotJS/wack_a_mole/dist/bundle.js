@@ -53,28 +53,48 @@
 	var _consts = __webpack_require__(15);
 
 	__webpack_require__(16);
+
+	__webpack_require__(17);
 	__webpack_require__(18);
 
 	// Create a new game
 	var gamestate = new _store2.default();
-	console.log('gamestate', gamestate, _consts.TIMER);
+	//DEBUGGING:
 	window.gamestate = gamestate;
 
 	// render all the tags
-	var tagBoard = riot.mount('gameboard', gamestate)[0];
-	var tagTimer = riot.mount('timer', gamestate)[0];
+	riot.mount('*', gamestate);
 
 	// Change the mole every second.
-	tagTimer.on(_consts.TIMER.TICK, function (seconds) {
+	gamestate.on(_consts.TIMER.TICK, function (seconds) {
 	  var lastIndex = gamestate.lastIndex;
 
-	  var index = 0 | Math.random() * 9;
+	  var index = lastIndex;
 
-	  gamestate.trigger(_consts.MOLE.TOGGLE, [lastIndex, index]);
+	  // find a hidden mole
+	  while (index === lastIndex) {
+	    index = 0 | Math.random() * 9;
+	  }
+
+	  // hide the last mole we showed and show a new one instead.
+	  gamestate.trigger(_consts.ACTION.MOLE.HIDE, [lastIndex], true);
+	  gamestate.trigger(_consts.ACTION.MOLE.SHOW, [index], true);
 	  gamestate.update({
 	    lastIndex: index
 	  });
 	});
+
+	gamestate.on(_consts.MOLE.HIT, function (mole) {
+	  var score = gamestate.score;
+
+	  gamestate.update({
+	    score: score + 10
+	  });
+	});
+
+	//
+	// Auto START
+	gamestate.trigger('TIMER.START');
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
@@ -2524,74 +2544,114 @@
 	var _require = __webpack_require__(4);
 
 	var images = _require.images;
-	var randomMole = _require.randomMole;
+	var randomMoleImage = _require.randomMoleImage;
 
 	var _require2 = __webpack_require__(15);
 
+	var ACTION = _require2.ACTION;
 	var MOLE = _require2.MOLE;
 
 	var Store = function () {
 	  function Store() {
 	    babelHelpers.classCallCheck(this, Store);
 
-	    var i = 9;
-
-	    // create the molesSrc
-	    this.moles = [];
-	    while (i--) {
-	      this.moles.push({
-	        src: images.dirt
-	      });
-	    }
+	    this.moles = this.createArray(9, { src: images.dirt });
+	    this.score = 0;
 
 	    riot.observable(this);
 	    this.delegateEvents();
 	  }
 
 	  // Listens to events defined in MOLE
+	  // This function maps the actions listed int he consts.js file
+	  //   to the functions on this object.
 
 	  Store.prototype.delegateEvents = function delegateEvents() {
 	    var _this = this;
 
-	    this.on(MOLE.TOGGLE, function (indexList) {
+	    this.on(ACTION.MOLE.HIDE, function (indexList, silent) {
 	      if (typeof indexList === "number") {
 	        throw new Error('Toggle takes an array of ids');
 	      }
-	      indexList.forEach(_this.toggleMole.bind(_this));
+	      indexList.forEach(_this.hideMole.bind(_this, silent));
 	    });
+	    this.on(ACTION.MOLE.SHOW, function (indexList, silent) {
+	      if (typeof indexList === "number") {
+	        throw new Error('Toggle takes an array of ids');
+	      }
+	      indexList.forEach(_this.showMole.bind(_this, silent));
+	    });
+
+	    this.on(ACTION.CLICKED, this.onClick.bind(this));
 	  };
 
-	  // Toggle the mole at index.
+	  // ACTIONS.MOLE.HIDE
 
-	  Store.prototype.toggleMole = function toggleMole(index) {
-	    var moles = this.moles;
-	    var mole = moles[index];
-	    // Skip if the index was invalid
+	  Store.prototype.hideMole = function hideMole(silent, index) {
+	    var mole = this.moles[index];
 	    if (!mole) {
 	      return;
-	    }
+	    } // Skip undefined
 
-	    if (mole.src === images.dirt) {
-	      mole.src = randomMole();
-	    } else {
-	      mole.src = images.dirt;
-	    }
-
-	    moles[index] = mole;
-
-	    this.update({
-	      moles: moles
-	    });
+	    mole.src = images.dirt;
+	    this.setMole(index, mole, silent);
 	  };
 
-	  Store.prototype.update = function update(newState) {
+	  // ACTIONS.MOLE.SHOW
+
+	  Store.prototype.showMole = function showMole(silent, index) {
+	    var mole = this.moles[index];
+	    if (!mole) {
+	      return;
+	    } // Skip undefined
+
+	    mole.src = randomMoleImage();
+	    this.setMole(index, mole, silent);
+	  };
+
+	  // ACTION.CLICKED
+
+	  Store.prototype.onClick = function onClick(mole) {
+	    if (mole.src === images.dirt) {
+	      return;
+	    }
+	    var index = mole.index;
+
+	    mole.src = images.dirt;
+	    this.setMole(index, mole);
+
+	    this.trigger(MOLE.HIT, mole);
+	  };
+
+	  //
+	  // Utils
+	  //
+
+	  // Sets mole and triggers update
+
+	  Store.prototype.setMole = function setMole(index, mole, silent) {
+	    var moles = this.moles;
+
+	    moles[index] = mole;
+	    this.update({
+	      moles: moles
+	    }, silent);
+	  };
+
+	  // Updates the state and trigger the update event with a clone of state.
+
+	  Store.prototype.update = function update(newState, silent) {
 	    var _this2 = this;
 
+	    silent = silent || false;
 	    // Set values on this to match the new state
 	    Object.keys(newState).forEach(function (prop) {
 	      _this2[prop] = newState[prop];
 	    });
-	    this.trigger('update', this.toJSON());
+
+	    if (!silent) {
+	      this.trigger('update', this.toJSON());
+	    }
 	  };
 
 	  // Returns a clone of the current state.
@@ -2603,6 +2663,17 @@
 	      result[key] = _this3[key];
 	      return result;
 	    }, {});
+
+	    return result;
+	  };
+
+	  Store.prototype.createArray = function createArray(len, val) {
+	    var result = [];
+
+	    while (len--) {
+	      val._index = len;
+	      result[len] = JSON.parse(JSON.stringify(val));
+	    }
 
 	    return result;
 	  };
@@ -2622,7 +2693,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.randomMole = randomMole;
+	exports.randomMoleImage = randomMoleImage;
 	var images = exports.images = {
 	  dirt: __webpack_require__(5),
 	  rabbit: __webpack_require__(6),
@@ -2639,7 +2710,7 @@
 	// Since they never change, we can have the best of both worlds.
 	var imageKeys = Object.keys(images);
 
-	function randomMole() {
+	function randomMoleImage() {
 	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
 
 	  return images[imageKeys[index]];
@@ -2715,61 +2786,37 @@
 	  value: true
 	});
 	var TIMER = exports.TIMER = {
-	  TICK: 'TIMER.TICK'
+	  TICK: 'TIMER.TICK',
+	  START: 'TIMER.START'
 	};
 
 	var MOLE = exports.MOLE = {
-	  TOGGLE: 'MOLE.TOGGLE'
+	  HIT: 'MOLE.HIT'
+	};
+
+	var ACTION = exports.ACTION = {
+	  CLICKED: 'ACTION.CLICKED',
+	  MOLE: {
+	    HIDE: 'ACTION.MOLE.HIDE',
+	    SHOW: 'ACTION.MOLE.SHOW'
+	  }
 	};
 
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(17);
-
-	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <img each="{moles}" riot-src="{src}"> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; } gameboard > .board > mole { }', '', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('score', '<h2>Score: {score}</h2>', '', '', function(opts) {
 	'use strict';
 
 	var _this = this;
 
 	var store = this.store = this.opts;
-	console.log('store', store);
 
 	// Rerender on store update.
 	store.on('update', function (state) {
 	  _this.update(state);
 	});
-	// 'use strict';
-	// const State = require('./state.js');
-	// const assets = require('./assets.js');
-	//
-	// // Create the inital state of the game
-	// let state = this.state = new State(9, assets.images.dirt, [
-	//   assets.images.giraffe, assets.images.hippo, assets.images.elephant,
-	//   assets.images.monkey, assets.images.panda, assets.images.pig,
-	//   assets.images.snake, assets.images.parrot, assets.images.rabbit,
-	// ]);
-	//
-	// // Listen for the state tick event
-	// state.on('tick', (delta) => {
-	//   // When the game clock ticks, we update.
-	//   this.update(state.toJSON());
-	// });
-	//
-	// // this.squares = state.toGameboard();
-	// this.onClick = (evt) => {
-	//   const item = evt.item;
-	//   const index = this.squares.indexOf(item);
-	//
-	//   state.hit(index);
-	//   this.update(state.toJSON());
-	// }
-	//
-	// this.on('mount', () => {
-	//   // start the game!
-	//   state.start();
-	// });
 	}, '{ }');
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -2778,7 +2825,28 @@
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
+	'use strict';
+
+	var _this = this;
+
+	var _consts = __webpack_require__(15);
+
+	var _assets = __webpack_require__(4);
+
+	var store = this.store = this.opts;
+
+	this.moles = store.moles;
+
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+
+	this.onClick = function (evt) {
+	  var mole = evt.item;
+	  store.trigger(_consts.ACTION.CLICKED, mole);
+	};
 	}, '{ }');
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -2790,26 +2858,27 @@
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
 	'use strict';
 
+	var _this = this;
+
 	var _consts = __webpack_require__(15);
+
+	var store = this.store = this.opts;
 
 	this.seconds = 0;
 
-	this.on('mount', function () {
-	  this.timer = setInterval(this.tick.bind(this), 1000);
-	  // inital render happens with the values before mount.
-	  // if we want to change something, we need to call update.
-	  // this.update({
-	  //   displayTime: 'mount'
-	  // })
+	store.on(_consts.TIMER.START, function () {
+	  var tick = _this.tick.bind(_this);
+
+	  _this.timer = setInterval(tick, 1000);
 	});
 
 	this.tick = function () {
-	  var seconds = this.seconds += 1;
+	  var seconds = _this.seconds += 1;
 
-	  this.update({
+	  _this.update({
 	    seconds: seconds
 	  });
-	  this.trigger(_consts.TIMER.TICK, seconds);
+	  store.trigger(_consts.TIMER.TICK, seconds);
 	};
 	}, '{ }');
 

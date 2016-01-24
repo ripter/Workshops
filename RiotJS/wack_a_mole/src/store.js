@@ -1,57 +1,89 @@
-const {images, randomMole} = require('./assets.js');
-const {MOLE} = require('./consts.js');
+const {images, randomMoleImage} = require('./assets.js');
+const {ACTION, MOLE} = require('./consts.js');
 
 
 class Store {
   constructor() {
-    let i = 9;
-
-    // create the molesSrc
-    this.moles = [];
-    while(i--) {
-      this.moles.push({
-        src: images.dirt
-      });
-    }
+    this.moles = this.createArray(9, {src: images.dirt});
+    this.score = 0;
 
     riot.observable(this);
     this.delegateEvents();
   }
 
   // Listens to events defined in MOLE
+  // This function maps the actions listed int he consts.js file
+  //   to the functions on this object.
   delegateEvents() {
-    this.on(MOLE.TOGGLE, (indexList) => {
+    this.on(ACTION.MOLE.HIDE, (indexList, silent) => {
       if (typeof indexList === "number") { throw new Error('Toggle takes an array of ids'); }
-      indexList.forEach(this.toggleMole.bind(this));
+      indexList.forEach(this.hideMole.bind(this, silent));
     });
+    this.on(ACTION.MOLE.SHOW, (indexList, silent) => {
+      if (typeof indexList === "number") { throw new Error('Toggle takes an array of ids'); }
+      indexList.forEach(this.showMole.bind(this, silent));
+    });
+
+    this.on(ACTION.CLICKED, this.onClick.bind(this));
   }
 
-  // Toggle the mole at index.
-  toggleMole(index) {
-    const moles = this.moles;
-    const mole = moles[index];
-    // Skip if the index was invalid
-    if (!mole) { return; }
+  // ACTIONS.MOLE.HIDE
+  hideMole(silent, index) {
+    const mole = this.moles[index];
+    if (!mole) { return; } // Skip undefined
 
-    if (mole.src === images.dirt) {
-      mole.src = randomMole();
-    } else {
-      mole.src = images.dirt;
-    }
+    mole.src = images.dirt;
+    this.setMole(index, mole, silent);
+  }
+
+  // ACTIONS.MOLE.SHOW
+  showMole(silent, index) {
+    const mole = this.moles[index];
+    if (!mole) { return; } // Skip undefined
+
+    mole.src = randomMoleImage();
+    this.setMole(index, mole, silent);
+  }
+
+  // ACTION.CLICKED
+  onClick(mole) {
+    if (mole.src === images.dirt) { return; }
+    const index = mole.index;
+
+    mole.src = images.dirt;
+    this.setMole(index, mole);
+
+    this.trigger(MOLE.HIT, mole);
+  }
+
+
+
+
+  //
+  // Utils
+  //
+
+  // Sets mole and triggers update
+  setMole(index, mole, silent) {
+    const moles = this.moles;
 
     moles[index] = mole;
-
     this.update({
       moles: moles
-    });
+    }, silent);
   }
 
-  update(newState) {
+  // Updates the state and trigger the update event with a clone of state.
+  update(newState, silent) {
+    silent = silent || false;
     // Set values on this to match the new state
     Object.keys(newState).forEach((prop) => {
       this[prop] = newState[prop];
     });
-    this.trigger('update', this.toJSON());
+
+    if (!silent) {
+      this.trigger('update', this.toJSON());
+    }
   }
 
   // Returns a clone of the current state.
@@ -60,6 +92,17 @@ class Store {
       result[key] = this[key];
       return result;
     }, {});
+
+    return result;
+  }
+
+  createArray(len, val) {
+    let result = [];
+
+    while (len--) {
+      val._index = len;
+      result[len] = JSON.parse(JSON.stringify(val));
+    }
 
     return result;
   }

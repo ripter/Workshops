@@ -3,24 +3,23 @@
 
   <script type="babel">
     import {TIMER} from './consts.js';
+    const store = this.store = this.opts;
+
     this.seconds = 0;
 
-    this.on('mount', function() {
-      this.timer = setInterval(this.tick.bind(this), 1000);
-      // inital render happens with the values before mount.
-      // if we want to change something, we need to call update.
-      // this.update({
-      //   displayTime: 'mount'
-      // })
+    store.on(TIMER.START, () => {
+      const tick = this.tick.bind(this);
+
+      this.timer = setInterval(tick, 1000);
     });
 
-    this.tick =function() {
+    this.tick = () => {
       const seconds = this.seconds += 1;
 
       this.update({
         seconds: seconds
       });
-      this.trigger(TIMER.TICK, seconds);
+      store.trigger(TIMER.TICK, seconds);
     }
 
   </script>
