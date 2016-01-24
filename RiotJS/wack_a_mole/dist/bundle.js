@@ -50,12 +50,14 @@
 
 	var _store2 = babelHelpers.interopRequireDefault(_store);
 
-	__webpack_require__(15);
-	__webpack_require__(17);
+	var _consts = __webpack_require__(15);
+
+	__webpack_require__(16);
+	__webpack_require__(18);
 
 	// Create a new game
 	var gamestate = new _store2.default();
-	console.log('gamestate', gamestate);
+	console.log('gamestate', gamestate, _consts.TIMER);
 	window.gamestate = gamestate;
 
 	// render all the tags
@@ -63,9 +65,15 @@
 	var tagTimer = riot.mount('timer', gamestate)[0];
 
 	// Change the mole every second.
-	tagTimer.on('tick', function (seconds) {
+	tagTimer.on(_consts.TIMER.TICK, function (seconds) {
+	  var lastIndex = gamestate.lastIndex;
+
 	  var index = 0 | Math.random() * 9;
-	  gamestate.toggleMole(index);
+
+	  gamestate.trigger(_consts.MOLE.TOGGLE, [lastIndex, index]);
+	  gamestate.update({
+	    lastIndex: index
+	  });
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -2513,14 +2521,14 @@
 
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
 
-	var assets = __webpack_require__(4);
-	var requestAnimationFrame = window.requestAnimationFrame;
+	var _require = __webpack_require__(4);
 
-	var STORE = {
-	  EVENTS: {
-	    UPDATE: 'STORE.EVENTS.UPDATE'
-	  }
-	};
+	var images = _require.images;
+	var randomMole = _require.randomMole;
+
+	var _require2 = __webpack_require__(15);
+
+	var MOLE = _require2.MOLE;
 
 	var Store = function () {
 	  function Store() {
@@ -2532,23 +2540,41 @@
 	    this.moles = [];
 	    while (i--) {
 	      this.moles.push({
-	        src: assets.images.dirt
+	        src: images.dirt
 	      });
 	    }
 
 	    riot.observable(this);
+	    this.delegateEvents();
 	  }
+
+	  // Listens to events defined in MOLE
+
+	  Store.prototype.delegateEvents = function delegateEvents() {
+	    var _this = this;
+
+	    this.on(MOLE.TOGGLE, function (indexList) {
+	      if (typeof indexList === "number") {
+	        throw new Error('Toggle takes an array of ids');
+	      }
+	      indexList.forEach(_this.toggleMole.bind(_this));
+	    });
+	  };
 
 	  // Toggle the mole at index.
 
 	  Store.prototype.toggleMole = function toggleMole(index) {
 	    var moles = this.moles;
 	    var mole = moles[index];
+	    // Skip if the index was invalid
+	    if (!mole) {
+	      return;
+	    }
 
-	    if (mole.src === assets.images.dirt) {
-	      mole.src = assets.images.panda;
+	    if (mole.src === images.dirt) {
+	      mole.src = randomMole();
 	    } else {
-	      mole.src = assets.images.dirt;
+	      mole.src = images.dirt;
 	    }
 
 	    moles[index] = mole;
@@ -2559,20 +2585,22 @@
 	  };
 
 	  Store.prototype.update = function update(newState) {
-	    var _this = this;
+	    var _this2 = this;
 
 	    // Set values on this to match the new state
 	    Object.keys(newState).forEach(function (prop) {
-	      _this[prop] = newState[prop];
+	      _this2[prop] = newState[prop];
 	    });
 	    this.trigger('update', this.toJSON());
 	  };
 
+	  // Returns a clone of the current state.
+
 	  Store.prototype.toJSON = function toJSON() {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    var result = Object.keys(this).reduce(function (result, key) {
-	      result[key] = _this2[key];
+	      result[key] = _this3[key];
 	      return result;
 	    }, {});
 
@@ -2591,20 +2619,31 @@
 
 	'use strict';
 
-	module.exports = {
-	  images: {
-	    dirt: __webpack_require__(5),
-	    rabbit: __webpack_require__(6),
-	    elephant: __webpack_require__(7),
-	    hippo: __webpack_require__(8),
-	    monkey: __webpack_require__(9),
-	    panda: __webpack_require__(10),
-	    pig: __webpack_require__(11),
-	    snake: __webpack_require__(12),
-	    giraffe: __webpack_require__(13),
-	    parrot: __webpack_require__(14)
-	  }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.randomMole = randomMole;
+	var images = exports.images = {
+	  dirt: __webpack_require__(5),
+	  rabbit: __webpack_require__(6),
+	  elephant: __webpack_require__(7),
+	  hippo: __webpack_require__(8),
+	  monkey: __webpack_require__(9),
+	  panda: __webpack_require__(10),
+	  pig: __webpack_require__(11),
+	  snake: __webpack_require__(12),
+	  giraffe: __webpack_require__(13),
+	  parrot: __webpack_require__(14)
 	};
+	// The object is easer to type, but the array is easer to code.
+	// Since they never change, we can have the best of both worlds.
+	var imageKeys = Object.keys(images);
+
+	function randomMole() {
+	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
+
+	  return images[imageKeys[index]];
+	}
 
 /***/ },
 /* 5 */
@@ -2668,9 +2707,26 @@
 
 /***/ },
 /* 15 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var TIMER = exports.TIMER = {
+	  TICK: 'TIMER.TICK'
+	};
+
+	var MOLE = exports.MOLE = {
+	  TOGGLE: 'MOLE.TOGGLE'
+	};
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(16);
+	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(17);
 
 	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <img each="{moles}" riot-src="{src}"> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; } gameboard > .board > mole { }', '', function(opts) {
 	'use strict';
@@ -2719,7 +2775,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
@@ -2728,11 +2784,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
 	'use strict';
+
+	var _consts = __webpack_require__(15);
 
 	this.seconds = 0;
 
@@ -2751,7 +2809,7 @@
 	  this.update({
 	    seconds: seconds
 	  });
-	  this.trigger('tick', seconds);
+	  this.trigger(_consts.TIMER.TICK, seconds);
 	};
 	}, '{ }');
 

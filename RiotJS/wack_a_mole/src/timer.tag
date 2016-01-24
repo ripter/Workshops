@@ -2,6 +2,7 @@
   <h2>Timer: {seconds}</h2>
 
   <script type="babel">
+    import {TIMER} from './consts.js';
     this.seconds = 0;
 
     this.on('mount', function() {
@@ -19,7 +20,7 @@
       this.update({
         seconds: seconds
       });
-      this.trigger('tick', seconds);
+      this.trigger(TIMER.TICK, seconds);
     }
 
   </script>

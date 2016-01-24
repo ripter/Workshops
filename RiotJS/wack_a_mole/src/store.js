@@ -1,11 +1,6 @@
-const assets = require('./assets.js');
-const requestAnimationFrame = window.requestAnimationFrame;
+const {images, randomMole} = require('./assets.js');
+const {MOLE} = require('./consts.js');
 
-const STORE = {
-  EVENTS: {
-    UPDATE: 'STORE.EVENTS.UPDATE'
-  }
-};
 
 class Store {
   constructor() {
@@ -15,22 +10,33 @@ class Store {
     this.moles = [];
     while(i--) {
       this.moles.push({
-        src: assets.images.dirt
+        src: images.dirt
       });
     }
 
     riot.observable(this);
+    this.delegateEvents();
+  }
+
+  // Listens to events defined in MOLE
+  delegateEvents() {
+    this.on(MOLE.TOGGLE, (indexList) => {
+      if (typeof indexList === "number") { throw new Error('Toggle takes an array of ids'); }
+      indexList.forEach(this.toggleMole.bind(this));
+    });
   }
 
   // Toggle the mole at index.
   toggleMole(index) {
     const moles = this.moles;
     const mole = moles[index];
+    // Skip if the index was invalid
+    if (!mole) { return; }
 
-    if (mole.src === assets.images.dirt) {
-      mole.src = assets.images.panda;
+    if (mole.src === images.dirt) {
+      mole.src = randomMole();
     } else {
-      mole.src = assets.images.dirt;
+      mole.src = images.dirt;
     }
 
     moles[index] = mole;
@@ -48,6 +54,7 @@ class Store {
     this.trigger('update', this.toJSON());
   }
 
+  // Returns a clone of the current state.
   toJSON() {
     const result = Object.keys(this).reduce((result, key) => {
       result[key] = this[key];
