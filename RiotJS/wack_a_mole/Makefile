@@ -3,13 +3,15 @@
 NODE_BIN := ./node_modules/.bin
 
 all: build
-	rm -Rf dist
-	mkdir dist
-	cp public/index.html dist/index.html
+	cp -f public/index.html dist/index.html
 
 build: npm
-	$(NODE_BIN)/webpack -dc
-	mv -f img dist
+	# $(NODE_BIN)/webpack -dc
+	$(NODE_BIN)/webpack
+	$(NODE_BIN)/babel-external-helpers -t global > dist/babel-external-helpers.js
+	cp node_modules/riot/riot.min.js dist/riot.min.js
+	cp -R img/ dist/img
+	rm -R img
 
 server:
 	$(NODE_BIN)/http-server dist/
