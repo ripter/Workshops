@@ -4,13 +4,19 @@ require('./mole.tag');
   <h1>Score: {score}</h1>
 
   <div class="board">
-    <img each={opts.moles} src={src} />
+    <img each={moles} src={src} />
     <!-- <Mole each={squares} data={this} onClick={onClick} /> -->
   </div>
 
 
   <script>
-    console.log('gameboard', this);
+    const store = this.store = this.opts;
+    console.log('store', store);
+
+    // Rerender on store update.
+    store.on('update', (state) => {
+      this.update(state);
+    });
     // 'use strict';
     // const State = require('./state.js');
     // const assets = require('./assets.js');

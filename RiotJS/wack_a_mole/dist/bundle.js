@@ -51,15 +51,22 @@
 	var _store2 = babelHelpers.interopRequireDefault(_store);
 
 	__webpack_require__(15);
+	__webpack_require__(17);
 
 	// Create a new game
 	var gamestate = new _store2.default();
 	console.log('gamestate', gamestate);
+	window.gamestate = gamestate;
 
 	// render all the tags
-	var tags = riot.mount('gameboard', gamestate);
-	// for debugging
-	window.tags = tags;
+	var tagBoard = riot.mount('gameboard', gamestate)[0];
+	var tagTimer = riot.mount('timer', gamestate)[0];
+
+	// Change the mole every second.
+	tagTimer.on('tick', function (seconds) {
+	  var index = 0 | Math.random() * 9;
+	  gamestate.toggleMole(index);
+	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
@@ -2507,6 +2514,7 @@
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
 
 	var assets = __webpack_require__(4);
+	var requestAnimationFrame = window.requestAnimationFrame;
 
 	var STORE = {
 	  EVENTS: {
@@ -2514,23 +2522,65 @@
 	  }
 	};
 
-	var Store = function Store() {
-	  babelHelpers.classCallCheck(this, Store);
+	var Store = function () {
+	  function Store() {
+	    babelHelpers.classCallCheck(this, Store);
 
-	  var i = 9;
+	    var i = 9;
 
-	  // create the molesSrc
-	  this.moles = [];
-	  while (i--) {
-	    this.moles.push({
-	      src: assets.images.dirt
-	    });
+	    // create the molesSrc
+	    this.moles = [];
+	    while (i--) {
+	      this.moles.push({
+	        src: assets.images.dirt
+	      });
+	    }
+
+	    riot.observable(this);
 	  }
 
-	  riot.observable(this);
-	};
+	  // Toggle the mole at index.
 
-	Store.EVENTS = STORE.EVENTS;
+	  Store.prototype.toggleMole = function toggleMole(index) {
+	    var moles = this.moles;
+	    var mole = moles[index];
+
+	    if (mole.src === assets.images.dirt) {
+	      mole.src = assets.images.panda;
+	    } else {
+	      mole.src = assets.images.dirt;
+	    }
+
+	    moles[index] = mole;
+
+	    this.update({
+	      moles: moles
+	    });
+	  };
+
+	  Store.prototype.update = function update(newState) {
+	    var _this = this;
+
+	    // Set values on this to match the new state
+	    Object.keys(newState).forEach(function (prop) {
+	      _this[prop] = newState[prop];
+	    });
+	    this.trigger('update', this.toJSON());
+	  };
+
+	  Store.prototype.toJSON = function toJSON() {
+	    var _this2 = this;
+
+	    var result = Object.keys(this).reduce(function (result, key) {
+	      result[key] = _this2[key];
+	      return result;
+	    }, {});
+
+	    return result;
+	  };
+
+	  return Store;
+	}();
 
 	module.exports = Store;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -2622,38 +2672,48 @@
 
 	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(16);
 
-	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <img each="{opts.moles}" riot-src="{src}"> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; } gameboard > .board > mole { }', '', function(opts) {
-	    console.log('gameboard', this);
-	    // 'use strict';
-	    // const State = require('./state.js');
-	    // const assets = require('./assets.js');
-	    //
-	    // // Create the inital state of the game
-	    // let state = this.state = new State(9, assets.images.dirt, [
-	    //   assets.images.giraffe, assets.images.hippo, assets.images.elephant,
-	    //   assets.images.monkey, assets.images.panda, assets.images.pig,
-	    //   assets.images.snake, assets.images.parrot, assets.images.rabbit,
-	    // ]);
-	    //
-	    // // Listen for the state tick event
-	    // state.on('tick', (delta) => {
-	    //   // When the game clock ticks, we update.
-	    //   this.update(state.toJSON());
-	    // });
-	    //
-	    // // this.squares = state.toGameboard();
-	    // this.onClick = (evt) => {
-	    //   const item = evt.item;
-	    //   const index = this.squares.indexOf(item);
-	    //
-	    //   state.hit(index);
-	    //   this.update(state.toJSON());
-	    // }
-	    //
-	    // this.on('mount', () => {
-	    //   // start the game!
-	    //   state.start();
-	    // });
+	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <img each="{moles}" riot-src="{src}"> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; } gameboard > .board > mole { }', '', function(opts) {
+	'use strict';
+
+	var _this = this;
+
+	var store = this.store = this.opts;
+	console.log('store', store);
+
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+	// 'use strict';
+	// const State = require('./state.js');
+	// const assets = require('./assets.js');
+	//
+	// // Create the inital state of the game
+	// let state = this.state = new State(9, assets.images.dirt, [
+	//   assets.images.giraffe, assets.images.hippo, assets.images.elephant,
+	//   assets.images.monkey, assets.images.panda, assets.images.pig,
+	//   assets.images.snake, assets.images.parrot, assets.images.rabbit,
+	// ]);
+	//
+	// // Listen for the state tick event
+	// state.on('tick', (delta) => {
+	//   // When the game clock ticks, we update.
+	//   this.update(state.toJSON());
+	// });
+	//
+	// // this.squares = state.toGameboard();
+	// this.onClick = (evt) => {
+	//   const item = evt.item;
+	//   const index = this.squares.indexOf(item);
+	//
+	//   state.hit(index);
+	//   this.update(state.toJSON());
+	// }
+	//
+	// this.on('mount', () => {
+	//   // start the game!
+	//   state.start();
+	// });
 	}, '{ }');
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -2663,6 +2723,36 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
+	}, '{ }');
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
+	'use strict';
+
+	this.seconds = 0;
+
+	this.on('mount', function () {
+	  this.timer = setInterval(this.tick.bind(this), 1000);
+	  // inital render happens with the values before mount.
+	  // if we want to change something, we need to call update.
+	  // this.update({
+	  //   displayTime: 'mount'
+	  // })
+	});
+
+	this.tick = function () {
+	  var seconds = this.seconds += 1;
+
+	  this.update({
+	    seconds: seconds
+	  });
+	  this.trigger('tick', seconds);
+	};
 	}, '{ }');
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
