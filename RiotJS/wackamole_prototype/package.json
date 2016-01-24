@@ -7,5 +7,16 @@
     "test": "make test"
   },
   "author": "Chris Richards",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-plugin-external-helpers-2": "^6.3.13",
+    "babel-preset-es2015-riot": "^1.0.1",
+    "babel-preset-stage-0": "^6.3.13",
+    "babel-preset-stage-2": "^6.3.13",
+    "riot": "^2.3.13"
+  },
+  "dependencies": {
+    "babel-cli": "^6.4.5"
+  }
 }

@@ -8,12 +8,15 @@
     <title>Wack-A-Mole Prototype</title>
   </head>
   <body>
+    <h1>Rose</h1>
     <gameboard />
   </body>
 
   <script src="riot.min.js"></script>
-  <script src="gameboard.js"></script>
+  <script src="babel-external-helpers.js"></script>
+  <script src="tags.js"></script>
+  <script src="game.js"></script>
   <script>
-    riot.mount('*');
+    riot.mount('gameboard');
   </script>
 </html>
