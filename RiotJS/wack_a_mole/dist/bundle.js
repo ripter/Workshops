@@ -50,9 +50,13 @@
 	'use strict';
 	
 	var riot = __webpack_require__(/*! riot */ 1);
+	var Store = __webpack_require__(/*! ./store */ 3);
+	
 	// We need to include the puppy tag because we use it in index.html
-	__webpack_require__(/*! ./puppy.tag */ 3);
 	__webpack_require__(/*! ./gameboard.tag */ 4);
+	
+	var gamestate = new Store();
+	console.log('gamestate', gamestate);
 	
 	// render all the tags
 	var tags = riot.mount('*');
@@ -2505,24 +2509,20 @@
 
 /***/ },
 /* 3 */
-/*!***********************!*\
-  !*** ./src/puppy.tag ***!
-  \***********************/
-/***/ function(module, exports, __webpack_require__) {
+/*!**********************!*\
+  !*** ./src/store.js ***!
+  \**********************/
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('puppy', '<h1>Rose {title}</h1>', '', '', function(opts) {
-	    const titles = [
-	      'The Puppy',
-	      'The Princess',
-	      'The Pirate',
-	      'smoosh face'
-	    ];
-	    const index = 0 | (Math.random() * titles.length);
+	"use strict";
 	
-	    this.title = titles[index];
-	}, '{ }');
+	var Store = function Store() {
+	  babelHelpers.classCallCheck(this, Store);
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
+	  this.moles = [];
+	};
+	
+	module.exports = Store;
 
 /***/ },
 /* 4 */

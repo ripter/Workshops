@@ -3,13 +3,11 @@
 NODE_BIN := ./node_modules/.bin
 
 all: build
-	rm -Rf dist
-	mkdir dist
-	cp public/index.html dist/index.html
 
 build: npm
-	$(NODE_BIN)/webpack -dc
-	mv -f img dist
+	cp -R public/ dist
+	cp node_modules/riot/riot.min.js dist/riot.min.js
+	$(NODE_BIN)/riot src dist
 
 server:
 	$(NODE_BIN)/http-server dist/
