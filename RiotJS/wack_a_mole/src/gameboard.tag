@@ -6,8 +6,6 @@
     import {images} from './assets.js';
     const store = this.store = this.opts;
 
-    this.moles = store.moles;
-
     // Rerender on store update.
     store.on('update', (state) => {
       this.update(state);

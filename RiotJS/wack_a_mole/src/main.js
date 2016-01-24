@@ -1,8 +1,8 @@
+import './gameboard.tag';
+import './timer.tag';
+import './score.tag';
 import Store from './store.js';
 import {TIMER, ACTION, MOLE} from './consts.js';
-require('./gameboard.tag');
-require('./timer.tag');
-import './score.tag';
 
 // Create a new game
 var gamestate = new Store();
@@ -30,6 +30,7 @@ gamestate.on(TIMER.TICK, function(seconds) {
   });
 });
 
+// when a mole has been 'hit' by the player
 gamestate.on(MOLE.HIT, function(mole) {
   var score = gamestate.score;
 

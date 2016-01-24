@@ -46,16 +46,17 @@
 
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
 
-	var _store = __webpack_require__(3);
-
-	var _store2 = babelHelpers.interopRequireDefault(_store);
-
-	var _consts = __webpack_require__(15);
+	__webpack_require__(3);
 
 	__webpack_require__(16);
 
 	__webpack_require__(17);
-	__webpack_require__(18);
+
+	var _store = __webpack_require__(18);
+
+	var _store2 = babelHelpers.interopRequireDefault(_store);
+
+	var _consts = __webpack_require__(4);
 
 	// Create a new game
 	var gamestate = new _store2.default();
@@ -84,6 +85,7 @@
 	  });
 	});
 
+	// when a mole has been 'hit' by the player
 	gamestate.on(_consts.MOLE.HIT, function (mole) {
 	  var score = gamestate.score;
 
@@ -2539,14 +2541,212 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
+	'use strict';
+
+	var _this = this;
+
+	var _consts = __webpack_require__(4);
+
+	var _assets = __webpack_require__(5);
+
+	var store = this.store = this.opts;
+
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+
+	this.onClick = function (evt) {
+	  var mole = evt.item;
+	  store.trigger(_consts.ACTION.CLICKED, mole);
+	};
+	}, '{ }');
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var TIMER = exports.TIMER = {
+	  TICK: 'TIMER.TICK',
+	  START: 'TIMER.START'
+	};
+
+	var MOLE = exports.MOLE = {
+	  HIT: 'MOLE.HIT'
+	};
+
+	var ACTION = exports.ACTION = {
+	  CLICKED: 'ACTION.CLICKED',
+	  MOLE: {
+	    HIDE: 'ACTION.MOLE.HIDE',
+	    SHOW: 'ACTION.MOLE.SHOW'
+	  }
+	};
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.randomMoleImage = randomMoleImage;
+	var images = exports.images = {
+	  dirt: __webpack_require__(6),
+	  rabbit: __webpack_require__(7),
+	  elephant: __webpack_require__(8),
+	  hippo: __webpack_require__(9),
+	  monkey: __webpack_require__(10),
+	  panda: __webpack_require__(11),
+	  pig: __webpack_require__(12),
+	  snake: __webpack_require__(13),
+	  giraffe: __webpack_require__(14),
+	  parrot: __webpack_require__(15)
+	};
+	// The object is easer to type, but the array is easer to code.
+	// Since they never change, we can have the best of both worlds.
+	var imageKeys = Object.keys(images);
+
+	function randomMoleImage() {
+	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
+
+	  return images[imageKeys[index]];
+	}
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
+	'use strict';
+
+	var _this = this;
+
+	var _consts = __webpack_require__(4);
+
+	var store = this.store = this.opts;
+
+	this.seconds = 0;
+
+	store.on(_consts.TIMER.START, function () {
+	  var tick = _this.tick.bind(_this);
+
+	  _this.timer = setInterval(tick, 1000);
+	});
+
+	this.tick = function () {
+	  var seconds = _this.seconds += 1;
+
+	  _this.update({
+	    seconds: seconds
+	  });
+	  store.trigger(_consts.TIMER.TICK, seconds);
+	};
+	}, '{ }');
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('score', '<h2>Score: {score}</h2>', '', '', function(opts) {
+	'use strict';
+
+	var _this = this;
+
+	var store = this.store = this.opts;
+
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+	}, '{ }');
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
 
-	var _require = __webpack_require__(4);
+	var _require = __webpack_require__(5);
 
 	var images = _require.images;
 	var randomMoleImage = _require.randomMoleImage;
 
-	var _require2 = __webpack_require__(15);
+	var _require2 = __webpack_require__(4);
 
 	var ACTION = _require2.ACTION;
 	var MOLE = _require2.MOLE;
@@ -2682,206 +2882,6 @@
 	}();
 
 	module.exports = Store;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.randomMoleImage = randomMoleImage;
-	var images = exports.images = {
-	  dirt: __webpack_require__(5),
-	  rabbit: __webpack_require__(6),
-	  elephant: __webpack_require__(7),
-	  hippo: __webpack_require__(8),
-	  monkey: __webpack_require__(9),
-	  panda: __webpack_require__(10),
-	  pig: __webpack_require__(11),
-	  snake: __webpack_require__(12),
-	  giraffe: __webpack_require__(13),
-	  parrot: __webpack_require__(14)
-	};
-	// The object is easer to type, but the array is easer to code.
-	// Since they never change, we can have the best of both worlds.
-	var imageKeys = Object.keys(images);
-
-	function randomMoleImage() {
-	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
-
-	  return images[imageKeys[index]];
-	}
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var TIMER = exports.TIMER = {
-	  TICK: 'TIMER.TICK',
-	  START: 'TIMER.START'
-	};
-
-	var MOLE = exports.MOLE = {
-	  HIT: 'MOLE.HIT'
-	};
-
-	var ACTION = exports.ACTION = {
-	  CLICKED: 'ACTION.CLICKED',
-	  MOLE: {
-	    HIDE: 'ACTION.MOLE.HIDE',
-	    SHOW: 'ACTION.MOLE.SHOW'
-	  }
-	};
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('score', '<h2>Score: {score}</h2>', '', '', function(opts) {
-	'use strict';
-
-	var _this = this;
-
-	var store = this.store = this.opts;
-
-	// Rerender on store update.
-	store.on('update', function (state) {
-	  _this.update(state);
-	});
-	}, '{ }');
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
-	'use strict';
-
-	var _this = this;
-
-	var _consts = __webpack_require__(15);
-
-	var _assets = __webpack_require__(4);
-
-	var store = this.store = this.opts;
-
-	this.moles = store.moles;
-
-	// Rerender on store update.
-	store.on('update', function (state) {
-	  _this.update(state);
-	});
-
-	this.onClick = function (evt) {
-	  var mole = evt.item;
-	  store.trigger(_consts.ACTION.CLICKED, mole);
-	};
-	}, '{ }');
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
-	'use strict';
-
-	var _this = this;
-
-	var _consts = __webpack_require__(15);
-
-	var store = this.store = this.opts;
-
-	this.seconds = 0;
-
-	store.on(_consts.TIMER.START, function () {
-	  var tick = _this.tick.bind(_this);
-
-	  _this.timer = setInterval(tick, 1000);
-	});
-
-	this.tick = function () {
-	  var seconds = _this.seconds += 1;
-
-	  _this.update({
-	    seconds: seconds
-	  });
-	  store.trigger(_consts.TIMER.TICK, seconds);
-	};
-	}, '{ }');
-
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }
