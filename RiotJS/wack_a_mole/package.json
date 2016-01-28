@@ -21,6 +21,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "http-server": "^0.8.5"
+    "http-server": "^0.8.5",
+    "moment": "^2.11.1"
   }
 }

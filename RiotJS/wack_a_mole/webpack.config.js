@@ -12,11 +12,11 @@ module.exports = {
   ],
   module: {
     preLoaders: [
-      { test: /\.tag$/, exclude: /node_modules/, loader: 'riotjs-loader', query: { type: 'none' } }
+      { test: /\.tag$/, exclude: /node_modules/, loader: 'riotjs-loader', query: { type: 'babel' } }
     ],
     loaders: [
       {test: /\.js?$/, exclude: /node_modules/, loader: 'babel-loader', query: {
-        presets: ['es2015', 'es2015-riot'],
+        presets: ['es2015-riot'],
         plugins: ['external-helpers-2']
       }},
       {test: /\.png$/, loader: 'file?name=img/[name]-[hash].[ext]'}

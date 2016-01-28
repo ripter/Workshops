@@ -1,56 +1,28 @@
-require('./mole.tag');
-
 <gameboard>
-  <h1>Score: {score}</h1>
+  <img each={moles} src={src} onClick={onClick} />
 
-  <div class="board">
-    <Mole each={squares} data={this} onClick={onClick} />
-  </div>
+  <script type="babel">
+    import {ACTION} from './consts.js';
+    const store = this.store = this.opts;
 
-
-  <script>
-    'use strict';
-    const State = require('./state.js');
-    const assets = require('./assets.js');
-
-    // Create the inital state of the game
-    let state = this.state = new State(9, assets.images.dirt, [
-      assets.images.giraffe, assets.images.hippo, assets.images.elephant,
-      assets.images.monkey, assets.images.panda, assets.images.pig,
-      assets.images.snake, assets.images.parrot, assets.images.rabbit,
-    ]);
-
-    // Listen for the state tick event
-    state.on('tick', (delta) => {
-      // When the game clock ticks, we update.
-      this.update(state.toJSON());
+    // Rerender on store update.
+    store.on('update', (state) => {
+      this.update(state);
     });
 
-    // this.squares = state.toGameboard();
     this.onClick = (evt) => {
-      const item = evt.item;
-      const index = this.squares.indexOf(item);
-
-      state.hit(index);
-      this.update(state.toJSON());
+      var mole = evt.item;
+      store.trigger(ACTION.CLICKED, mole);
     }
-
-    this.on('mount', () => {
-      // start the game!
-      state.start();
-    });
-
   </script>
 
   <style>
-    gameboard > .board {
+    gameboard {
       width: 426px;
       margin-left: auto;
       margin-right: auto;
-    }
-
-    gameboard > .board > mole {
-      float: left;
+      display: flex;
+      flex-wrap: wrap;
     }
   </style>
 </gameboard>

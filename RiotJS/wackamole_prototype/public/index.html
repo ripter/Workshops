@@ -5,16 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Wack-A-Mole Project</title>
+    <title>Wack-A-Mole Prototype</title>
   </head>
   <body>
-    <timer></timer>
-    <score></score>
-    <gameboard></gameboard>
-    <mole-log></mole-log>
+    <h1>Rose</h1>
+    <gameboard />
   </body>
 
   <script src="riot.min.js"></script>
   <script src="babel-external-helpers.js"></script>
-  <script src="bundle.js"></script>
+  <script src="tags.js"></script>
+  <script src="game.js"></script>
+  <script>
+    riot.mount('gameboard');
+  </script>
 </html>

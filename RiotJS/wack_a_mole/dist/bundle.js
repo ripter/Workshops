@@ -47,17 +47,76 @@
   \*********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
 	
-	var riot = __webpack_require__(/*! riot */ 1);
-	// We need to include the puppy tag because we use it in index.html
-	__webpack_require__(/*! ./puppy.tag */ 3);
-	__webpack_require__(/*! ./gameboard.tag */ 4);
+	__webpack_require__(/*! ./gameboard.tag */ 3);
 	
-	// render all the tags
-	var tags = riot.mount('*');
-	// for debugging
-	window.tags = tags;
+	__webpack_require__(/*! ./timer.tag */ 5);
+	
+	__webpack_require__(/*! ./score.tag */ 6);
+	
+	__webpack_require__(/*! ./mole-log.tag */ 7);
+	
+	var _store = __webpack_require__(/*! ./store.js */ 19);
+	
+	var _store2 = babelHelpers.interopRequireDefault(_store);
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
+	// Create a new game
+	var gamestate = new _store2.default();
+	//DEBUGGING:
+	window.gamestate = gamestate;
+	
+	// render all the tags and pass them gamestate
+	riot.mount('*', gamestate);
+	
+	// <timer /> emits TIMER.TICK every second.
+	gamestate.on(_consts.TIMER.TICK, function (seconds) {
+	  var lastIndex = gamestate.lastIndex;
+	
+	  var index = lastIndex;
+	
+	  // find a hidden mole
+	  while (index === lastIndex) {
+	    index = 0 | Math.random() * 9;
+	  }
+	
+	  // hide the last mole we showed and show a new one instead.
+	  gamestate.trigger(_consts.ACTION.MOLE.HIDE, [lastIndex], true);
+	  gamestate.trigger(_consts.ACTION.MOLE.SHOW, [index], true);
+	  gamestate.update({
+	    lastIndex: index
+	  });
+	});
+	
+	// when a mole has been 'hit' by the player
+	// this is different than ACTION.CLICKED, HIT only emits when the mole was clicked and showing.
+	gamestate.on(_consts.MOLE.HIT, function (mole) {
+	  var src = mole.src;
+	  var score = gamestate.score;
+	  var moleLog = gamestate.moleLog;
+	
+	  var log = moleLog[src];
+	
+	  if (!log) {
+	    log = 1;
+	  } else {
+	    log += 1;
+	  }
+	
+	  moleLog[src] = log;
+	
+	  gamestate.update({
+	    score: score + 10,
+	    moleLog: moleLog
+	  });
+	});
+	
+	//
+	// Auto START
+	gamestate.trigger('TIMER.START');
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 1 */
@@ -2505,213 +2564,165 @@
 
 /***/ },
 /* 3 */
-/*!***********************!*\
-  !*** ./src/puppy.tag ***!
-  \***********************/
+/*!***************************!*\
+  !*** ./src/gameboard.tag ***!
+  \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('puppy', '<h1>Rose {title}</h1>', '', '', function(opts) {
-	    const titles = [
-	      'The Puppy',
-	      'The Princess',
-	      'The Pirate',
-	      'smoosh face'
-	    ];
-	    const index = 0 | (Math.random() * titles.length);
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
+	'use strict';
 	
-	    this.title = titles[index];
+	var _this = this;
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
+	var store = this.store = this.opts;
+	
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+	
+	this.onClick = function (evt) {
+	  var mole = evt.item;
+	  store.trigger(_consts.ACTION.CLICKED, mole);
+	};
 	}, '{ }');
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 4 */
-/*!***************************!*\
-  !*** ./src/gameboard.tag ***!
-  \***************************/
-/***/ function(module, exports, __webpack_require__) {
+/*!***********************!*\
+  !*** ./src/consts.js ***!
+  \***********************/
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {__webpack_require__(/*! ./mole.tag */ 5);
+	'use strict';
 	
-	riot.tag2('gameboard', '<h1>Score: {score}</h1> <div class="board"> <mole each="{squares}" data="{this}" onclick="{onClick}"></mole> </div>', 'gameboard > .board { width: 426px; margin-left: auto; margin-right: auto; } gameboard > .board > mole { float: left; }', '', function(opts) {
-	    'use strict';
-	    const State = __webpack_require__(/*! ./state.js */ 6);
-	    const assets = __webpack_require__(/*! ./assets.js */ 7);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var TIMER = exports.TIMER = {
+	  TICK: 'TIMER.TICK',
+	  START: 'TIMER.START'
+	};
 	
-	    // Create the inital state of the game
-	    let state = this.state = new State(9, assets.images.dirt, [
-	      assets.images.giraffe, assets.images.hippo, assets.images.elephant,
-	      assets.images.monkey, assets.images.panda, assets.images.pig,
-	      assets.images.snake, assets.images.parrot, assets.images.rabbit,
-	    ]);
+	var MOLE = exports.MOLE = {
+	  HIT: 'MOLE.HIT'
+	};
 	
-	    // Listen for the state tick event
-	    state.on('tick', (delta) => {
-	      // When the game clock ticks, we update.
-	      this.update(state.toJSON());
-	    });
-	
-	    // this.squares = state.toGameboard();
-	    this.onClick = (evt) => {
-	      const item = evt.item;
-	      const index = this.squares.indexOf(item);
-	
-	      state.hit(index);
-	      this.update(state.toJSON());
-	    }
-	
-	    this.on('mount', () => {
-	      // start the game!
-	      state.start();
-	    });
-	
-	}, '{ }');
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
+	var ACTION = exports.ACTION = {
+	  CLICKED: 'ACTION.CLICKED',
+	  MOLE: {
+	    HIDE: 'ACTION.MOLE.HIDE',
+	    SHOW: 'ACTION.MOLE.SHOW'
+	  }
+	};
 
 /***/ },
 /* 5 */
-/*!**********************!*\
-  !*** ./src/mole.tag ***!
-  \**********************/
+/*!***********************!*\
+  !*** ./src/timer.tag ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole', '<img riot-src="{dirtSrc}" class="dirt" alt="dirt"> <img riot-src="{moleSrc}" class="mole" alt="mole">', 'mole { height: 128px; width: 128px; } mole > .mole {display: none;} mole.popped > .mole {display: block;} mole > .dirt {display: block;} mole.popped > .dirt {display: none;}', 'class="{popped: isPopped}"', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
+	'use strict';
+	
+	var _this = this;
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
+	var store = this.store = this.opts;
+	
+	this.seconds = 0;
+	
+	store.on(_consts.TIMER.START, function () {
+	  var tick = _this.tick.bind(_this);
+	
+	  _this.timer = setInterval(tick, 1000);
+	});
+	
+	this.tick = function () {
+	  var seconds = _this.seconds += 1;
+	
+	  _this.update({
+	    seconds: seconds
+	  });
+	  store.trigger(_consts.TIMER.TICK, seconds);
+	};
 	}, '{ }');
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 6 */
-/*!**********************!*\
-  !*** ./src/state.js ***!
-  \**********************/
+/*!***********************!*\
+  !*** ./src/score.tag ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('score', '<h2>Score: {score}</h2>', '', '', function(opts) {
 	'use strict';
 	
-	var riot = __webpack_require__(/*! riot */ 1);
-	var requestAnimationFrame = window.requestAnimationFrame;
+	var _this = this;
 	
-	var TICK_SPEED = 1000;
+	var store = this.store = this.opts;
 	
-	// State for the gameboard
-	function State(boardSize, dirtSrc, molesSrc) {
-	  this.boardSize = boardSize;
-	  this.moles = [];
-	  this.dirtSrc = dirtSrc;
-	  this.molesSrc = molesSrc;
-	  this.score = 0;
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  _this.update(state);
+	});
+	}, '{ }');
 	
-	  // add events
-	  riot.observable(this);
-	
-	  this.resetBoard();
-	  this.start();
-	}
-	State.prototype = {
-	  // Creates a new random mole
-	  // return mole
-	
-	  createMole: function createMole() {
-	    var dirtSrc = this.dirtSrc;
-	    var molesSrc = this.molesSrc;
-	
-	    var index = 0 | Math.random() * molesSrc.length;
-	
-	    return {
-	      dirtSrc: dirtSrc,
-	      moleSrc: molesSrc[index],
-	      isPopped: false
-	    };
-	  },
-	
-	  // Resets the gameboard with new moles.
-	  resetBoard: function resetBoard() {
-	    var moles = [];
-	    var len = this.boardSize;
-	
-	    while (len--) {
-	      moles.push(this.createMole());
-	    }
-	
-	    this.moles = moles;
-	  },
-	
-	  // Start the Game Timer and the Action!
-	  start: function start() {
-	    // Start the loop!
-	    requestAnimationFrame(this.tick.bind(this));
-	  },
-	
-	  // Call to register a hit on the index
-	  hit: function hit(index) {
-	    var points = 10;
-	    var mole = this.moles[index];
-	    // ignore if the mole hasn't popped
-	    if (!mole.isPopped) {
-	      return;
-	    }
-	
-	    this.score += points;
-	    mole.isPopped = false;
-	
-	    this.moles[index] = mole;
-	    // force another tick.
-	    // this.update();
-	    // this.trigger('tick', this);
-	  },
-	
-	  // Called on every frame, emits 'tick' event at TICK_SPEED
-	  tick: function tick(timestamp) {
-	    var delta = timestamp - this.lastTick;
-	
-	    // skip if it hasn't been long enough.
-	    if (delta < TICK_SPEED) {
-	      requestAnimationFrame(this.tick.bind(this));
-	      return;
-	    }
-	
-	    this.update();
-	
-	    this.trigger('tick', this);
-	    this.lastTick = timestamp;
-	    if (!window.pause) {
-	      requestAnimationFrame(this.tick.bind(this));
-	    }
-	  },
-	
-	  // Update is called every tick
-	  // Called before the tick event is emitted.
-	  update: function update() {
-	    var index = 0 | Math.random() * this.moles.length;
-	    var active = this.active || 0;
-	    var moles = this.moles;
-	
-	    // Flip to dirt
-	    moles[active].isPopped = false;
-	    // Flip new one.
-	    moles[index].isPopped = true;
-	    // save the change
-	    this.active = index;
-	    this.moles = moles;
-	  },
-	
-	  // Returns the gameboard for the UI
-	  toJSON: function toJSON() {
-	    var moles = this.moles;
-	    var score = this.score;
-	
-	    return JSON.parse(JSON.stringify({
-	      squares: moles,
-	      score: score
-	    }));
-	  }
-	};
-	module.exports = State;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 7 */
+/*!**************************!*\
+  !*** ./src/mole-log.tag ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole-log', '<div class="mole" each="{moles}"> <img riot-src="{src}"> <p>Hits: {hits || 0}</p> </div>', 'mole-log { display: flex; } mole-log .mole { width: 10em; display: flex; } mole-log .mole img { height: 64px; width: 64px; } mole-log .mole p { padding-left: 1em; }', '', function(opts) {
+	'use strict';
+	
+	var _this = this;
+	
+	var _assets = __webpack_require__(/*! ./assets */ 8);
+	
+	var store = this.store = this.opts;
+	
+	var moles = Object.keys(_assets.images).map(function (name) {
+	  return { name: name, src: _assets.images[name] };
+	});
+	moles.shift(); // remove the dirt
+	this.moles = moles;
+	
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  var moleLog = state.moleLog;
+	
+	  var mole = _this.moles.find(function (mole) {
+	    return mole.src;
+	  });
+	
+	  var moles = _this.moles.map(function (mole) {
+	    mole.hits = moleLog[mole.src];
+	    return mole;
+	  });
+	
+	  _this.update({
+	    moles: moles
+	  });
+	});
+	}, '{ }');
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
+
+/***/ },
+/* 8 */
 /*!***********************!*\
   !*** ./src/assets.js ***!
   \***********************/
@@ -2719,23 +2730,34 @@
 
 	'use strict';
 	
-	module.exports = {
-	  images: {
-	    dirt: __webpack_require__(/*! ./img/dirt.png */ 8),
-	    rabbit: __webpack_require__(/*! ./img/moles/rabbit.png */ 9),
-	    elephant: __webpack_require__(/*! ./img/moles/elephant.png */ 10),
-	    hippo: __webpack_require__(/*! ./img/moles/hippo.png */ 11),
-	    monkey: __webpack_require__(/*! ./img/moles/monkey.png */ 12),
-	    panda: __webpack_require__(/*! ./img/moles/panda.png */ 13),
-	    pig: __webpack_require__(/*! ./img/moles/pig.png */ 14),
-	    snake: __webpack_require__(/*! ./img/moles/snake.png */ 15),
-	    giraffe: __webpack_require__(/*! ./img/moles/giraffe.png */ 16),
-	    parrot: __webpack_require__(/*! ./img/moles/parrot.png */ 17)
-	  }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.randomMoleImage = randomMoleImage;
+	var images = exports.images = {
+	  dirt: __webpack_require__(/*! ./img/dirt.png */ 9),
+	  rabbit: __webpack_require__(/*! ./img/moles/rabbit.png */ 10),
+	  elephant: __webpack_require__(/*! ./img/moles/elephant.png */ 11),
+	  hippo: __webpack_require__(/*! ./img/moles/hippo.png */ 12),
+	  monkey: __webpack_require__(/*! ./img/moles/monkey.png */ 13),
+	  panda: __webpack_require__(/*! ./img/moles/panda.png */ 14),
+	  pig: __webpack_require__(/*! ./img/moles/pig.png */ 15),
+	  snake: __webpack_require__(/*! ./img/moles/snake.png */ 16),
+	  giraffe: __webpack_require__(/*! ./img/moles/giraffe.png */ 17),
+	  parrot: __webpack_require__(/*! ./img/moles/parrot.png */ 18)
 	};
+	// The object is easer to type, but the array is easer to code.
+	// Since they never change, we can have the best of both worlds.
+	var imageKeys = Object.keys(images);
+	
+	function randomMoleImage() {
+	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
+	
+	  return images[imageKeys[index]];
+	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /*!**************************!*\
   !*** ./src/img/dirt.png ***!
   \**************************/
@@ -2744,7 +2766,7 @@
 	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!**********************************!*\
   !*** ./src/img/moles/rabbit.png ***!
   \**********************************/
@@ -2753,7 +2775,7 @@
 	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
 
 /***/ },
-/* 10 */
+/* 11 */
 /*!************************************!*\
   !*** ./src/img/moles/elephant.png ***!
   \************************************/
@@ -2762,7 +2784,7 @@
 	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
 
 /***/ },
-/* 11 */
+/* 12 */
 /*!*********************************!*\
   !*** ./src/img/moles/hippo.png ***!
   \*********************************/
@@ -2771,7 +2793,7 @@
 	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
 
 /***/ },
-/* 12 */
+/* 13 */
 /*!**********************************!*\
   !*** ./src/img/moles/monkey.png ***!
   \**********************************/
@@ -2780,7 +2802,7 @@
 	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
 
 /***/ },
-/* 13 */
+/* 14 */
 /*!*********************************!*\
   !*** ./src/img/moles/panda.png ***!
   \*********************************/
@@ -2789,7 +2811,7 @@
 	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
 
 /***/ },
-/* 14 */
+/* 15 */
 /*!*******************************!*\
   !*** ./src/img/moles/pig.png ***!
   \*******************************/
@@ -2798,7 +2820,7 @@
 	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
 
 /***/ },
-/* 15 */
+/* 16 */
 /*!*********************************!*\
   !*** ./src/img/moles/snake.png ***!
   \*********************************/
@@ -2807,7 +2829,7 @@
 	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
 
 /***/ },
-/* 16 */
+/* 17 */
 /*!***********************************!*\
   !*** ./src/img/moles/giraffe.png ***!
   \***********************************/
@@ -2816,13 +2838,168 @@
 	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
 
 /***/ },
-/* 17 */
+/* 18 */
 /*!**********************************!*\
   !*** ./src/img/moles/parrot.png ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
+
+/***/ },
+/* 19 */
+/*!**********************!*\
+  !*** ./src/store.js ***!
+  \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
+	
+	var _require = __webpack_require__(/*! ./assets.js */ 8);
+	
+	var images = _require.images;
+	var randomMoleImage = _require.randomMoleImage;
+	
+	var _require2 = __webpack_require__(/*! ./consts.js */ 4);
+	
+	var ACTION = _require2.ACTION;
+	var MOLE = _require2.MOLE;
+	
+	var Store = function () {
+	  function Store() {
+	    babelHelpers.classCallCheck(this, Store);
+	
+	    this.moles = this.createArray(9, { src: images.dirt });
+	    this.score = 0;
+	    this.moleLog = {};
+	
+	    riot.observable(this);
+	    this.delegateEvents();
+	  }
+	
+	  // Listens to events defined in MOLE
+	  // This function maps the actions listed int he consts.js file
+	  //   to the functions on this object.
+	
+	  Store.prototype.delegateEvents = function delegateEvents() {
+	    var _this = this;
+	
+	    this.on(ACTION.MOLE.HIDE, function (indexList, silent) {
+	      if (typeof indexList === "number") {
+	        throw new Error('ACTION.MOLE.HIDE takes an array of ids');
+	      }
+	      indexList.forEach(_this.hideMole.bind(_this, silent));
+	    });
+	    this.on(ACTION.MOLE.SHOW, function (indexList, silent) {
+	      if (typeof indexList === "number") {
+	        throw new Error('ACTION.MOLE.SHOW takes an array of ids');
+	      }
+	      indexList.forEach(_this.showMole.bind(_this, silent));
+	    });
+	
+	    this.on(ACTION.CLICKED, this.onClick.bind(this));
+	  };
+	
+	  // ACTIONS.MOLE.HIDE
+	
+	  Store.prototype.hideMole = function hideMole(silent, index) {
+	    var mole = this.moles[index];
+	    if (!mole) {
+	      return;
+	    } // Skip undefined
+	
+	    mole.src = images.dirt;
+	    this.setMole(index, mole, silent);
+	  };
+	
+	  // ACTIONS.MOLE.SHOW
+	
+	  Store.prototype.showMole = function showMole(silent, index) {
+	    var mole = this.moles[index];
+	    if (!mole) {
+	      return;
+	    } // Skip undefined
+	
+	    mole.src = randomMoleImage();
+	    this.setMole(index, mole, silent);
+	  };
+	
+	  // ACTION.CLICKED
+	
+	  Store.prototype.onClick = function onClick(mole) {
+	    if (mole.src === images.dirt) {
+	      return;
+	    }
+	    var index = mole.index;
+	
+	    // trigger before we change mole
+	    // so the listeners can refrence the src.
+	    this.trigger(MOLE.HIT, mole);
+	
+	    mole.src = images.dirt;
+	    this.setMole(index, mole);
+	  };
+	
+	  //
+	  // Utils
+	  //
+	
+	  // Sets mole and triggers update
+	
+	  Store.prototype.setMole = function setMole(index, mole, silent) {
+	    var moles = this.moles;
+	
+	    moles[index] = mole;
+	    this.update({
+	      moles: moles
+	    }, silent);
+	  };
+	
+	  // Updates the state and trigger the update event with a clone of state.
+	
+	  Store.prototype.update = function update(newState, silent) {
+	    var _this2 = this;
+	
+	    silent = silent || false;
+	    // Set values on this to match the new state
+	    Object.keys(newState).forEach(function (prop) {
+	      _this2[prop] = newState[prop];
+	    });
+	
+	    if (!silent) {
+	      this.trigger('update', this.toJSON());
+	    }
+	  };
+	
+	  // Returns a clone of the current state.
+	
+	  Store.prototype.toJSON = function toJSON() {
+	    var _this3 = this;
+	
+	    var result = Object.keys(this).reduce(function (result, key) {
+	      result[key] = _this3[key];
+	      return result;
+	    }, {});
+	
+	    return result;
+	  };
+	
+	  Store.prototype.createArray = function createArray(len, val) {
+	    var result = [];
+	
+	    while (len--) {
+	      val._index = len;
+	      result[len] = JSON.parse(JSON.stringify(val));
+	    }
+	
+	    return result;
+	  };
+	
+	  return Store;
+	}();
+	
+	module.exports = Store;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ }
 /******/ ]);
