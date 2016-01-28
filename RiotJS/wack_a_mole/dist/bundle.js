@@ -1,82 +1,87 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-
+/******/
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			exports: {},
 /******/ 			id: moduleId,
 /******/ 			loaded: false
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/*!*********************!*\
+  !*** ./src/main.js ***!
+  \*********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
-
-	__webpack_require__(3);
-
-	__webpack_require__(16);
-
-	__webpack_require__(17);
-
-	var _store = __webpack_require__(18);
-
+	
+	__webpack_require__(/*! ./gameboard.tag */ 3);
+	
+	__webpack_require__(/*! ./timer.tag */ 5);
+	
+	__webpack_require__(/*! ./score.tag */ 6);
+	
+	__webpack_require__(/*! ./mole-log.tag */ 7);
+	
+	var _store = __webpack_require__(/*! ./store.js */ 19);
+	
 	var _store2 = babelHelpers.interopRequireDefault(_store);
-
-	var _consts = __webpack_require__(4);
-
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
 	// Create a new game
 	var gamestate = new _store2.default();
 	//DEBUGGING:
 	window.gamestate = gamestate;
-
-	// render all the tags
+	
+	// render all the tags and pass them gamestate
 	riot.mount('*', gamestate);
-
-	// Change the mole every second.
+	
+	// <timer /> emits TIMER.TICK every second.
 	gamestate.on(_consts.TIMER.TICK, function (seconds) {
 	  var lastIndex = gamestate.lastIndex;
-
+	
 	  var index = lastIndex;
-
+	
 	  // find a hidden mole
 	  while (index === lastIndex) {
 	    index = 0 | Math.random() * 9;
 	  }
-
+	
 	  // hide the last mole we showed and show a new one instead.
 	  gamestate.trigger(_consts.ACTION.MOLE.HIDE, [lastIndex], true);
 	  gamestate.trigger(_consts.ACTION.MOLE.SHOW, [index], true);
@@ -84,47 +89,64 @@
 	    lastIndex: index
 	  });
 	});
-
+	
 	// when a mole has been 'hit' by the player
+	// this is different than ACTION.CLICKED, HIT only emits when the mole was clicked and showing.
 	gamestate.on(_consts.MOLE.HIT, function (mole) {
+	  var src = mole.src;
 	  var score = gamestate.score;
-
+	  var moleLog = gamestate.moleLog;
+	
+	  var log = moleLog[src];
+	
+	  if (!log) {
+	    log = 1;
+	  } else {
+	    log += 1;
+	  }
+	
+	  moleLog[src] = log;
+	
 	  gamestate.update({
-	    score: score + 10
+	    score: score + 10,
+	    moleLog: moleLog
 	  });
 	});
-
+	
 	//
 	// Auto START
 	gamestate.trigger('TIMER.START');
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 1 */
+/*!************************!*\
+  !*** ./~/riot/riot.js ***!
+  \************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* Riot v2.3.13, @license MIT, (c) 2015 Muut Inc. + contributors */
-
+	
 	;(function(window, undefined) {
 	  'use strict';
 	var riot = { version: 'v2.3.13', settings: {} },
 	  // be aware, internal usage
 	  // ATTENTION: prefix the global dynamic variables with `__`
-
+	
 	  // counter to give a unique id to all the Tag instances
 	  __uid = 0,
 	  // tags instances cache
 	  __virtualDom = [],
 	  // tags implementation cache
 	  __tagImpl = {},
-
+	
 	  /**
 	   * Const
 	   */
 	  // riot specific prefixes
 	  RIOT_PREFIX = 'riot-',
 	  RIOT_TAG = RIOT_PREFIX + 'tag',
-
+	
 	  // for typeof == '' comparisons
 	  T_STRING = 'string',
 	  T_OBJECT = 'object',
@@ -133,19 +155,19 @@
 	  // special native tags that cannot be treated like the others
 	  SPECIAL_TAGS_REGEX = /^(?:opt(ion|group)|tbody|col|t[rhd])$/,
 	  RESERVED_WORDS_BLACKLIST = ['_item', '_id', '_parent', 'update', 'root', 'mount', 'unmount', 'mixin', 'isMounted', 'isLoop', 'tags', 'parent', 'opts', 'trigger', 'on', 'off', 'one'],
-
+	
 	  // version# for IE 8-11, 0 for others
 	  IE_VERSION = (window && window.document || {}).documentMode | 0
 	/* istanbul ignore next */
 	riot.observable = function(el) {
-
+	
 	  /**
 	   * Extend the original object or create a new empty one
 	   * @type { Object }
 	   */
-
+	
 	  el = el || {}
-
+	
 	  /**
 	   * Private variables and methods
 	   */
@@ -160,7 +182,7 @@
 	        configurable: false
 	      })
 	    }
-
+	
 	  /**
 	   * Listen to the given space separated list of `events` and execute the `callback` each time an event is triggered.
 	   * @param  { String } events - events ids
@@ -169,15 +191,15 @@
 	   */
 	  defineProperty('on', function(events, fn) {
 	    if (typeof fn != 'function')  return el
-
+	
 	    onEachEvent(events, function(name, pos) {
 	      (callbacks[name] = callbacks[name] || []).push(fn)
 	      fn.typed = pos > 0
 	    })
-
+	
 	    return el
 	  })
-
+	
 	  /**
 	   * Removes the given space separated list of `events` listeners
 	   * @param   { String } events - events ids
@@ -198,7 +220,7 @@
 	    }
 	    return el
 	  })
-
+	
 	  /**
 	   * Listen to the given space separated list of `events` and execute the `callback` at most once
 	   * @param   { String } events - events ids
@@ -212,23 +234,23 @@
 	    }
 	    return el.on(events, on)
 	  })
-
+	
 	  /**
 	   * Execute all callback functions that listen to the given space separated list of `events`
 	   * @param   { String } events - events ids
 	   * @returns { Object } el
 	   */
 	  defineProperty('trigger', function(events) {
-
+	
 	    // getting the arguments
 	    // skipping the first one
 	    var args = slice.call(arguments, 1),
 	      fns
-
+	
 	    onEachEvent(events, function(name) {
-
+	
 	      fns = slice.call(callbacks[name] || [], 0)
-
+	
 	      for (var i = 0, fn; fn = fns[i]; ++i) {
 	        if (fn.busy) return
 	        fn.busy = 1
@@ -236,27 +258,27 @@
 	        if (fns[i] !== fn) { i-- }
 	        fn.busy = 0
 	      }
-
+	
 	      if (callbacks['*'] && name != '*')
 	        el.trigger.apply(el, ['*', name].concat(args))
-
+	
 	    })
-
+	
 	    return el
 	  })
-
+	
 	  return el
-
+	
 	}
 	/* istanbul ignore next */
 	;(function(riot) {
-
+	
 	/**
 	 * Simple client-side router
 	 * @module riot-route
 	 */
-
-
+	
+	
 	var RE_ORIGIN = /^.+?\/+[^\/]+/,
 	  EVENT_LISTENER = 'EventListener',
 	  REMOVE_EVENT_LISTENER = 'remove' + EVENT_LISTENER,
@@ -278,7 +300,7 @@
 	  routeFound = false,
 	  debouncedEmit,
 	  base, current, parser, secondParser, emitStack = [], emitStackLevel = 0
-
+	
 	/**
 	 * Default parser. You can replace it via router.parser method.
 	 * @param {string} path - current path (normalized)
@@ -287,7 +309,7 @@
 	function DEFAULT_PARSER(path) {
 	  return path.split(/[/?#]/)
 	}
-
+	
 	/**
 	 * Default parser (second). You can replace it via router.parser method.
 	 * @param {string} path - current path (normalized)
@@ -297,10 +319,10 @@
 	function DEFAULT_SECOND_PARSER(path, filter) {
 	  var re = new RegExp('^' + filter[REPLACE](/\*/g, '([^/?#]+?)')[REPLACE](/\.\./, '.*') + '$'),
 	    args = path.match(re)
-
+	
 	  if (args) return args.slice(1)
 	}
-
+	
 	/**
 	 * Simple/cheap debounce implementation
 	 * @param   {function} fn - callback
@@ -314,7 +336,7 @@
 	    t = setTimeout(fn, delay)
 	  }
 	}
-
+	
 	/**
 	 * Set the window listeners to trigger the routes
 	 * @param {boolean} autoExec - see route.start
@@ -326,7 +348,7 @@
 	  doc[ADD_EVENT_LISTENER](clickEvent, click)
 	  if (autoExec) emit(true)
 	}
-
+	
 	/**
 	 * Router class
 	 */
@@ -336,15 +358,15 @@
 	  central.on('stop', this.s.bind(this))
 	  central.on('emit', this.e.bind(this))
 	}
-
+	
 	function normalize(path) {
 	  return path[REPLACE](/^\/|\/$/, '')
 	}
-
+	
 	function isString(str) {
 	  return typeof str == 'string'
 	}
-
+	
 	/**
 	 * Get the part after domain name
 	 * @param {string} href - fullpath
@@ -353,7 +375,7 @@
 	function getPathFromRoot(href) {
 	  return (href || loc.href || '')[REPLACE](RE_ORIGIN, '')
 	}
-
+	
 	/**
 	 * Get the part after base
 	 * @param {string} href - fullpath
@@ -364,12 +386,12 @@
 	    ? (href || loc.href || '').split(base)[1] || ''
 	    : getPathFromRoot(href)[REPLACE](base, '')
 	}
-
+	
 	function emit(force) {
 	  // the stack is needed for redirections
 	  var isRoot = emitStackLevel == 0
 	  if (MAX_EMIT_STACK_LEVEL <= emitStackLevel) return
-
+	
 	  emitStackLevel++
 	  emitStack.push(function() {
 	    var path = getPathFromBase()
@@ -386,14 +408,14 @@
 	    emitStackLevel = 0
 	  }
 	}
-
+	
 	function click(e) {
 	  if (
 	    e.which != 1 // not left click
 	    || e.metaKey || e.ctrlKey || e.shiftKey // or meta keys
 	    || e.defaultPrevented // or default prevented
 	  ) return
-
+	
 	  var el = e.target
 	  while (el && el.nodeName != 'A') el = el.parentNode
 	  if (
@@ -403,7 +425,7 @@
 	    || el.target && el.target != '_self' // another window or frame
 	    || el.href.indexOf(loc.href.match(RE_ORIGIN)[0]) == -1 // cross origin
 	  ) return
-
+	
 	  if (el.href != loc.href) {
 	    if (
 	      el.href.split('#')[0] == loc.href.split('#')[0] // internal jump
@@ -411,10 +433,10 @@
 	      || !go(getPathFromBase(el.href), el.title || doc.title) // route not found
 	    ) return
 	  }
-
+	
 	  e.preventDefault()
 	}
-
+	
 	/**
 	 * Go to the path
 	 * @param {string} path - destination path
@@ -436,11 +458,11 @@
 	    emit()
 	    return routeFound
 	  }
-
+	
 	  // Server-side usage: directly execute handlers for the path
 	  return central[TRIGGER]('emit', getPathFromBase(path))
 	}
-
+	
 	/**
 	 * Go to path or set action
 	 * a single string:                go there
@@ -457,7 +479,7 @@
 	  else if (second) this.r(first, second)
 	  else this.r('@', first)
 	}
-
+	
 	/**
 	 * Stop routing
 	 */
@@ -465,7 +487,7 @@
 	  this.off('*')
 	  this.$ = []
 	}
-
+	
 	/**
 	 * Emit
 	 * @param {string} path - path
@@ -479,7 +501,7 @@
 	    }
 	  }, this)
 	}
-
+	
 	/**
 	 * Register route
 	 * @param {string} filter - filter for matching to url
@@ -492,10 +514,10 @@
 	  }
 	  this.on(filter, action)
 	}
-
+	
 	var mainRouter = new Router()
 	var route = mainRouter.m.bind(mainRouter)
-
+	
 	/**
 	 * Create a sub router
 	 * @returns {function} the method of a new Router object
@@ -507,7 +529,7 @@
 	  // return sub-router's main method
 	  return newSubRouter.m.bind(newSubRouter)
 	}
-
+	
 	/**
 	 * Set the base of url
 	 * @param {(str|RegExp)} arg - a new base or '#' or '#!'
@@ -516,12 +538,12 @@
 	  base = arg || '#'
 	  current = getPathFromBase() // recalculate current path
 	}
-
+	
 	/** Exec routing right now **/
 	route.exec = function() {
 	  emit(true)
 	}
-
+	
 	/**
 	 * Replace the default router to yours
 	 * @param {function} fn - your parser function
@@ -536,7 +558,7 @@
 	  if (fn) parser = fn
 	  if (fn2) secondParser = fn2
 	}
-
+	
 	/**
 	 * Helper function to get url query as an object
 	 * @returns {object} parsed query
@@ -547,7 +569,7 @@
 	  href[REPLACE](/[?&](.+?)=([^&]*)/g, function(_, k, v) { q[k] = v })
 	  return q
 	}
-
+	
 	/** Stop routing **/
 	route.stop = function () {
 	  if (started) {
@@ -560,7 +582,7 @@
 	    started = false
 	  }
 	}
-
+	
 	/**
 	 * Start routing
 	 * @param {boolean} autoExec - automatically exec after starting if true
@@ -578,20 +600,20 @@
 	    started = true
 	  }
 	}
-
+	
 	/** Prepare the router **/
 	route.base()
 	route.parser()
-
+	
 	riot.route = route
 	})(riot)
 	/* istanbul ignore next */
-
+	
 	/**
 	 * The riot template engine
 	 * @version v2.3.20
 	 */
-
+	
 	/**
 	 * @module brackets
 	 *
@@ -600,46 +622,46 @@
 	 * `brackets.set     ` Change the current riot brackets
 	 */
 	/*global riot */
-
+	
 	var brackets = (function (UNDEF) {
-
+	
 	  var
 	    REGLOB  = 'g',
-
+	
 	    MLCOMMS = /\/\*[^*]*\*+(?:[^*\/][^*]*\*+)*\//g,
 	    STRINGS = /"[^"\\]*(?:\\[\S\s][^"\\]*)*"|'[^'\\]*(?:\\[\S\s][^'\\]*)*'/g,
-
+	
 	    S_QBSRC = STRINGS.source + '|' +
 	      /(?:\breturn\s+|(?:[$\w\)\]]|\+\+|--)\s*(\/)(?![*\/]))/.source + '|' +
 	      /\/(?=[^*\/])[^[\/\\]*(?:(?:\[(?:\\.|[^\]\\]*)*\]|\\.)[^[\/\\]*)*?(\/)[gim]*/.source,
-
+	
 	    DEFAULT = '{ }',
-
+	
 	    FINDBRACES = {
 	      '(': RegExp('([()])|'   + S_QBSRC, REGLOB),
 	      '[': RegExp('([[\\]])|' + S_QBSRC, REGLOB),
 	      '{': RegExp('([{}])|'   + S_QBSRC, REGLOB)
 	    }
-
+	
 	  var
 	    cachedBrackets = UNDEF,
 	    _regex,
 	    _pairs = []
-
+	
 	  function _loopback (re) { return re }
-
+	
 	  function _rewrite (re, bp) {
 	    if (!bp) bp = _pairs
 	    return new RegExp(
 	      re.source.replace(/{/g, bp[2]).replace(/}/g, bp[3]), re.global ? REGLOB : ''
 	    )
 	  }
-
+	
 	  function _create (pair) {
 	    var
 	      cvt,
 	      arr = pair.split(' ')
-
+	
 	    if (pair === DEFAULT) {
 	      arr[2] = arr[0]
 	      arr[3] = arr[1]
@@ -659,10 +681,10 @@
 	    arr[8] = pair
 	    return arr
 	  }
-
+	
 	  function _reset (pair) {
 	    if (!pair) pair = DEFAULT
-
+	
 	    if (pair !== _pairs[8]) {
 	      _pairs = _create(pair)
 	      _regex = pair === DEFAULT ? _loopback : _rewrite
@@ -672,15 +694,15 @@
 	    }
 	    cachedBrackets = pair
 	  }
-
+	
 	  function _brackets (reOrIdx) {
 	    return reOrIdx instanceof RegExp ? _regex(reOrIdx) : _pairs[reOrIdx]
 	  }
-
+	
 	  _brackets.split = function split (str, tmpl, _bp) {
 	    // istanbul ignore next: _bp is for the compiler
 	    if (!_bp) _bp = _pairs
-
+	
 	    var
 	      parts = [],
 	      match,
@@ -688,24 +710,24 @@
 	      start,
 	      pos,
 	      re = _bp[6]
-
+	
 	    isexpr = start = re.lastIndex = 0
-
+	
 	    while (match = re.exec(str)) {
-
+	
 	      pos = match.index
-
+	
 	      if (isexpr) {
-
+	
 	        if (match[2]) {
 	          re.lastIndex = skipBraces(match[2], re.lastIndex)
 	          continue
 	        }
-
+	
 	        if (!match[3])
 	          continue
 	      }
-
+	
 	      if (!match[1]) {
 	        unescapeStr(str.slice(start, pos))
 	        start = re.lastIndex
@@ -713,27 +735,27 @@
 	        re.lastIndex = start
 	      }
 	    }
-
+	
 	    if (str && start < str.length) {
 	      unescapeStr(str.slice(start))
 	    }
-
+	
 	    return parts
-
+	
 	    function unescapeStr (str) {
 	      if (tmpl || isexpr)
 	        parts.push(str && str.replace(_bp[5], '$1'))
 	      else
 	        parts.push(str)
 	    }
-
+	
 	    function skipBraces (ch, pos) {
 	      var
 	        match,
 	        recch = FINDBRACES[ch],
 	        level = 1
 	      recch.lastIndex = pos
-
+	
 	      while (match = recch.exec(str)) {
 	        if (match[1] &&
 	          !(match[1] === ch ? ++level : --level)) break
@@ -741,21 +763,21 @@
 	      return match ? recch.lastIndex : str.length
 	    }
 	  }
-
+	
 	  _brackets.hasExpr = function hasExpr (str) {
 	    return _brackets(4).test(str)
 	  }
-
+	
 	  _brackets.loopKeys = function loopKeys (expr) {
 	    var m = expr.match(_brackets(9))
 	    return m ?
 	      { key: m[1], pos: m[2], val: _pairs[0] + m[3].trim() + _pairs[1] } : { val: expr.trim() }
 	  }
-
+	
 	  _brackets.array = function array (pair) {
 	    return _create(pair || cachedBrackets)
 	  }
-
+	
 	  var _settings
 	  function _setSettings (o) {
 	    var b
@@ -773,19 +795,19 @@
 	    set: _setSettings,
 	    get: function () { return _settings }
 	  })
-
+	
 	  /* istanbul ignore next: in the node version riot is not in the scope */
 	  _brackets.settings = typeof riot !== 'undefined' && riot.settings || {}
 	  _brackets.set = _reset
-
+	
 	  _brackets.R_STRINGS = STRINGS
 	  _brackets.R_MLCOMMS = MLCOMMS
 	  _brackets.S_QBLOCKS = S_QBSRC
-
+	
 	  return _brackets
-
+	
 	})()
-
+	
 	/**
 	 * @module tmpl
 	 *
@@ -794,35 +816,35 @@
 	 * tmpl.loopKeys - Get the keys for an 'each' loop (used by `_each`)
 	 */
 	/*global riot */
-
+	
 	var tmpl = (function () {
-
+	
 	  var _cache = {}
-
+	
 	  function _tmpl (str, data) {
 	    if (!str) return str
-
+	
 	    return (_cache[str] || (_cache[str] = _create(str))).call(data, _logErr)
 	  }
-
+	
 	  _tmpl.isRaw = function (expr) {
 	    return expr[brackets._rawOffset] === '='
 	  }
-
+	
 	  _tmpl.haveRaw = function (src) {
 	    return brackets(10).test(src)
 	  }
-
+	
 	  _tmpl.hasExpr = brackets.hasExpr
-
+	
 	  _tmpl.loopKeys = brackets.loopKeys
-
+	
 	  _tmpl.errorHandler = null
-
+	
 	  function _logErr (err, ctx) {
-
+	
 	    if (_tmpl.errorHandler) {
-
+	
 	      err.riotData = {
 	        tagName: ctx && ctx.root && ctx.root.tagName,
 	        _riot_id: ctx && ctx._riot_id  //eslint-disable-line camelcase
@@ -830,84 +852,84 @@
 	      _tmpl.errorHandler(err)
 	    }
 	  }
-
+	
 	  function _create (str) {
-
+	
 	    var expr = _getTmpl(str)
 	    if (expr.slice(0, 11) !== 'try{return ') expr = 'return ' + expr
-
+	
 	    return new Function('E', expr + ';')
 	  }
-
+	
 	  var
 	    RE_QBLOCK = RegExp(brackets.S_QBLOCKS, 'g'),
 	    RE_QBMARK = /\x01(\d+)~/g
-
+	
 	  function _getTmpl (str) {
 	    var
 	      qstr = [],
 	      expr,
 	      parts = brackets.split(str.replace(/\u2057/g, '"'), 1)
-
+	
 	    if (parts.length > 2 || parts[0]) {
 	      var i, j, list = []
-
+	
 	      for (i = j = 0; i < parts.length; ++i) {
-
+	
 	        expr = parts[i]
-
+	
 	        if (expr && (expr = i & 1 ?
-
+	
 	              _parseExpr(expr, 1, qstr) :
-
+	
 	              '"' + expr
 	                .replace(/\\/g, '\\\\')
 	                .replace(/\r\n?|\n/g, '\\n')
 	                .replace(/"/g, '\\"') +
 	              '"'
-
+	
 	          )) list[j++] = expr
-
+	
 	      }
-
+	
 	      expr = j < 2 ? list[0] :
 	             '[' + list.join(',') + '].join("")'
 	    }
 	    else {
-
+	
 	      expr = _parseExpr(parts[1], 0, qstr)
 	    }
-
+	
 	    if (qstr[0])
 	      expr = expr.replace(RE_QBMARK, function (_, pos) {
 	        return qstr[pos]
 	          .replace(/\r/g, '\\r')
 	          .replace(/\n/g, '\\n')
 	      })
-
+	
 	    return expr
 	  }
-
+	
 	  var
 	    CS_IDENT = /^(?:(-?[_A-Za-z\xA0-\xFF][-\w\xA0-\xFF]*)|\x01(\d+)~):/
-
+	
 	  function _parseExpr (expr, asText, qstr) {
-
+	
 	    if (expr[0] === '=') expr = expr.slice(1)
-
+	
 	    expr = expr
 	          .replace(RE_QBLOCK, function (s, div) {
 	            return s.length > 2 && !div ? '\x01' + (qstr.push(s) - 1) + '~' : s
 	          })
 	          .replace(/\s+/g, ' ').trim()
 	          .replace(/\ ?([[\({},?\.:])\ ?/g, '$1')
-
+	
 	    if (expr) {
 	      var
 	        list = [],
 	        cnt = 0,
 	        match
-
+	
 	      while (expr &&
 	            (match = expr.match(CS_IDENT)) &&
 	            !match.index
@@ -916,29 +938,29 @@
 	          key,
 	          jsb,
 	          re = /,|([[{(])|$/g
-
+	
 	        expr = RegExp.rightContext
 	        key  = match[2] ? qstr[match[2]].slice(1, -1).trim().replace(/\s+/g, ' ') : match[1]
-
+	
 	        while (jsb = (match = re.exec(expr))[1]) skipBraces(jsb, re)
-
+	
 	        jsb  = expr.slice(0, match.index)
 	        expr = RegExp.rightContext
-
+	
 	        list[cnt++] = _wrapExpr(jsb, 1, key)
 	      }
-
+	
 	      expr = !cnt ? _wrapExpr(expr, asText) :
 	          cnt > 1 ? '[' + list.join(',') + '].join(" ").trim()' : list[0]
 	    }
 	    return expr
-
+	
 	    function skipBraces (jsb, re) {
 	      var
 	        match,
 	        lv = 1,
 	        ir = jsb === '(' ? /[()]/g : jsb === '[' ? /[[\]]/g : /[{}]/g
-
+	
 	      ir.lastIndex = re.lastIndex
 	      while (match = ir.exec(expr)) {
 	        if (match[0] === jsb) ++lv
@@ -947,20 +969,20 @@
 	      re.lastIndex = lv ? expr.length : ir.lastIndex
 	    }
 	  }
-
+	
 	  // istanbul ignore next: not both
 	  var
 	    JS_CONTEXT = '"in this?this:' + (typeof window !== 'object' ? 'global' : 'window') + ').',
 	    JS_VARNAME = /[,{][$\w]+:|(^ *|[^$\w\.])(?!(?:typeof|true|false|null|undefined|in|instanceof|is(?:Finite|NaN)|void|NaN|new|Date|RegExp|Math)(?![$\w]))([$_A-Za-z][$\w]*)/g,
 	    JS_NOPROPS = /^(?=(\.[$\w]+))\1(?:[^.[(]|$)/
-
+	
 	  function _wrapExpr (expr, asText, key) {
 	    var tb
-
+	
 	    expr = expr.replace(JS_VARNAME, function (match, p, mvar, pos, s) {
 	      if (mvar) {
 	        pos = tb ? 0 : pos + match.length
-
+	
 	        if (mvar !== 'this' && mvar !== 'global' && mvar !== 'window') {
 	          match = p + '("' + mvar + JS_CONTEXT + mvar
 	          if (pos) tb = (s = s[pos]) === '.' || s === '(' || s === '['
@@ -971,48 +993,48 @@
 	      }
 	      return match
 	    })
-
+	
 	    if (tb) {
 	      expr = 'try{return ' + expr + '}catch(e){E(e,this)}'
 	    }
-
+	
 	    if (key) {
-
+	
 	      expr = (tb ?
 	          'function(){' + expr + '}.call(this)' : '(' + expr + ')'
 	        ) + '?"' + key + '":""'
 	    }
 	    else if (asText) {
-
+	
 	      expr = 'function(v){' + (tb ?
 	          expr.replace('return ', 'v=') : 'v=(' + expr + ')'
 	        ) + ';return v||v===0?v:""}.call(this)'
 	    }
-
+	
 	    return expr
 	  }
-
+	
 	  // istanbul ignore next: compatibility fix for beta versions
 	  _tmpl.parse = function (s) { return s }
-
+	
 	  return _tmpl
-
+	
 	})()
-
+	
 	  tmpl.version = brackets.version = 'v2.3.20'
-
-
+	
+	
 	/*
 	  lib/browser/tag/mkdom.js
-
+	
 	  Includes hacks needed for the Internet Explorer version 9 and below
-
+	
 	*/
 	// http://kangax.github.io/compat-table/es5/#ie8
 	// http://codeplanet.io/dropping-ie8/
-
+	
 	var mkdom = (function (checkIE) {
-
+	
 	  var rootEls = {
 	      tr: 'tbody',
 	      th: 'tr',
@@ -1022,48 +1044,48 @@
 	    },
 	    reToSrc = /<yield\s+to=(['"])?@\1\s*>([\S\s]+?)<\/yield\s*>/.source,
 	    GENERIC = 'div'
-
+	
 	  checkIE = checkIE && checkIE < 10
-
+	
 	  // creates any dom element in a div, table, or colgroup container
 	  function _mkdom(templ, html) {
-
+	
 	    var match = templ && templ.match(/^\s*<([-\w]+)/),
 	      tagName = match && match[1].toLowerCase(),
 	      rootTag = rootEls[tagName] || GENERIC,
 	      el = mkEl(rootTag)
-
+	
 	    el.stub = true
-
+	
 	    // replace all the yield tags with the tag inner html
 	    if (html) templ = replaceYield(templ, html)
-
+	
 	    /* istanbul ignore next */
 	    if (checkIE && tagName && (match = tagName.match(SPECIAL_TAGS_REGEX)))
 	      ie9elem(el, templ, tagName, !!match[1])
 	    else
 	      el.innerHTML = templ
-
+	
 	    return el
 	  }
-
+	
 	  // creates tr, th, td, option, optgroup element for IE8-9
 	  /* istanbul ignore next */
 	  function ie9elem(el, html, tagName, select) {
-
+	
 	    var div = mkEl(GENERIC),
 	      tag = select ? 'select>' : 'table>',
 	      child
-
+	
 	    div.innerHTML = '<' + tag + html + '</' + tag
-
+	
 	    child = $(tagName, div)
 	    if (child)
 	      el.appendChild(child)
-
+	
 	  }
 	  // end ie9elem()
-
+	
 	  /**
 	   * Replace the yield tag from any tag template with the innerHTML of the
 	   * original tag in the page
@@ -1074,7 +1096,7 @@
 	  function replaceYield(templ, html) {
 	    // do nothing if no yield
 	    if (!/<yield\b/i.test(templ)) return templ
-
+	
 	    // be careful with #1343 - string on the source having `$1`
 	    var n = 0
 	    templ = templ.replace(/<yield\s+from=['"]([-\w]+)['"]\s*(?:\/>|>\s*<\/yield\s*>)/ig,
@@ -1083,15 +1105,15 @@
 	        ++n
 	        return m && m[2] || ''
 	      })
-
+	
 	    // yield without any "from", replace yield in templ with the innerHTML
 	    return n ? templ : templ.replace(/<yield\s*(?:\/>|>\s*<\/yield\s*>)/gi, html || '')
 	  }
-
+	
 	  return _mkdom
-
+	
 	})(IE_VERSION)
-
+	
 	/**
 	 * Convert the item looped into an object used to extend the child tag properties
 	 * @param   { Object } expr - object containing the keys used to extend the children tags
@@ -1110,25 +1132,25 @@
 	  if (expr.pos) item[expr.pos] = val
 	  return item
 	}
-
+	
 	/**
 	 * Unmount the redundant tags
 	 * @param   { Array } items - array containing the current items to loop
 	 * @param   { Array } tags - array containing all the children tags
 	 */
 	function unmountRedundant(items, tags) {
-
+	
 	  var i = tags.length,
 	    j = items.length,
 	    t
-
+	
 	  while (i > j) {
 	    t = tags[--i]
 	    tags.splice(i, 1)
 	    t.unmount()
 	  }
 	}
-
+	
 	/**
 	 * Move the nested custom tags in non custom loop tags
 	 * @param   { Object } child - non custom loop tag
@@ -1145,7 +1167,7 @@
 	      moveChildTag(tag, tagName, i)
 	  })
 	}
-
+	
 	/**
 	 * Adds the elements for a virtual tag
 	 * @param { Tag } tag - the tag whose root's children will be inserted or appended
@@ -1161,12 +1183,12 @@
 	      src.insertBefore(el, target._root)
 	    else
 	      src.appendChild(el)
-
+	
 	    tag._virts.push(el) // hold for unmounting
 	    el = sib
 	  }
 	}
-
+	
 	/**
 	 * Move virtual tag and all child nodes
 	 * @param { Tag } tag - first child reference used to start move
@@ -1182,8 +1204,8 @@
 	    el = sib
 	  }
 	}
-
-
+	
+	
 	/**
 	 * Manage tags having the 'each'
 	 * @param   { Object } dom - DOM node we need to loop
@@ -1191,10 +1213,10 @@
 	 * @param   { String } expr - string contained in the 'each' attribute
 	 */
 	function _each(dom, parent, expr) {
-
+	
 	  // remove the each property from the original tag
 	  remAttr(dom, 'each')
-
+	
 	  var mustReorder = typeof getAttr(dom, 'no-reorder') !== T_STRING || remAttr(dom, 'no-reorder'),
 	    tagName = getTagName(dom),
 	    impl = __tagImpl[tagName] || { tmpl: dom.outerHTML },
@@ -1207,28 +1229,28 @@
 	    oldItems = [],
 	    hasKeys,
 	    isVirtual = dom.tagName == 'VIRTUAL'
-
+	
 	  // parse the each expression
 	  expr = tmpl.loopKeys(expr)
-
+	
 	  // insert a marked where the loop tags will be injected
 	  root.insertBefore(ref, dom)
-
+	
 	  // clean template code
 	  parent.one('before-mount', function () {
-
+	
 	    // remove the original DOM node
 	    dom.parentNode.removeChild(dom)
 	    if (root.stub) root = parent.root
-
+	
 	  }).on('update', function () {
 	    // get the new items collection
 	    var items = tmpl(expr.val, parent),
 	      // create a fragment to hold the new DOM nodes to inject in the parent tag
 	      frag = document.createDocumentFragment()
-
-
-
+	
+	
+	
 	    // object loop. any changes cause full redraw
 	    if (!isArray(items)) {
 	      hasKeys = items || false
@@ -1237,7 +1259,7 @@
 	          return mkitem(expr, key, items[key])
 	        }) : []
 	    }
-
+	
 	    // loop all the new items
 	    items.forEach(function(item, i) {
 	      // reorder only if the items are objects
@@ -1246,16 +1268,16 @@
 	        pos = ~oldPos && _mustReorder ? oldPos : i,
 	        // does a tag exist in this position?
 	        tag = tags[pos]
-
+	
 	      item = !hasKeys && expr.key ? mkitem(expr, item, i) : item
-
+	
 	      // new tag
 	      if (
 	        !_mustReorder && !tag // with no-reorder we just update the old tags
 	        ||
 	        _mustReorder && !~oldPos || !tag // by default we always try to reorder the DOM elements
 	      ) {
-
+	
 	        tag = new Tag(impl, {
 	          parent: parent,
 	          isLoop: true,
@@ -1263,7 +1285,7 @@
 	          root: useRoot ? root : dom.cloneNode(),
 	          item: item
 	        }, dom.innerHTML)
-
+	
 	        tag.mount()
 	        if (isVirtual) tag._root = tag.root.firstChild // save reference for further moves or inserts
 	        // this tag must be appended
@@ -1279,11 +1301,11 @@
 	          else root.insertBefore(tag.root, tags[i].root)
 	          oldItems.splice(i, 0, item)
 	        }
-
+	
 	        tags.splice(i, 0, tag)
 	        pos = i // handled here so no move
 	      } else tag.update(item)
-
+	
 	      // reorder the tag if it's not located in its previous position
 	      if (pos !== i && _mustReorder) {
 	        // update the DOM
@@ -1301,50 +1323,50 @@
 	        // we need to move all their custom tags into the right position
 	        if (!child) moveNestedTags(tag, i)
 	      }
-
+	
 	      // cache the original item to use it in the events bound to this node
 	      // and its children
 	      tag._item = item
 	      // cache the real parent tag internally
 	      defineProperty(tag, '_parent', parent)
-
+	
 	    }, true) // allow null values
-
+	
 	    // remove the redundant tags
 	    unmountRedundant(items, tags)
-
+	
 	    // insert the new nodes
 	    if (isOption) root.appendChild(frag)
 	    else root.insertBefore(frag, ref)
-
+	
 	    // set the 'tags' property of the parent tag
 	    // if child is 'undefined' it means that we don't need to set this property
 	    // for example:
 	    // we don't need store the `myTag.tags['div']` property if we are looping a div tag
 	    // but we need to track the `myTag.tags['child']` property looping a custom child node named `child`
 	    if (child) parent.tags[tagName] = tags
-
+	
 	    // clone the items array
 	    oldItems = items.slice()
-
+	
 	  })
-
+	
 	}
 	/**
 	 * Object that will be used to inject and manage the css of every tag instance
 	 */
 	var styleManager = (function(_riot) {
-
+	
 	  if (!window) return { // skip injection on the server
 	    add: function () {},
 	    inject: function () {}
 	  }
-
+	
 	  var styleNode = (function () {
 	    // create a new style element with the correct type
 	    var newNode = mkEl('style')
 	    setAttr(newNode, 'type', 'text/css')
-
+	
 	    // replace any user node or insert the new one into the head
 	    var userNode = $('style[type=riot]')
 	    if (userNode) {
@@ -1352,20 +1374,20 @@
 	      userNode.parentNode.replaceChild(newNode, userNode)
 	    }
 	    else document.getElementsByTagName('head')[0].appendChild(newNode)
-
+	
 	    return newNode
 	  })()
-
+	
 	  // Create cache and shortcut to the correct property
 	  var cssTextProp = styleNode.styleSheet,
 	    stylesToInject = ''
-
+	
 	  // Expose the style node in a non-modificable property
 	  Object.defineProperty(_riot, 'styleNode', {
 	    value: styleNode,
 	    writable: true
 	  })
-
+	
 	  /**
 	   * Public api
 	   */
@@ -1389,75 +1411,75 @@
 	      }
 	    }
 	  }
-
+	
 	})(riot)
-
-
+	
+	
 	function parseNamedElements(root, tag, childTags, forceParsingNamed) {
-
+	
 	  walk(root, function(dom) {
 	    if (dom.nodeType == 1) {
 	      dom.isLoop = dom.isLoop ||
 	                  (dom.parentNode && dom.parentNode.isLoop || getAttr(dom, 'each'))
 	                    ? 1 : 0
-
+	
 	      // custom child tag
 	      if (childTags) {
 	        var child = getTag(dom)
-
+	
 	        if (child && !dom.isLoop)
 	          childTags.push(initChildTag(child, {root: dom, parent: tag}, dom.innerHTML, tag))
 	      }
-
+	
 	      if (!dom.isLoop || forceParsingNamed)
 	        setNamed(dom, tag, [])
 	    }
-
+	
 	  })
-
+	
 	}
-
+	
 	function parseExpressions(root, tag, expressions) {
-
+	
 	  function addExpr(dom, val, extra) {
 	    if (tmpl.hasExpr(val)) {
 	      expressions.push(extend({ dom: dom, expr: val }, extra))
 	    }
 	  }
-
+	
 	  walk(root, function(dom) {
 	    var type = dom.nodeType,
 	      attr
-
+	
 	    // text node
 	    if (type == 3 && dom.parentNode.tagName != 'STYLE') addExpr(dom, dom.nodeValue)
 	    if (type != 1) return
-
+	
 	    /* element */
-
+	
 	    // loop
 	    attr = getAttr(dom, 'each')
-
+	
 	    if (attr) { _each(dom, tag, attr); return false }
-
+	
 	    // attribute expressions
 	    each(dom.attributes, function(attr) {
 	      var name = attr.name,
 	        bool = name.split('__')[1]
-
+	
 	      addExpr(dom, attr.value, { attr: bool || name, bool: bool })
 	      if (bool) { remAttr(dom, name); return false }
-
+	
 	    })
-
+	
 	    // skip custom tags
 	    if (getTag(dom)) return false
-
+	
 	  })
-
+	
 	}
 	function Tag(impl, conf, innerHTML) {
-
+	
 	  var self = riot.observable(this),
 	    opts = inherit(conf.opts) || {},
 	    parent = conf.parent,
@@ -1472,36 +1494,36 @@
 	    attr = {},
 	    propsInSyncWithParent = [],
 	    dom
-
+	
 	  if (fn && root._tag) root._tag.unmount(true)
-
+	
 	  // not yet mounted
 	  this.isMounted = false
 	  root.isLoop = isLoop
-
+	
 	  // keep a reference to the tag just created
 	  // so we will be able to mount this tag multiple times
 	  root._tag = this
-
+	
 	  // create a unique id to this tag
 	  // it could be handy to use it also to improve the virtual dom rendering speed
 	  defineProperty(this, '_riot_id', ++__uid) // base 1 allows test !t._riot_id
-
+	
 	  extend(this, { parent: parent, root: root, opts: opts, tags: {} }, item)
-
+	
 	  // grab attributes
 	  each(root.attributes, function(el) {
 	    var val = el.value
 	    // remember attributes with expressions only
 	    if (tmpl.hasExpr(val)) attr[el.name] = val
 	  })
-
+	
 	  dom = mkdom(impl.tmpl, innerHTML)
-
+	
 	  // options
 	  function updateOpts() {
 	    var ctx = hasImpl && isLoop ? self : parent || self
-
+	
 	    // update opts from current DOM attributes
 	    each(root.attributes, function(el) {
 	      var val = el.value
@@ -1512,14 +1534,14 @@
 	      opts[toCamel(name)] = tmpl(attr[name], ctx)
 	    })
 	  }
-
+	
 	  function normalizeData(data) {
 	    for (var key in item) {
 	      if (typeof self[key] !== T_UNDEF && isWritable(self, key))
 	        self[key] = data[key]
 	    }
 	  }
-
+	
 	  function inheritFromParent () {
 	    if (!self.parent || !isLoop) return
 	    each(Object.keys(self.parent), function(k) {
@@ -1533,9 +1555,9 @@
 	      }
 	    })
 	  }
-
+	
 	  defineProperty(this, 'update', function(data) {
-
+	
 	    // make sure the data passed will not override
 	    // the component core methods
 	    data = cleanUpData(data)
@@ -1557,13 +1579,13 @@
 	    rAF(function() { self.trigger('updated') })
 	    return this
 	  })
-
+	
 	  defineProperty(this, 'mixin', function() {
 	    each(arguments, function(mix) {
 	      var instance
-
+	
 	      mix = typeof mix === T_STRING ? riot.mixin(mix) : mix
-
+	
 	      // check if the mixin is a function
 	      if (isFunction(mix)) {
 	        // create the new mixin instance
@@ -1571,7 +1593,7 @@
 	        // save the prototype to loop it afterwards
 	        mix = mix.prototype
 	      } else instance = mix
-
+	
 	      // loop the keys in the function prototype or the all object keys
 	      each(Object.getOwnPropertyNames(mix), function(key) {
 	        // bind methods to self
@@ -1580,52 +1602,52 @@
 	                        instance[key].bind(self) :
 	                        instance[key]
 	      })
-
+	
 	      // init method will be called automatically
 	      if (instance.init) instance.init.bind(self)()
 	    })
 	    return this
 	  })
-
+	
 	  defineProperty(this, 'mount', function() {
-
+	
 	    updateOpts()
-
+	
 	    // initialiation
 	    if (fn) fn.call(self, opts)
-
+	
 	    // parse layout after init. fn may calculate args for nested custom tags
 	    parseExpressions(dom, self, expressions)
-
+	
 	    // mount the child tags
 	    toggle(true)
-
+	
 	    // update the root adding custom attributes coming from the compiler
 	    // it fixes also #1087
 	    if (impl.attrs || hasImpl) {
 	      walkAttributes(impl.attrs, function (k, v) { setAttr(root, k, v) })
 	      parseExpressions(self.root, self, expressions)
 	    }
-
+	
 	    if (!self.parent || isLoop) self.update(item)
-
+	
 	    // internal use only, fixes #403
 	    self.trigger('before-mount')
-
+	
 	    if (isLoop && !hasImpl) {
 	      // update the root attribute for the looped elements
 	      self.root = root = dom.firstChild
-
+	
 	    } else {
 	      while (dom.firstChild) root.appendChild(dom.firstChild)
 	      if (root.stub) self.root = root = parent.root
 	    }
-
+	
 	    // parse the named dom nodes in the looped child
 	    // adding them to the parent as well
 	    if (isLoop)
 	      parseNamedElements(self.root, self.parent, null, true)
-
+	
 	    // if it's not a child tag we can trigger its mount event
 	    if (!self.parent || self.parent.isMounted) {
 	      self.isMounted = true
@@ -1641,26 +1663,26 @@
 	      }
 	    })
 	  })
-
-
+	
+	
 	  defineProperty(this, 'unmount', function(keepRootTag) {
 	    var el = root,
 	      p = el.parentNode,
 	      ptag
-
+	
 	    self.trigger('before-unmount')
-
+	
 	    // remove this tag instance from the global virtualDom variable
 	    __virtualDom.splice(__virtualDom.indexOf(self), 1)
-
+	
 	    if (this._virts) {
 	      each(this._virts, function(v) {
 	        v.parentNode.removeChild(v)
 	      })
 	    }
-
+	
 	    if (p) {
-
+	
 	      if (parent) {
 	        ptag = getImmediateCustomParentTag(parent)
 	        // remove this tag from the parent tags object
@@ -1675,45 +1697,45 @@
 	          // otherwise just delete the tag instance
 	          ptag.tags[tagName] = undefined
 	      }
-
+	
 	      else
 	        while (el.firstChild) el.removeChild(el.firstChild)
-
+	
 	      if (!keepRootTag)
 	        p.removeChild(el)
 	      else
 	        // the riot-tag attribute isn't needed anymore, remove it
 	        remAttr(p, 'riot-tag')
 	    }
-
-
+	
+	
 	    self.trigger('unmount')
 	    toggle()
 	    self.off('*')
 	    self.isMounted = false
 	    delete root._tag
-
+	
 	  })
-
+	
 	  function toggle(isMount) {
-
+	
 	    // mount/unmount children
 	    each(childTags, function(child) { child[isMount ? 'mount' : 'unmount']() })
-
+	
 	    // listen/unlisten parent (events flow one way from parent to children)
 	    if (!parent) return
 	    var evt = isMount ? 'on' : 'off'
-
+	
 	    // the loop tags will be always in sync with the parent automatically
 	    if (isLoop)
 	      parent[evt]('unmount', self.unmount)
 	    else
 	      parent[evt]('update', self.update)[evt]('unmount', self.unmount)
 	  }
-
+	
 	  // named elements available for fn
 	  parseNamedElements(dom, this, childTags)
-
+	
 	}
 	/**
 	 * Attach an event to a DOM node
@@ -1723,45 +1745,45 @@
 	 * @param { Tag } tag - tag instance
 	 */
 	function setEventHandler(name, handler, dom, tag) {
-
+	
 	  dom[name] = function(e) {
-
+	
 	    var ptag = tag._parent,
 	      item = tag._item,
 	      el
-
+	
 	    if (!item)
 	      while (ptag && !item) {
 	        item = ptag._item
 	        ptag = ptag._parent
 	      }
-
+	
 	    // cross browser event fix
 	    e = e || window.event
-
+	
 	    // override the event properties
 	    if (isWritable(e, 'currentTarget')) e.currentTarget = dom
 	    if (isWritable(e, 'target')) e.target = e.srcElement
 	    if (isWritable(e, 'which')) e.which = e.charCode || e.keyCode
-
+	
 	    e.item = item
-
+	
 	    // prevent default behaviour (by default)
 	    if (handler.call(tag, e) !== true && !/radio|check/.test(dom.type)) {
 	      if (e.preventDefault) e.preventDefault()
 	      e.returnValue = false
 	    }
-
+	
 	    if (!e.preventUpdate) {
 	      el = item ? getImmediateCustomParentTag(ptag) : tag
 	      el.update()
 	    }
-
+	
 	  }
-
+	
 	}
-
-
+	
+	
 	/**
 	 * Insert a DOM node replacing another one (used by if- attribute)
 	 * @param   { Object } root - parent node
@@ -1773,26 +1795,26 @@
 	  root.insertBefore(before, node)
 	  root.removeChild(node)
 	}
-
+	
 	/**
 	 * Update the expressions in a Tag instance
 	 * @param   { Array } expressions - expression that must be re evaluated
 	 * @param   { Tag } tag - tag instance
 	 */
 	function update(expressions, tag) {
-
+	
 	  each(expressions, function(expr, i) {
-
+	
 	    var dom = expr.dom,
 	      attrName = expr.attr,
 	      value = tmpl(expr.expr, tag),
 	      parent = expr.dom.parentNode
-
+	
 	    if (expr.bool)
 	      value = value ? attrName : false
 	    else if (value == null)
 	      value = ''
-
+	
 	    // leave out riot- prefixes from strings inside textarea
 	    // fix #815: any value -> string
 	    if (parent && parent.tagName == 'TEXTAREA') {
@@ -1800,29 +1822,29 @@
 	      // change textarea's value
 	      parent.value = value
 	    }
-
+	
 	    // no change
 	    if (expr.value === value) return
 	    expr.value = value
-
+	
 	    // text node
 	    if (!attrName) {
 	      dom.nodeValue = '' + value    // #815 related
 	      return
 	    }
-
+	
 	    // remove original attribute
 	    remAttr(dom, attrName)
 	    // event handler
 	    if (isFunction(value)) {
 	      setEventHandler(attrName, value, dom, tag)
-
+	
 	    // if- conditional
 	    } else if (attrName == 'if') {
 	      var stub = expr.stub,
 	        add = function() { insertTo(stub.parentNode, stub, dom) },
 	        remove = function() { insertTo(dom.parentNode, dom, stub) }
-
+	
 	      // add to DOM
 	      if (value) {
 	        if (stub) {
@@ -1845,36 +1867,36 @@
 	          remove()
 	        // otherwise we need to wait the updated event
 	        else (tag.parent || tag).one('updated', remove)
-
+	
 	        dom.inStub = true
 	      }
 	    // show / hide
 	    } else if (/^(show|hide)$/.test(attrName)) {
 	      if (attrName == 'hide') value = !value
 	      dom.style.display = value ? '' : 'none'
-
+	
 	    // field value
 	    } else if (attrName == 'value') {
 	      dom.value = value
-
+	
 	    // <img src="{ expr }">
 	    } else if (startsWith(attrName, RIOT_PREFIX) && attrName != RIOT_TAG) {
 	      if (value)
 	        setAttr(dom, attrName.slice(RIOT_PREFIX.length), value)
-
+	
 	    } else {
 	      if (expr.bool) {
 	        dom[attrName] = value
 	        if (!value) return
 	      }
-
+	
 	      if (value === 0 || value && typeof value !== T_OBJECT)
 	        setAttr(dom, attrName, value)
-
+	
 	    }
-
+	
 	  })
-
+	
 	}
 	/**
 	 * Loops an array
@@ -1890,7 +1912,7 @@
 	  }
 	  return els
 	}
-
+	
 	/**
 	 * Detect if the argument passed is a function
 	 * @param   { * } v - whatever you want to pass to this function
@@ -1899,7 +1921,7 @@
 	function isFunction(v) {
 	  return typeof v === T_FUNCTION || false   // avoid IE problems
 	}
-
+	
 	/**
 	 * Remove any DOM attribute from a node
 	 * @param   { Object } dom - DOM node we want to update
@@ -1908,7 +1930,7 @@
 	function remAttr(dom, name) {
 	  dom.removeAttribute(name)
 	}
-
+	
 	/**
 	 * Convert a string containing dashes to camel case
 	 * @param   { String } string - input string
@@ -1919,7 +1941,7 @@
 	    return c.toUpperCase()
 	  })
 	}
-
+	
 	/**
 	 * Get the value of any DOM attribute on a node
 	 * @param   { Object } dom - DOM node we want to parse
@@ -1929,7 +1951,7 @@
 	function getAttr(dom, name) {
 	  return dom.getAttribute(name)
 	}
-
+	
 	/**
 	 * Set any DOM attribute
 	 * @param { Object } dom - DOM node we want to update
@@ -1939,7 +1961,7 @@
 	function setAttr(dom, name, val) {
 	  dom.setAttribute(name, val)
 	}
-
+	
 	/**
 	 * Detect the tag implementation by a DOM node
 	 * @param   { Object } dom - DOM node we need to parse to get its tag implementation
@@ -1956,7 +1978,7 @@
 	 */
 	function addChildTag(tag, tagName, parent) {
 	  var cachedTag = parent.tags[tagName]
-
+	
 	  // if there are multiple children tags having the same name
 	  if (cachedTag) {
 	    // if the parent tags property is not yet an array
@@ -1972,7 +1994,7 @@
 	    parent.tags[tagName] = tag
 	  }
 	}
-
+	
 	/**
 	 * Move the position of a custom tag in its parent tag
 	 * @param   { Object } tag - child tag instance
@@ -1984,14 +2006,14 @@
 	    tags
 	  // no parent no move
 	  if (!parent) return
-
+	
 	  tags = parent.tags[tagName]
-
+	
 	  if (isArray(tags))
 	    tags.splice(newPos, 0, tags.splice(tags.indexOf(tag), 1)[0])
 	  else addChildTag(tag, tagName, parent)
 	}
-
+	
 	/**
 	 * Create a new child tag including it correctly into its parent
 	 * @param   { Object } child - child tag implementation
@@ -2010,7 +2032,7 @@
 	  // in some cases this could be different from the custom parent tag
 	  // for example in nested loops
 	  tag._parent = parent
-
+	
 	  // add this tag to the custom parent tag
 	  addChildTag(tag, tagName, ptag)
 	  // and also to the real parent tag
@@ -2019,10 +2041,10 @@
 	  // empty the child node once we got its template
 	  // to avoid that its children get compiled multiple times
 	  opts.root.innerHTML = ''
-
+	
 	  return tag
 	}
-
+	
 	/**
 	 * Loop backward all the parents tree to detect the first custom parent tag
 	 * @param   { Object } tag - a Tag instance
@@ -2036,7 +2058,7 @@
 	  }
 	  return ptag
 	}
-
+	
 	/**
 	 * Helper function to set an immutable property
 	 * @param   { Object } el - object where the new property will be set
@@ -2054,7 +2076,7 @@
 	  }, options))
 	  return el
 	}
-
+	
 	/**
 	 * Get the tag name of any DOM node
 	 * @param   { Object } dom - DOM node we want to parse
@@ -2066,10 +2088,10 @@
 	    tagName = namedTag && !tmpl.hasExpr(namedTag) ?
 	                namedTag :
 	              child ? child.name : dom.tagName.toLowerCase()
-
+	
 	  return tagName
 	}
-
+	
 	/**
 	 * Extend any object with other properties
 	 * @param   { Object } src - source object
@@ -2093,7 +2115,7 @@
 	  }
 	  return src
 	}
-
+	
 	/**
 	 * Check whether an array contains an item
 	 * @param   { Array } arr - target array
@@ -2103,14 +2125,14 @@
 	function contains(arr, item) {
 	  return ~arr.indexOf(item)
 	}
-
+	
 	/**
 	 * Check whether an object is a kind of array
 	 * @param   { * } a - anything
 	 * @returns {Boolean} is 'a' an array?
 	 */
 	function isArray(a) { return Array.isArray(a) || a instanceof Array }
-
+	
 	/**
 	 * Detect whether a property of an object could be overridden
 	 * @param   { Object }  obj - source object
@@ -2121,8 +2143,8 @@
 	  var props = Object.getOwnPropertyDescriptor(obj, key)
 	  return typeof obj[key] === T_UNDEF || props && props.writable
 	}
-
-
+	
+	
 	/**
 	 * With this function we avoid that the internal Tag methods get overridden
 	 * @param   { Object } data - options we want to use to extend the tag instance
@@ -2131,7 +2153,7 @@
 	function cleanUpData(data) {
 	  if (!(data instanceof Tag) && !(data && typeof data.trigger == T_FUNCTION))
 	    return data
-
+	
 	  var o = {}
 	  for (var key in data) {
 	    if (!contains(RESERVED_WORDS_BLACKLIST, key))
@@ -2139,7 +2161,7 @@
 	  }
 	  return o
 	}
-
+	
 	/**
 	 * Walk down recursively all the children tags starting dom node
 	 * @param   { Object }   dom - starting node where we will start the recursion
@@ -2151,7 +2173,7 @@
 	    if (fn(dom) === false) return
 	    else {
 	      dom = dom.firstChild
-
+	
 	      while (dom) {
 	        walk(dom, fn)
 	        dom = dom.nextSibling
@@ -2159,7 +2181,7 @@
 	    }
 	  }
 	}
-
+	
 	/**
 	 * Minimize risk: only zero or one _space_ between attr & value
 	 * @param   { String }   html - html string we want to parse
@@ -2168,12 +2190,12 @@
 	function walkAttributes(html, fn) {
 	  var m,
 	    re = /([-\w]+) ?= ?(?:"([^"]*)|'([^']*)|({[^}]*}))/g
-
+	
 	  while (m = re.exec(html)) {
 	    fn(m[1].toLowerCase(), m[2] || m[3] || m[4])
 	  }
 	}
-
+	
 	/**
 	 * Check whether a DOM node is in stub mode, useful for the riot 'if' directive
 	 * @param   { Object }  dom - DOM node we want to parse
@@ -2186,7 +2208,7 @@
 	  }
 	  return false
 	}
-
+	
 	/**
 	 * Create a generic DOM node
 	 * @param   { String } name - name of the DOM node we want to create
@@ -2195,7 +2217,7 @@
 	function mkEl(name) {
 	  return document.createElement(name)
 	}
-
+	
 	/**
 	 * Shorter and fast way to select multiple nodes in the DOM
 	 * @param   { String } selector - DOM selector
@@ -2205,7 +2227,7 @@
 	function $$(selector, ctx) {
 	  return (ctx || document).querySelectorAll(selector)
 	}
-
+	
 	/**
 	 * Shorter and fast way to select a single node in the DOM
 	 * @param   { String } selector - unique dom selector
@@ -2215,7 +2237,7 @@
 	function $(selector, ctx) {
 	  return (ctx || document).querySelector(selector)
 	}
-
+	
 	/**
 	 * Simple object prototypal inheritance
 	 * @param   { Object } parent - parent object
@@ -2226,7 +2248,7 @@
 	  Child.prototype = parent
 	  return new Child()
 	}
-
+	
 	/**
 	 * Get the name property needed to identify a DOM node in riot
 	 * @param   { Object } dom - DOM node we need to parse
@@ -2235,7 +2257,7 @@
 	function getNamedKey(dom) {
 	  return getAttr(dom, 'id') || getAttr(dom, 'name')
 	}
-
+	
 	/**
 	 * Set the named properties of a tag element
 	 * @param { Object } dom - DOM node we need to parse
@@ -2265,10 +2287,10 @@
 	          parent[key] = [value, dom]
 	      }
 	    }
-
+	
 	  // skip the elements with no named properties
 	  if (!key) return
-
+	
 	  // check whether this key has been already evaluated
 	  if (tmpl.hasExpr(key))
 	    // wait the first updated event only once
@@ -2278,9 +2300,9 @@
 	    })
 	  else
 	    add(parent[key])
-
+	
 	}
-
+	
 	/**
 	 * Faster String startsWith alternative
 	 * @param   { String } src - source string
@@ -2290,7 +2312,7 @@
 	function startsWith(src, str) {
 	  return src.slice(0, str.length) === str
 	}
-
+	
 	/**
 	 * requestAnimationFrame function
 	 * Adapted from https://gist.github.com/paulirish/1579671, license MIT
@@ -2298,19 +2320,19 @@
 	var rAF = (function (w) {
 	  var raf = w.requestAnimationFrame    ||
 	            w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame
-
+	
 	  if (!raf || /iP(ad|hone|od).*OS 6/.test(w.navigator.userAgent)) {  // buggy iOS6
 	    var lastTime = 0
-
+	
 	    raf = function (cb) {
 	      var nowtime = Date.now(), timeout = Math.max(16 - (nowtime - lastTime), 0)
 	      setTimeout(function () { cb(lastTime = nowtime + timeout) }, timeout)
 	    }
 	  }
 	  return raf
-
+	
 	})(window || {})
-
+	
 	/**
 	 * Mount a tag creating new Tag instance
 	 * @param   { Object } root - dom node where the tag will be mounted
@@ -2322,33 +2344,33 @@
 	  var tag = __tagImpl[tagName],
 	    // cache the inner HTML to fix #855
 	    innerHTML = root._innerHTML = root._innerHTML || root.innerHTML
-
+	
 	  // clear the inner html
 	  root.innerHTML = ''
-
+	
 	  if (tag && root) tag = new Tag(tag, { root: root, opts: opts }, innerHTML)
-
+	
 	  if (tag && tag.mount) {
 	    tag.mount()
 	    // add this tag to the virtualDom variable
 	    if (!contains(__virtualDom, tag)) __virtualDom.push(tag)
 	  }
-
+	
 	  return tag
 	}
 	/**
 	 * Riot public api
 	 */
-
+	
 	// share methods for other riot parts, e.g. compiler
 	riot.util = { brackets: brackets, tmpl: tmpl }
-
+	
 	/**
 	 * Create a mixin that could be globally shared across all the tags
 	 */
 	riot.mixin = (function() {
 	  var mixins = {}
-
+	
 	  /**
 	   * Create/Return a mixin by its name
 	   * @param   { String } name - mixin name
@@ -2359,9 +2381,9 @@
 	    if (!mixin) return mixins[name]
 	    mixins[name] = mixin
 	  }
-
+	
 	})()
-
+	
 	/**
 	 * Create a new riot tag implementation
 	 * @param   { String }   name - name/id of the new riot tag
@@ -2386,7 +2408,7 @@
 	  __tagImpl[name] = { name: name, tmpl: html, attrs: attrs, fn: fn }
 	  return name
 	}
-
+	
 	/**
 	 * Create a new riot tag implementation (for use by the compiler)
 	 * @param   { String }   name - name/id of the new riot tag
@@ -2403,7 +2425,7 @@
 	  __tagImpl[name] = { name: name, tmpl: html, attrs: attrs, fn: fn }
 	  return name
 	}
-
+	
 	/**
 	 * Mount a tag using a specific tag implementation
 	 * @param   { String } selector - tag DOM selector
@@ -2412,13 +2434,13 @@
 	 * @returns { Array } new tags instances
 	 */
 	riot.mount = function(selector, tagName, opts) {
-
+	
 	  var els,
 	    allTags,
 	    tags = []
-
+	
 	  // helper functions
-
+	
 	  function addRiotTags(arr) {
 	    var list = ''
 	    each(arr, function (e) {
@@ -2427,37 +2449,37 @@
 	    })
 	    return list
 	  }
-
+	
 	  function selectAllTags() {
 	    var keys = Object.keys(__tagImpl)
 	    return keys + addRiotTags(keys)
 	  }
-
+	
 	  function pushTags(root) {
 	    var last
-
+	
 	    if (root.tagName) {
 	      if (tagName && (!(last = getAttr(root, RIOT_TAG)) || last != tagName))
 	        setAttr(root, RIOT_TAG, tagName)
-
+	
 	      var tag = mountTo(root, tagName || root.getAttribute(RIOT_TAG) || root.tagName.toLowerCase(), opts)
-
+	
 	      if (tag) tags.push(tag)
 	    } else if (root.length)
 	      each(root, pushTags)   // assume nodeList
-
+	
 	  }
-
+	
 	  // ----- mount code -----
-
+	
 	  // inject styles into DOM
 	  styleManager.inject()
-
+	
 	  if (typeof tagName === T_OBJECT) {
 	    opts = tagName
 	    tagName = 0
 	  }
-
+	
 	  // crawl the DOM to find the tag
 	  if (typeof selector === T_STRING) {
 	    if (selector === '*')
@@ -2467,7 +2489,7 @@
 	    else
 	      // or just the ones named like the selector
 	      selector += addRiotTags(selector.split(','))
-
+	
 	    // make sure to pass always a selector
 	    // to the querySelectorAll function
 	    els = selector ? $$(selector) : []
@@ -2475,7 +2497,7 @@
 	  else
 	    // probably you have passed already a tag or a NodeList
 	    els = selector
-
+	
 	  // select all the registered and mount them inside their root elements
 	  if (tagName === '*') {
 	    // get all custom tags
@@ -2494,15 +2516,15 @@
 	    // get rid of the tagName
 	    tagName = 0
 	  }
-
+	
 	  if (els.tagName)
 	    pushTags(els)
 	  else
 	    each(els, pushTags)
-
+	
 	  return tags
 	}
-
+	
 	/**
 	 * Update all the tags instances created
 	 * @returns { Array } all the tags instances
@@ -2512,7 +2534,7 @@
 	    tag.update()
 	  })
 	}
-
+	
 	/**
 	 * Export the Tag constructor
 	 */
@@ -2521,56 +2543,63 @@
 	  /* istanbul ignore next */
 	  if (typeof exports === T_OBJECT)
 	    module.exports = riot
-	  else if ("function" === T_FUNCTION && typeof __webpack_require__(2) !== T_UNDEF)
+	  else if ("function" === T_FUNCTION && typeof __webpack_require__(/*! !webpack amd options */ 2) !== T_UNDEF)
 	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return riot }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
 	  else
 	    window.riot = riot
-
+	
 	})(typeof window != 'undefined' ? window : void 0);
 
 
 /***/ },
 /* 2 */
+/*!****************************************!*\
+  !*** (webpack)/buildin/amd-options.js ***!
+  \****************************************/
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
-
+	
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
 /* 3 */
+/*!***************************!*\
+  !*** ./src/gameboard.tag ***!
+  \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
 	'use strict';
-
+	
 	var _this = this;
-
-	var _consts = __webpack_require__(4);
-
-	var _assets = __webpack_require__(5);
-
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
 	var store = this.store = this.opts;
-
+	
 	// Rerender on store update.
 	store.on('update', function (state) {
 	  _this.update(state);
 	});
-
+	
 	this.onClick = function (evt) {
 	  var mole = evt.item;
 	  store.trigger(_consts.ACTION.CLICKED, mole);
 	};
 	}, '{ }');
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
 /* 4 */
+/*!***********************!*\
+  !*** ./src/consts.js ***!
+  \***********************/
 /***/ function(module, exports) {
 
 	'use strict';
-
+	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -2578,11 +2607,11 @@
 	  TICK: 'TIMER.TICK',
 	  START: 'TIMER.START'
 	};
-
+	
 	var MOLE = exports.MOLE = {
 	  HIT: 'MOLE.HIT'
 	};
-
+	
 	var ACTION = exports.ACTION = {
 	  CLICKED: 'ACTION.CLICKED',
 	  MOLE: {
@@ -2593,296 +2622,385 @@
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.randomMoleImage = randomMoleImage;
-	var images = exports.images = {
-	  dirt: __webpack_require__(6),
-	  rabbit: __webpack_require__(7),
-	  elephant: __webpack_require__(8),
-	  hippo: __webpack_require__(9),
-	  monkey: __webpack_require__(10),
-	  panda: __webpack_require__(11),
-	  pig: __webpack_require__(12),
-	  snake: __webpack_require__(13),
-	  giraffe: __webpack_require__(14),
-	  parrot: __webpack_require__(15)
-	};
-	// The object is easer to type, but the array is easer to code.
-	// Since they never change, we can have the best of both worlds.
-	var imageKeys = Object.keys(images);
-
-	function randomMoleImage() {
-	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
-
-	  return images[imageKeys[index]];
-	}
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
-
-/***/ },
-/* 16 */
+/*!***********************!*\
+  !*** ./src/timer.tag ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('timer', '<h2>Timer: {seconds}</h2>', '', '', function(opts) {
 	'use strict';
-
+	
 	var _this = this;
-
-	var _consts = __webpack_require__(4);
-
+	
+	var _consts = __webpack_require__(/*! ./consts.js */ 4);
+	
 	var store = this.store = this.opts;
-
+	
 	this.seconds = 0;
-
+	
 	store.on(_consts.TIMER.START, function () {
 	  var tick = _this.tick.bind(_this);
-
+	
 	  _this.timer = setInterval(tick, 1000);
 	});
-
+	
 	this.tick = function () {
 	  var seconds = _this.seconds += 1;
-
+	
 	  _this.update({
 	    seconds: seconds
 	  });
 	  store.trigger(_consts.TIMER.TICK, seconds);
 	};
 	}, '{ }');
-
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ },
-/* 17 */
+/* 6 */
+/*!***********************!*\
+  !*** ./src/score.tag ***!
+  \***********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('score', '<h2>Score: {score}</h2>', '', '', function(opts) {
 	'use strict';
-
+	
 	var _this = this;
-
+	
 	var store = this.store = this.opts;
-
+	
 	// Rerender on store update.
 	store.on('update', function (state) {
 	  _this.update(state);
 	});
 	}, '{ }');
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/***/ },
+/* 7 */
+/*!**************************!*\
+  !*** ./src/mole-log.tag ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole-log', '<div class="mole" each="{moles}"> <img riot-src="{src}"> <p>Hits: {hits || 0}</p> </div>', 'mole-log { display: flex; } mole-log .mole { width: 10em; display: flex; } mole-log .mole img { height: 64px; width: 64px; } mole-log .mole p { padding-left: 1em; }', '', function(opts) {
+	'use strict';
+	
+	var _this = this;
+	
+	var _assets = __webpack_require__(/*! ./assets */ 8);
+	
+	var store = this.store = this.opts;
+	
+	var moles = Object.keys(_assets.images).map(function (name) {
+	  return { name: name, src: _assets.images[name] };
+	});
+	moles.shift(); // remove the dirt
+	this.moles = moles;
+	
+	// Rerender on store update.
+	store.on('update', function (state) {
+	  var moleLog = state.moleLog;
+	
+	  var mole = _this.moles.find(function (mole) {
+	    return mole.src;
+	  });
+	
+	  var moles = _this.moles.map(function (mole) {
+	    mole.hits = moleLog[mole.src];
+	    return mole;
+	  });
+	
+	  _this.update({
+	    moles: moles
+	  });
+	});
+	}, '{ }');
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
+
+/***/ },
+/* 8 */
+/*!***********************!*\
+  !*** ./src/assets.js ***!
+  \***********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.randomMoleImage = randomMoleImage;
+	var images = exports.images = {
+	  dirt: __webpack_require__(/*! ./img/dirt.png */ 9),
+	  rabbit: __webpack_require__(/*! ./img/moles/rabbit.png */ 10),
+	  elephant: __webpack_require__(/*! ./img/moles/elephant.png */ 11),
+	  hippo: __webpack_require__(/*! ./img/moles/hippo.png */ 12),
+	  monkey: __webpack_require__(/*! ./img/moles/monkey.png */ 13),
+	  panda: __webpack_require__(/*! ./img/moles/panda.png */ 14),
+	  pig: __webpack_require__(/*! ./img/moles/pig.png */ 15),
+	  snake: __webpack_require__(/*! ./img/moles/snake.png */ 16),
+	  giraffe: __webpack_require__(/*! ./img/moles/giraffe.png */ 17),
+	  parrot: __webpack_require__(/*! ./img/moles/parrot.png */ 18)
+	};
+	// The object is easer to type, but the array is easer to code.
+	// Since they never change, we can have the best of both worlds.
+	var imageKeys = Object.keys(images);
+	
+	function randomMoleImage() {
+	  var index = 0 | Math.random() * (imageKeys.length - 1) + 1;
+	
+	  return images[imageKeys[index]];
+	}
+
+/***/ },
+/* 9 */
+/*!**************************!*\
+  !*** ./src/img/dirt.png ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/dirt-df66ab4ec47dc052c7597ac270141d24.png";
+
+/***/ },
+/* 10 */
+/*!**********************************!*\
+  !*** ./src/img/moles/rabbit.png ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/rabbit-61c2df597c3b004d580aa8ebb4b36668.png";
+
+/***/ },
+/* 11 */
+/*!************************************!*\
+  !*** ./src/img/moles/elephant.png ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/elephant-836e5047f2e011ecd52ded76c9089e94.png";
+
+/***/ },
+/* 12 */
+/*!*********************************!*\
+  !*** ./src/img/moles/hippo.png ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/hippo-eb375311ee60d46045da8ac4a76b2b10.png";
+
+/***/ },
+/* 13 */
+/*!**********************************!*\
+  !*** ./src/img/moles/monkey.png ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/monkey-1022270c1440cdb086b2e0b05c6e94bf.png";
+
+/***/ },
+/* 14 */
+/*!*********************************!*\
+  !*** ./src/img/moles/panda.png ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/panda-4d54658cb8607db037a771c5ec786bef.png";
+
+/***/ },
+/* 15 */
+/*!*******************************!*\
+  !*** ./src/img/moles/pig.png ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/pig-003f5f44c41d370f4aad7fb0555fcf53.png";
+
+/***/ },
+/* 16 */
+/*!*********************************!*\
+  !*** ./src/img/moles/snake.png ***!
+  \*********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/snake-2fb63946a6f2b4783f1cb11622acdf45.png";
+
+/***/ },
+/* 17 */
+/*!***********************************!*\
+  !*** ./src/img/moles/giraffe.png ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/giraffe-7b08bf8b5394c79b7ddde1e83939c8e9.png";
 
 /***/ },
 /* 18 */
+/*!**********************************!*\
+  !*** ./src/img/moles/parrot.png ***!
+  \**********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "img/parrot-805d2de70efac283af252497accac621.png";
+
+/***/ },
+/* 19 */
+/*!**********************!*\
+  !*** ./src/store.js ***!
+  \**********************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(riot) {'use strict';
-
-	var _require = __webpack_require__(5);
-
+	
+	var _require = __webpack_require__(/*! ./assets.js */ 8);
+	
 	var images = _require.images;
 	var randomMoleImage = _require.randomMoleImage;
-
-	var _require2 = __webpack_require__(4);
-
+	
+	var _require2 = __webpack_require__(/*! ./consts.js */ 4);
+	
 	var ACTION = _require2.ACTION;
 	var MOLE = _require2.MOLE;
-
+	
 	var Store = function () {
 	  function Store() {
 	    babelHelpers.classCallCheck(this, Store);
-
+	
 	    this.moles = this.createArray(9, { src: images.dirt });
 	    this.score = 0;
-
+	    this.moleLog = {};
+	
 	    riot.observable(this);
 	    this.delegateEvents();
 	  }
-
+	
 	  // Listens to events defined in MOLE
 	  // This function maps the actions listed int he consts.js file
 	  //   to the functions on this object.
-
+	
 	  Store.prototype.delegateEvents = function delegateEvents() {
 	    var _this = this;
-
+	
 	    this.on(ACTION.MOLE.HIDE, function (indexList, silent) {
 	      if (typeof indexList === "number") {
-	        throw new Error('Toggle takes an array of ids');
+	        throw new Error('ACTION.MOLE.HIDE takes an array of ids');
 	      }
 	      indexList.forEach(_this.hideMole.bind(_this, silent));
 	    });
 	    this.on(ACTION.MOLE.SHOW, function (indexList, silent) {
 	      if (typeof indexList === "number") {
-	        throw new Error('Toggle takes an array of ids');
+	        throw new Error('ACTION.MOLE.SHOW takes an array of ids');
 	      }
 	      indexList.forEach(_this.showMole.bind(_this, silent));
 	    });
-
+	
 	    this.on(ACTION.CLICKED, this.onClick.bind(this));
 	  };
-
+	
 	  // ACTIONS.MOLE.HIDE
-
+	
 	  Store.prototype.hideMole = function hideMole(silent, index) {
 	    var mole = this.moles[index];
 	    if (!mole) {
 	      return;
 	    } // Skip undefined
-
+	
 	    mole.src = images.dirt;
 	    this.setMole(index, mole, silent);
 	  };
-
+	
 	  // ACTIONS.MOLE.SHOW
-
+	
 	  Store.prototype.showMole = function showMole(silent, index) {
 	    var mole = this.moles[index];
 	    if (!mole) {
 	      return;
 	    } // Skip undefined
-
+	
 	    mole.src = randomMoleImage();
 	    this.setMole(index, mole, silent);
 	  };
-
+	
 	  // ACTION.CLICKED
-
+	
 	  Store.prototype.onClick = function onClick(mole) {
 	    if (mole.src === images.dirt) {
 	      return;
 	    }
 	    var index = mole.index;
-
+	
+	    // trigger before we change mole
+	    // so the listeners can refrence the src.
+	    this.trigger(MOLE.HIT, mole);
+	
 	    mole.src = images.dirt;
 	    this.setMole(index, mole);
-
-	    this.trigger(MOLE.HIT, mole);
 	  };
-
+	
 	  //
 	  // Utils
 	  //
-
+	
 	  // Sets mole and triggers update
-
+	
 	  Store.prototype.setMole = function setMole(index, mole, silent) {
 	    var moles = this.moles;
-
+	
 	    moles[index] = mole;
 	    this.update({
 	      moles: moles
 	    }, silent);
 	  };
-
+	
 	  // Updates the state and trigger the update event with a clone of state.
-
+	
 	  Store.prototype.update = function update(newState, silent) {
 	    var _this2 = this;
-
+	
 	    silent = silent || false;
 	    // Set values on this to match the new state
 	    Object.keys(newState).forEach(function (prop) {
 	      _this2[prop] = newState[prop];
 	    });
-
+	
 	    if (!silent) {
 	      this.trigger('update', this.toJSON());
 	    }
 	  };
-
+	
 	  // Returns a clone of the current state.
-
+	
 	  Store.prototype.toJSON = function toJSON() {
 	    var _this3 = this;
-
+	
 	    var result = Object.keys(this).reduce(function (result, key) {
 	      result[key] = _this3[key];
 	      return result;
 	    }, {});
-
+	
 	    return result;
 	  };
-
+	
 	  Store.prototype.createArray = function createArray(len, val) {
 	    var result = [];
-
+	
 	    while (len--) {
 	      val._index = len;
 	      result[len] = JSON.parse(JSON.stringify(val));
 	    }
-
+	
 	    return result;
 	  };
-
+	
 	  return Store;
 	}();
-
+	
 	module.exports = Store;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! riot */ 1)))
 
 /***/ }
 /******/ ]);
+//# sourceMappingURL=bundle.js.map

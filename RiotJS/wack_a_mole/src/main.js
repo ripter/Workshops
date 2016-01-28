@@ -1,6 +1,7 @@
 import './gameboard.tag';
 import './timer.tag';
 import './score.tag';
+import './mole-log.tag';
 import Store from './store.js';
 import {TIMER, ACTION, MOLE} from './consts.js';
 
@@ -9,10 +10,10 @@ var gamestate = new Store();
 //DEBUGGING:
 window.gamestate = gamestate;
 
-// render all the tags
+// render all the tags and pass them gamestate
 riot.mount('*', gamestate);
 
-// Change the mole every second.
+// <timer /> emits TIMER.TICK every second.
 gamestate.on(TIMER.TICK, function(seconds) {
   var {lastIndex} = gamestate;
   var index = lastIndex;
@@ -31,11 +32,20 @@ gamestate.on(TIMER.TICK, function(seconds) {
 });
 
 // when a mole has been 'hit' by the player
+// this is different than ACTION.CLICKED, HIT only emits when the mole was clicked and showing.
 gamestate.on(MOLE.HIT, function(mole) {
-  var score = gamestate.score;
+  const src = mole.src;
+  let {score, moleLog} = gamestate;
+  let log = moleLog[src];
+
+  if (!log) { log = 1; }
+  else { log += 1; }
+
+  moleLog[src] = log;
 
   gamestate.update({
-    score: score + 10
+    score: score + 10,
+    moleLog: moleLog
   });
 });
 

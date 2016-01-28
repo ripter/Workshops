@@ -2,12 +2,12 @@
 
 NODE_BIN := ./node_modules/.bin
 
-all: build
+all: npm build
 	cp -f public/index.html dist/index.html
 
-build: npm
+build:
 	# $(NODE_BIN)/webpack -dc
-	$(NODE_BIN)/webpack
+	$(NODE_BIN)/webpack -dc
 	$(NODE_BIN)/babel-external-helpers -t global > dist/babel-external-helpers.js
 	cp node_modules/riot/riot.min.js dist/riot.min.js
 	cp -R img/ dist/img

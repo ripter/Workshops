@@ -6,6 +6,7 @@ class Store {
   constructor() {
     this.moles = this.createArray(9, {src: images.dirt});
     this.score = 0;
+    this.moleLog = {};
 
     riot.observable(this);
     this.delegateEvents();
@@ -16,11 +17,11 @@ class Store {
   //   to the functions on this object.
   delegateEvents() {
     this.on(ACTION.MOLE.HIDE, (indexList, silent) => {
-      if (typeof indexList === "number") { throw new Error('Toggle takes an array of ids'); }
+      if (typeof indexList === "number") { throw new Error('ACTION.MOLE.HIDE takes an array of ids'); }
       indexList.forEach(this.hideMole.bind(this, silent));
     });
     this.on(ACTION.MOLE.SHOW, (indexList, silent) => {
-      if (typeof indexList === "number") { throw new Error('Toggle takes an array of ids'); }
+      if (typeof indexList === "number") { throw new Error('ACTION.MOLE.SHOW takes an array of ids'); }
       indexList.forEach(this.showMole.bind(this, silent));
     });
 
@@ -50,10 +51,12 @@ class Store {
     if (mole.src === images.dirt) { return; }
     const index = mole.index;
 
+    // trigger before we change mole
+    // so the listeners can refrence the src.
+    this.trigger(MOLE.HIT, mole);
+
     mole.src = images.dirt;
     this.setMole(index, mole);
-
-    this.trigger(MOLE.HIT, mole);
   }
 
 

@@ -3,7 +3,6 @@
 
   <script type="babel">
     import {ACTION} from './consts.js';
-    import {images} from './assets.js';
     const store = this.store = this.opts;
 
     // Rerender on store update.
