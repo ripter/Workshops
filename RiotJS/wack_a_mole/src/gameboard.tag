@@ -19,6 +19,7 @@
   <style>
     gameboard {
       width: 426px;
+      height: 386px;
       margin-left: auto;
       margin-right: auto;
       display: flex;

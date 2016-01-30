@@ -2569,7 +2569,7 @@
   \***************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('gameboard', '<img each="{moles}" riot-src="{src}" onclick="{onClick}">', 'gameboard { width: 426px; height: 386px; margin-left: auto; margin-right: auto; display: flex; flex-wrap: wrap; }', '', function(opts) {
 	'use strict';
 	
 	var _this = this;
