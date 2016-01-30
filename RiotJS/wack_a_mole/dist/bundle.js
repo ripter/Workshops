@@ -2685,7 +2685,7 @@
   \**************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole-log', '<div class="mole" each="{moles}"> <img riot-src="{src}"> <p>Hits: {hits || 0}</p> </div>', 'mole-log { display: flex; } mole-log .mole { width: 10em; display: flex; } mole-log .mole img { height: 64px; width: 64px; } mole-log .mole p { padding-left: 1em; }', '', function(opts) {
+	/* WEBPACK VAR INJECTION */(function(riot) {riot.tag2('mole-log', '<div class="mole" each="{moles}"> <img riot-src="{src}"> <p>Hits: {hits || 0}</p> </div>', 'mole-log { display: flex; flex-direction: column; flex-wrap: wrap; } mole-log .mole { width: 10em; display: flex; } mole-log .mole img { height: 64px; width: 64px; } mole-log .mole p { padding-left: 1em; }', '', function(opts) {
 	'use strict';
 	
 	var _this = this;

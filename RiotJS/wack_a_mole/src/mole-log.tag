@@ -31,6 +31,8 @@
   <style>
     mole-log {
       display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
     }
 
     mole-log .mole {

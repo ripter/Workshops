@@ -6,12 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Wack-A-Mole Project</title>
+    <style>
+      .rows {
+        display: flex;
+        flex-direction: column; /* a row contains columns */
+      }
+      .columns {
+        display: flex;
+        flex-direction: row; /* a column contains rows */
+      }
+    </style>
   </head>
   <body>
-    <timer></timer>
-    <score></score>
-    <gameboard></gameboard>
-    <mole-log></mole-log>
+    <div class="rows">
+      <timer></timer>
+      <score></score>
+    </div>
+    <div class="columns" style="height: 386px;">
+      <gameboard></gameboard>
+      <mole-log style="width: 500px;"></mole-log>
+    </div>
   </body>
 
   <script src="riot.min.js"></script>
