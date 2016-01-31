@@ -10,6 +10,7 @@ const END_TIME = 30; // 60 second rounds
 let currentTime = 0;
 let isRunning = true;
 let lastIndex = 0;
+let score = 0;
 
 
 // create the mole list
@@ -20,6 +21,7 @@ moles = moles.map((mole, index) => {
 
 // Init the timer.
 let timerTag = riot.mount('timer')[0];
+let scoreTag = riot.mount('score')[0];
 // init the gameboard with moles
 const gameboard = riot.mount('gameboard', {
   moles: moles
@@ -34,7 +36,7 @@ ai();
 gameboard.on(ACTION.CLICKED, function(item) {
   // Ignore clicks on dirt
   if (isDirt(item)) { return; }
-  //TODO: register the hit
+
   const index = item.id;
   console.log('gameboard.click', item);
 
@@ -42,6 +44,12 @@ gameboard.on(ACTION.CLICKED, function(item) {
   gameboard.update({
     moles: moles
   });
+
+  score += 10;
+  scoreTag.update({
+    score: score
+  });
+  console.log('score', score);
 });
 
 
