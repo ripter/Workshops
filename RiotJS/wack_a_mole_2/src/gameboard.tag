@@ -3,16 +3,17 @@
 
   <script type="babel">
     import {ACTION} from './consts.js';
-    const store = this.store = this.opts;
 
-    // Rerender on store update.
-    store.on('update', (state) => {
-      this.update(state);
-    });
+    this.moles = this.opts.moles;
+    // const store = this.store = this.opts;
+    //
+    // // Re-render on ACTION.UPDATE
+    // store.on(ACTION.UPDATE, (state) => {
+    //   this.update(state);
+    // });
 
     this.onClick = (evt) => {
-      var mole = evt.item;
-      store.trigger(ACTION.CLICKED, mole);
+      this.trigger(ACTION.CLICKED, evt.item);
     }
   </script>
 
