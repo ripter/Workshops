@@ -11,6 +11,7 @@ let currentTime = 0;
 let isRunning = true;
 let lastIndex = 0;
 let score = 0;
+let hitCount = 0;
 let log = {};
 
 // create the mole list
@@ -55,8 +56,9 @@ gameboard.on(ACTION.CLICKED, function(prevMole) {
   // global log object
   log[src] = logItem;
 
+  hitCount += 1;
   // Update the score
-  score += 1 + (score * 1.35);
+  score += 1 + (hitCount * 1.5);
 
   // Render all the tags with the new states
   renderGameboard(moles);
@@ -70,7 +72,8 @@ gameboard.on(ACTION.CLICKED, function(prevMole) {
 // Show/Hide moles!
 function ai() {
   const index = 0 | Math.random() * moles.length;
-  let nextTime = 1000 - (score * 5);
+  // speed up a little with every hit
+  let nextTime = 1000 - (hitCount * 55);
 
   if (moles[lastIndex] ) {
     moles[lastIndex].isUp = false;
