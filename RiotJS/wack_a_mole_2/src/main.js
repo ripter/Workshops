@@ -6,7 +6,7 @@ import './mole-log.tag';
 import {images, randomMoleImage} from './assets.js';
 import {ACTION, TIMER} from './consts.js';
 
-const END_TIME = 30; // 60 second rounds
+const END_TIME = 20; // 60 second rounds
 let currentTime = 0;
 let isRunning = true;
 let lastIndex = 0;
@@ -14,61 +14,85 @@ let score = 0;
 
 
 // create the mole list
-let moles = Array(9).fill({src: images.dirt});
+let moles = Array(9).fill({isUp: false});
 moles = moles.map((mole, index) => {
-  return Object.assign({}, mole, {id: index});
+  return Object.assign({}, mole, {id: index, src: randomMoleImage()});
 });
+console.log('moles', moles);
 
-// Init the timer.
-let timerTag = riot.mount('timer')[0];
-let scoreTag = riot.mount('score')[0];
-// init the gameboard with moles
-const gameboard = riot.mount('gameboard', {
-  moles: moles
-})[0];
+// create a log for each mole
+let log = moles.reduce((acc, mole) => {
+  acc[mole.src] = Object.assign({}, {hit: 0, src: mole.src});
+  return acc;
+}, {});
+console.log('log', log);
+
+
+// Mount the tags
+const timerTag = riot.mount('timer')[0];
+const scoreTag = riot.mount('score')[0];
+const logTag = riot.mount('mole-log')[0];
+const gameboard = riot.mount('gameboard')[0];
 window.gameboard = gameboard;
 
-// Start the AI
+
+//
+// Main
+// Start the game
 let intervalID = setInterval(tick, TIMER.SECOND);
 ai();
 
+//
+// Events
 // when a mole is clicked
-gameboard.on(ACTION.CLICKED, function(item) {
-  // Ignore clicks on dirt
-  if (isDirt(item)) { return; }
+gameboard.on(ACTION.CLICKED, function(prevMole) {
+  // Ignore clicks when the mole isn't up
+  if (!prevMole.isUp) { return; }
 
-  const index = item.id;
-  console.log('gameboard.click', item);
-
-  moles[index].src = images.dirt;
-  gameboard.update({
-    moles: moles
+  const index = prevMole.id;
+  const mole = Object.assign({}, prevMole, {
+    isUp: false,
+    src: randomMoleImage()
   });
 
+  moles[index] = mole;
   score += 10;
+  if (!log[prevMole.src]) {
+    log[prevMole.src] = {hit: 0, src: prevMole.src};
+  }
+  log[prevMole.src].hit += 1;
+  console.log('gameboard.click', index, mole, score, log);
+
   scoreTag.update({
     score: score
   });
-  console.log('score', score);
+
+  let logMoles = Object.keys(log).map((key) => { return log[key]; });
+  console.log('log moles', logMoles)
+  logTag.update({
+    moles: logMoles
+  });
 });
 
 
 // Show/Hide moles!
 function ai() {
   const index = 0 | Math.random() * moles.length;
-  let nextTime = 1000;
+  let nextTime = 1000 - (score * 20);
 
   if (moles[lastIndex] ) {
-    moles[lastIndex].src = images.dirt;
+    moles[lastIndex].isUp = false;
   }
   if (moles[index]) {
-    moles[index].src = randomMoleImage();
+    moles[index].isUp = true;
+    // if the image is dirt, pick a random mole instead
+    if (moles[index].src === images.dirt) {
+      moles[index].src = randomMoleImage();
+    }
   }
 
   lastIndex = index;
-  gameboard.update({
-    moles: moles
-  });
+  renderGameboard(moles);
 
   // Call the AI again if the game is still running.
   if (isRunning) {
@@ -80,7 +104,6 @@ function ai() {
 function tick() {
   currentTime += 1; //It's been a second!
 
-  console.log('tick', currentTime);
   timerTag.update({
     seconds: currentTime
   });
@@ -92,6 +115,20 @@ function tick() {
   }
 }
 
+function renderGameboard(moles) {
+  gameboard.update({
+    moles: moles.map(setProp.bind(null, 'src', (mole) => {
+      return mole.isUp ? mole.src : images.dirt;
+    }))
+  });
+}
+
+
+// helpers
+function setProp(key, getValue, obj) {
+  obj[key] = getValue(obj, key);
+  return obj;
+}
 
 // Filters
 function isDirt(mole) {
