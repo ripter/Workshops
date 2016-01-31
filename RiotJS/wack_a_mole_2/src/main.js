@@ -11,22 +11,13 @@ let currentTime = 0;
 let isRunning = true;
 let lastIndex = 0;
 let score = 0;
-
+let log = {};
 
 // create the mole list
 let moles = Array(9).fill({isUp: false});
 moles = moles.map((mole, index) => {
   return Object.assign({}, mole, {id: index, src: randomMoleImage()});
 });
-console.log('moles', moles);
-
-// create a log for each mole
-let log = moles.reduce((acc, mole) => {
-  acc[mole.src] = Object.assign({}, {hit: 0, src: mole.src});
-  return acc;
-}, {});
-console.log('log', log);
-
 
 // Mount the tags
 const timerTag = riot.mount('timer')[0];
@@ -46,31 +37,32 @@ ai();
 // Events
 // when a mole is clicked
 gameboard.on(ACTION.CLICKED, function(prevMole) {
+  const {id, src, isUp} = prevMole;
   // Ignore clicks when the mole isn't up
-  if (!prevMole.isUp) { return; }
+  if (!isUp) { return; }
 
-  const index = prevMole.id;
+  // create an updated mole
   const mole = Object.assign({}, prevMole, {
-    isUp: false,
-    src: randomMoleImage()
+    src: randomMoleImage(),
+    isUp: false
   });
+  // global moles list
+  moles[id] = mole;
 
-  moles[index] = mole;
-  score += 10;
-  if (!log[prevMole.src]) {
-    log[prevMole.src] = {hit: 0, src: prevMole.src};
-  }
-  log[prevMole.src].hit += 1;
-  console.log('gameboard.click', index, mole, score, log);
+  // create an updated logItem
+  const logItem = Object.assign({}, {hit: 0, src: src}, log[src]);
+  logItem.hit += 1;
+  // global log object
+  log[src] = logItem;
 
+  // Update the score
+  score += 1 + (score * 1.35);
+
+  // Render all the tags with the new states
+  renderGameboard(moles);
+  renderLog(log);
   scoreTag.update({
     score: score
-  });
-
-  let logMoles = Object.keys(log).map((key) => { return log[key]; });
-  console.log('log moles', logMoles)
-  logTag.update({
-    moles: logMoles
   });
 });
 
@@ -78,7 +70,7 @@ gameboard.on(ACTION.CLICKED, function(prevMole) {
 // Show/Hide moles!
 function ai() {
   const index = 0 | Math.random() * moles.length;
-  let nextTime = 1000 - (score * 20);
+  let nextTime = 1000 - (score * 5);
 
   if (moles[lastIndex] ) {
     moles[lastIndex].isUp = false;
@@ -115,11 +107,19 @@ function tick() {
   }
 }
 
+// Render the gameboard tag
 function renderGameboard(moles) {
   gameboard.update({
     moles: moles.map(setProp.bind(null, 'src', (mole) => {
       return mole.isUp ? mole.src : images.dirt;
     }))
+  });
+}
+
+// Render the log tag
+function renderLog(log) {
+  logTag.update({
+    moles: Object.keys(log).map((key) => { return log[key]; })
   });
 }
 
