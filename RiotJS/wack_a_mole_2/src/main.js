@@ -3,14 +3,14 @@ import './gameboard.tag';
 import './timer.tag';
 import './score.tag';
 import './mole-log.tag';
-import Store from './store.js';
 import {images, randomMoleImage} from './assets.js';
-import {ACTION} from './consts.js';
+import {ACTION, TIMER} from './consts.js';
 
-// Create a new game
-var store = new Store();
-//DEBUGGING:
-window.store = store;
+const END_TIME = 30; // 60 second rounds
+let currentTime = 0;
+let isRunning = true;
+let lastIndex = 0;
+
 
 // create the mole list
 let moles = Array(9).fill({src: images.dirt});
@@ -18,6 +18,8 @@ moles = moles.map((mole, index) => {
   return Object.assign({}, mole, {id: index});
 });
 
+// Init the timer.
+let timerTag = riot.mount('timer')[0];
 // init the gameboard with moles
 const gameboard = riot.mount('gameboard', {
   moles: moles
@@ -25,7 +27,8 @@ const gameboard = riot.mount('gameboard', {
 window.gameboard = gameboard;
 
 // Start the AI
-tick();
+let intervalID = setInterval(tick, TIMER.SECOND);
+ai();
 
 // when a mole is clicked
 gameboard.on(ACTION.CLICKED, function(item) {
@@ -42,14 +45,43 @@ gameboard.on(ACTION.CLICKED, function(item) {
 });
 
 
-function tick() {
+// Show/Hide moles!
+function ai() {
   const index = 0 | Math.random() * moles.length;
+  let nextTime = 1000;
 
-  moles[index].src = randomMoleImage();
+  if (moles[lastIndex] ) {
+    moles[lastIndex].src = images.dirt;
+  }
+  if (moles[index]) {
+    moles[index].src = randomMoleImage();
+  }
 
+  lastIndex = index;
   gameboard.update({
     moles: moles
   });
+
+  // Call the AI again if the game is still running.
+  if (isRunning) {
+    setTimeout(ai, nextTime);
+  }
+}
+
+// Called every second.
+function tick() {
+  currentTime += 1; //It's been a second!
+
+  console.log('tick', currentTime);
+  timerTag.update({
+    seconds: currentTime
+  });
+
+  if (currentTime >= END_TIME) {
+    isRunning = false;
+    clearInterval(intervalID);
+    console.log('Game Over');
+  }
 }
 
 

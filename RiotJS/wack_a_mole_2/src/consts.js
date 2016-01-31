@@ -1,7 +1,8 @@
 
 export const TIMER = {
   TICK: 'TIMER.TICK',
-  START: 'TIMER.START'
+  START: 'TIMER.START',
+  SECOND: 1000
 };
 
 export const MOLE = {
