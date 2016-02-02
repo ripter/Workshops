@@ -3,6 +3,7 @@ import './gameboard.tag';
 import './timer.tag';
 import './score.tag';
 import './mole-log.tag';
+import './banner.tag';
 import {images, randomMoleImage} from './assets.js';
 import {ACTION, TIMER} from './consts.js';
 
@@ -13,6 +14,7 @@ let lastIndex = 0;
 let score = 0;
 let hitCount = 0;
 let log = {};
+let intervalID;
 
 // create the mole list
 let moles = Array(9).fill({isUp: false});
@@ -24,15 +26,20 @@ moles = moles.map((mole, index) => {
 const timerTag = riot.mount('timer')[0];
 const scoreTag = riot.mount('score')[0];
 const logTag = riot.mount('mole-log')[0];
-const gameboard = riot.mount('gameboard')[0];
-window.gameboard = gameboard;
-
+const gameboard = window.gameboard = riot.mount('gameboard')[0];
+const bannerTag = riot.mount('banner')[0];
 
 //
 // Main
+function startGame() {
+  bannerTag.update({
+    visible: false
+  });
+  intervalID = setInterval(tick, TIMER.SECOND);
+  ai();
+}
 // Start the game
-let intervalID = setInterval(tick, TIMER.SECOND);
-ai();
+startGame();
 
 //
 // Events
@@ -106,6 +113,9 @@ function tick() {
   if (currentTime >= END_TIME) {
     isRunning = false;
     clearInterval(intervalID);
+    bannerTag.update({
+      visible: true  
+    });
     console.log('Game Over');
   }
 }
@@ -137,49 +147,3 @@ function setProp(key, getValue, obj) {
 function isDirt(mole) {
   return mole.src === images.dirt;
 }
-
-// render all the tags and pass them gamestate
-// riot.mount('*', store);
-
-//
-// // <timer /> emits TIMER.TICK every second.
-// gamestate.on(TIMER.TICK, function(seconds) {
-//   var {lastIndex} = gamestate;
-//   var index = lastIndex;
-//
-//   // find a hidden mole
-//   while (index === lastIndex) {
-//     index = 0 | Math.random() * 9;
-//   }
-//
-//   // hide the last mole we showed and show a new one instead.
-//   gamestate.trigger(ACTION.MOLE.HIDE, [lastIndex], true);
-//   gamestate.trigger(ACTION.MOLE.SHOW, [index], true);
-//   gamestate.update({
-//     lastIndex: index
-//   });
-// });
-//
-// // when a mole has been 'hit' by the player
-// // this is different than ACTION.CLICKED, HIT only emits when the mole was clicked and showing.
-// gamestate.on(MOLE.HIT, function(mole) {
-//   const src = mole.src;
-//   let {score, moleLog} = gamestate;
-//   let log = moleLog[src];
-//
-//   if (!log) { log = 1; }
-//   else { log += 1; }
-//
-//   moleLog[src] = log;
-//
-//   gamestate.update({
-//     score: score + 10,
-//     moleLog: moleLog
-//   });
-// });
-//
-//
-//
-// //
-// // Auto START
-// gamestate.trigger('TIMER.START');
