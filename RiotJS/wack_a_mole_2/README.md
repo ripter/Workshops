@@ -1,4 +1,4 @@
-# RiotJS Wack-A-Mole [Event Bus]
+# RiotJS Wack-A-Mole [tag.update]
 
 ## How to Run
 
@@ -8,5 +8,12 @@
 
 This is a Wack-A-Mole game. The 'mole' is randomly selected from (`src/assets.js`).
 
-The Architecture design is that Tags (`src/*.tag`) talk to a Store (`src/store.js`) using an event bus.
-The business logic listens to the event bus (`src/store.js`) and updates the store with the new state.
+## The Architecture design:
+
+Tags (`src/*.tag`) are used as templates with styles. They have no logic. Tags are updated by calling `tag.update({})`.
+
+Game State is in (`src/main.js`). Global variables are shared across functions.
+Game logic is also in (`src/main.js`).
+
+
+## Notes

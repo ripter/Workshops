@@ -4,6 +4,7 @@ import './timer.tag';
 import './score.tag';
 import './mole-log.tag';
 import './banner.tag';
+import './button.tag';
 import {images, randomMoleImage} from './assets.js';
 import {ACTION, TIMER} from './consts.js';
 
@@ -15,12 +16,8 @@ let score = 0;
 let hitCount = 0;
 let log = {};
 let intervalID;
+let moles = createMoles();
 
-// create the mole list
-let moles = Array(9).fill({isUp: false});
-moles = moles.map((mole, index) => {
-  return Object.assign({}, mole, {id: index, src: randomMoleImage()});
-});
 
 // Mount the tags
 const timerTag = riot.mount('timer')[0];
@@ -30,61 +27,76 @@ const gameboard = window.gameboard = riot.mount('gameboard')[0];
 const bannerTag = riot.mount('banner')[0];
 
 //
-// Main
-function startGame() {
+// Start the game
+actionStartGame();
+
+
+
+// ACTION: user clicks a mole
+function actionClickMole(clickedMole) {
+  const {id, src, isUp} = clickedMole.item;
+  // Ignore clicks when the mole isn't up
+  if (!isUp) { return; }
+
+  // Update the mole and the moles list
+  const mole = Object.assign({}, clickedMole, {
+    src: randomMoleImage(),
+    isUp: false
+  });
+  // global moles object
+  moles[id] = mole;
+
+  // Update the log list
+  const logItem = Object.assign({}, {hit: 0, src: src}, log[src]);
+  logItem.hit += 1;
+  // global log object
+  log[src] = logItem;
+
+  // global total hit count
+  hitCount += 1;
+  // global score
+  score += 1 + (hitCount * 1.5);
+
+  // Render all the tags with the new states
+  renderGameboard();
+  renderLog();
+  scoreTag.update({
+    score: score
+  });
+};
+
+function actionStartGame() {
+  currentTime = 0;
+  isRunning = true;
+  lastIndex = 0;
+  score = 0;
+  hitCount = 0;
+  log = {};
+  intervalID;
+  moles = createMoles();
+
+  renderGameboard();
   bannerTag.update({
     visible: false
   });
   intervalID = setInterval(tick, TIMER.SECOND);
   ai();
 }
-// Start the game
-startGame();
-
-//
-// Events
-// when a mole is clicked
-gameboard.on(ACTION.CLICKED, function(prevMole) {
-  const {id, src, isUp} = prevMole;
-  // Ignore clicks when the mole isn't up
-  if (!isUp) { return; }
-
-  // create an updated mole
-  const mole = Object.assign({}, prevMole, {
-    src: randomMoleImage(),
-    isUp: false
-  });
-  // global moles list
-  moles[id] = mole;
-
-  // create an updated logItem
-  const logItem = Object.assign({}, {hit: 0, src: src}, log[src]);
-  logItem.hit += 1;
-  // global log object
-  log[src] = logItem;
-
-  hitCount += 1;
-  // Update the score
-  score += 1 + (hitCount * 1.5);
-
-  // Render all the tags with the new states
-  renderGameboard(moles);
-  renderLog(log);
-  scoreTag.update({
-    score: score
-  });
-});
 
 
 // Show/Hide moles!
 function ai() {
+  // pick a square at random
   const index = 0 | Math.random() * moles.length;
   // speed up a little with every hit
   let nextTime = 1000 - (hitCount * 55);
 
+  // have the old mole pop down.
   if (moles[lastIndex] ) {
     moles[lastIndex].isUp = false;
   }
+
+  // flip a mole
   if (moles[index]) {
     moles[index].isUp = true;
     // if the image is dirt, pick a random mole instead
@@ -114,14 +126,30 @@ function tick() {
     isRunning = false;
     clearInterval(intervalID);
     bannerTag.update({
-      visible: true  
+      visible: true,
+      message: 'Game Over',
+      buttonText: 'Restart Game',
+      onClick: actionStartGame
     });
     console.log('Game Over');
   }
 }
 
+// create the mole list
+function createMoles() {
+  // Create an array of 9 moles.
+  return Array(9).fill({}).map((index) => {
+    return {
+      id: index,
+      isUp: false,
+      src: randomMoleImage(),
+      onClick: actionClickMole
+    };
+  });
+}
+
 // Render the gameboard tag
-function renderGameboard(moles) {
+function renderGameboard() {
   gameboard.update({
     moles: moles.map(setProp.bind(null, 'src', (mole) => {
       return mole.isUp ? mole.src : images.dirt;
@@ -130,7 +158,7 @@ function renderGameboard(moles) {
 }
 
 // Render the log tag
-function renderLog(log) {
+function renderLog() {
   logTag.update({
     moles: Object.keys(log).map((key) => { return log[key]; })
   });

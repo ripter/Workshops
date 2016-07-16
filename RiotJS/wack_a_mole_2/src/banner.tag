@@ -1,23 +1,20 @@
-<banner>
-  <div if={visible}>
-    <p>
-      {message}
-    </p>
-  </div>
+<banner if={visible}>
+  <p>
+    {message}
+  </p>
+  <button onClick={onClick}>{buttonText}</button>
 
-  <script type="babel">
-    this.visible = true;
-    this.message = 'Game Over';
-  </script>
   <style>
-    banner > div {
-      color: #0E3E14;
-      background-color: #2ECC40;
-      font-size: 20pt;
-      height: 80px;
+    banner {
+      position: fixed;
+      top: 50%;
+      width: 100%;
+      background-color: #66cc33;
+      box-shadow: 0px 3px #347e0f;
     }
 
-    banner > div > p {
+    banner > p {
+      font-size: 20pt;
       text-align: center;
       line-height: 3;
     }
