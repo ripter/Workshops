@@ -69,3 +69,38 @@ server:
 Now we can run `make server` to start the server!
 
 We created a single rule called `server` that make can run. This rule will run the bash command `./node_modules/.bin/http-server`. We get the nice short syntax of the global, without the downsides of makeing it global.
+
+Now git save all your hard work!
+```
+$ git commit -a -m "run with make server"
+$ git push
+```
+
+
+
+## Javascript
+
+Now that we have a webpage to host our app, we need to get it loading some code. The static files are being servered out og `public/` so if we want to include some Javascript with `<script>` it will have to be in somewhere in `public/`.
+
+```
+$ mkdir public/js
+$ touch public/js/build.js
+```
+
+I know, you are wondering why I called it `build.js`. It's because we will add weback later, and we won't have to rename this file later if we just call it build from the first place.
+
+We can start with just a simple hello world.
+
+```
+const world = 'world';
+console.log(`hello ${world}`);
+```
+
+Now we need to tell `index.html` to load our Javascript. Just add this to your page.
+```
+<script src="js/build.js"></script>
+```
+
+Switch back to the browser and refresh. You should now see `hello world` in the console!
+
+Let's git save this! One of the nice things about git saves is that we can always restore to a known good point. We can experiment as much as we want, and we always have a solid foundation.
