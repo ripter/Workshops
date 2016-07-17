@@ -84,10 +84,10 @@ Now that we have a webpage to host our app, we need to get it loading some code.
 
 ```
 $ mkdir public/js
-$ touch public/js/build.js
+$ touch public/js/bundle.js
 ```
 
-I know, you are wondering why I called it `build.js`. It's because we will add weback later, and we won't have to rename this file later if we just call it build from the first place.
+I know, you are wondering why I called it `bundle.js`. It's because we will add weback later, and we won't have to rename this file later if we just call it build from the first place.
 
 We can start with just a simple hello world.
 
@@ -98,7 +98,7 @@ console.log(`hello ${world}`);
 
 Now we need to tell `index.html` to load our Javascript. Just add this to your page.
 ```
-<script src="js/build.js"></script>
+<script src="js/bundle.js"></script>
 ```
 
 Switch back to the browser and refresh. You should now see `hello world` in the console!
@@ -109,6 +109,7 @@ Let's git save this! One of the nice things about git saves is that we can alway
  git commit -a -m "console.log(hello world)"
  ```
 
+## Bootstrap
 
 Let's do some cleanup. If you used the bootstrap basic template like I did, you probably have three errors in the console. The basic template assumes you have the style downloaded and are not using the cdn. We could download the files but I find that the cdn is fine most of the time. If you are in a situation where you don't always have internet access. Just download the files and put them in `public/css` and `public/js`.
 
@@ -130,4 +131,52 @@ This was copied from http://getbootstrap.com/getting-started/#download in the CD
 
 If you are reading the getbootstrap.com website, you will see lots of ways to install bootstrap. Including npm and bower. I find that for most projects, anything more than the minified files is unnecessary. We can utilize bootstrap without having to extend it or even going into their sass/less. Some web apps will need to do all those things, but I find that most do not. So we are going to focus on the common case.
 
- 
+
+## Webpack
+
+We don't want to edit `public/js/build.js` forever. We want a nicer place to store and work with our javascript. We want an entry point that webpack can turn into a build file.
+
+```
+$ mkdir src
+$ mv public/js/bundle.js src/index.js
+$ touch webpack.config.js
+$ npm install --save-dev webpack
+```
+
+We want to use [Webpack](http://webpack.github.io/docs/tutorials/getting-started/) to turn `src/index.js` into `public/js/build.js`. When it does, it will run transformations like Babel and allow us to include libraries like React and Redux.
+
+Let's take a moment to add another make rule to run webpack. In `Makefile`
+
+```
+build:
+	./node_modules/.bin/webpack
+```
+
+Next we need a config file for webpack.
+
+In `webpack.config.js`
+```
+module.exports = {
+    entry: "./src/index.js",
+    output: {
+        path: __dirname + '/public/js',
+        filename: "bundle.js"
+    },
+    module: {
+        loaders: [
+            { test: /\.css$/, loader: "style!css" }
+        ]
+    }
+};
+```
+
+Then you can build with
+```
+$ make build
+```
+
+
+Git save all our hard work.
+```
+$ git commit -a -m "added webpack"
+```
