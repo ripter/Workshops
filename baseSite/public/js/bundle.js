@@ -44,9 +44,13 @@
 /* 0 */
 /***/ function(module, exports) {
 
-	const world = 'world';
-	console.log(`hellp ${world}`);
+	"use strict";
 
+	var square = function square(n) {
+	  return n * n;
+	};
+
+	console.log("square 4 = " + square(4));
 
 /***/ }
 /******/ ]);

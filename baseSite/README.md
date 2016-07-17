@@ -178,5 +178,47 @@ $ make build
 
 Git save all our hard work.
 ```
-$ git commit -a -m "added webpack"
+$ git add --all
+$ git commit -m "added webpack"
 ```
+
+
+## Babel
+
+Now that we have webpack to build our application. We can use it to babel transform our code.
+Babel is a JavaScript compiler. It allows us to write in the latest JavaScript, but have it run on all the existing browsers. One of the problems is that a lot of users are still running old browsers. These old browsers can not run modern JavaScript. So we use babel to transform modern JavaScript into cross browser safe javascript.
+
+Install [babel](https://babeljs.io/docs/setup/#installation) for webpack
+
+```
+$ npm install --save-dev babel-loader babel-core babel-preset-es2015
+```
+
+Now that it's installed, we need to tell webpack to start using it. We do this with a [loader](http://webpack.github.io/docs/using-loaders.html). When a file is read by webpack, it loops over all the loaders, checking the filename to test, if it matches, it passes the file to the loader. In our case babel will compile the file. By default babel won't do anything. We have to specify what transformations we want. A good starting point is the ES2015 presets. Because we are using Webpack, we have to pass in the babel config into the query property of the loader object. You might have seen people use files like `.babelrc`. That is a config used by [Babel CLI](https://babeljs.io/docs/usage/cli/). We could use that, but webpack would not read from that config.
+
+In `webpack.config.js`
+```
+module: {
+  loaders: [
+    { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: {
+      presets: ['es2015']
+    }}
+  ]
+}
+```
+
+In order to test that everything is working. Let's put some ES6 into our file and see if Babel correctly transforms it.
+
+In `src/index.js`
+```
+const square = n => n * n;
+
+console.log(`square 4 = ${square(4)}`);
+```
+
+Build an check it out in the browser.
+```
+$ make Build
+```
+
+If everything worked right, you will see `square 4 = 16` on the console. If you use Chrome, you should double check that `public/js/bundle.js` has converted our es6 `square = n => n * n` into es5 `function square(n) {return n * n;};` If it didn't, you'll need to fix it before continuing on.
