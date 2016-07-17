@@ -1,0 +1,71 @@
+# Base Web Project.
+### By Chris Richards
+
+## Development System
+* Webpack
+* Babel
+* Make
+* Eslint
+* Mocha
+
+## Libraries
+* React
+* Redux
+* Bootstrap
+
+
+# Initial Setup
+The first thing we need is a simple html hello world page. All web apps are served on the web. The goal is to create a base web project. Since I like to start with a nice modern base, we will use React with Redux as our main front end Libraries.
+
+We need an html page to serve, and a server to serve it. Since we are creating just a front end base, we can use a really simple server.
+I'm a big fan of [http-server](https://www.npmjs.com/package/http-server) because it's so simple. It's an npm package, so we need to setup npm first.
+
+```
+npm init
+```
+
+Fill out the form for npm. It doesn't really matter what you put in there unless you want to publish on npm.
+Next we will install http-server. The website says to install it globally, but I think that's a bad idea. The reason to install it globally is to not have to type or remember to type something like `./node_modules/.bin/http-server` every time you want to start the server. It's a lot easer to type `http-server` instead. Installing globally allows this. But it has some side effects, like all globals in programming. One, you are assuming that everyone that wants to run your web app has http-server globally installed. It also assumes that they know what http-server is and to use it. These can be helped with good documentation. It doesn't remove the issue of remembering all the proper flags to pass. In the case of http-server we don't need to pass anything, but as we extend our toolset, we will.
+
+```
+npm install --save-dev http-server
+```
+
+We save it in our package.json file. That way it can be installed with a simple `npm install`.
+
+Now we need something to serve. By default the server will serve out of the `public/` folder. So let's put a basic html page for it and start the server. We start the server last because it will run and output the server logs as it runs.
+
+```
+$ mkdir public
+$ touch public/index.html
+$ ./node_modules/.bin/http-server
+```
+
+I since we will be using [Bootstrap](http://getbootstrap.com/getting-started/#download) I copy the basic template and paste it into `public/index.html`.
+
+You have to leave the server running, so you'll need to open a new terminal tab. If you `ctl-c` the server, then it will kill the program.
+
+```
+$ open http://localhost:8080/
+```
+
+Yay! We now have a working server. Now is a great time to clean up a little. Using a tool called [GNU Make](http://www.gnu.org/software/make/manual/make.html) we will make some easy to use short cuts.
+
+Instead of typing `./node_modules/.bin/http-server` we will type `make server`. This approach has several advantages. It means we can keep our tools local instead of global. We can have it automataclly installed with `npm install` so it doesn't matter if the user already has it installed or not.
+
+```
+$ touch Makefile
+```
+
+The documentation for make looks scary, but it's actually a basic concept. The `make` command takes a number of rules as arguments and runs them. If you are fermilur with bash alas, this is smilier. A rule runs a series of bash commands. So anything you can do on the command line, you can automate with Make.
+
+```
+.PHONY: server
+
+server:
+	./node_modules/.bin/http-server
+```
+
+Now we can run `make server` to start the server!
+
+We created a single rule called `server` that make can run. This rule will run the bash command `./node_modules/.bin/http-server`. We get the nice short syntax of the global, without the downsides of makeing it global.

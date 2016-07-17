@@ -1,0 +1,14 @@
+{
+  "name": "base-site",
+  "version": "1.0.0",
+  "description": "base front end site",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "Chris Richards",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  }
+}
