@@ -104,3 +104,30 @@ Now we need to tell `index.html` to load our Javascript. Just add this to your p
 Switch back to the browser and refresh. You should now see `hello world` in the console!
 
 Let's git save this! One of the nice things about git saves is that we can always restore to a known good point. We can experiment as much as we want, and we always have a solid foundation.
+
+```
+ git commit -a -m "console.log(hello world)"
+ ```
+
+
+Let's do some cleanup. If you used the bootstrap basic template like I did, you probably have three errors in the console. The basic template assumes you have the style downloaded and are not using the cdn. We could download the files but I find that the cdn is fine most of the time. If you are in a situation where you don't always have internet access. Just download the files and put them in `public/css` and `public/js`.
+
+In `public/index.html` take out the old bootstrap references and replace them with these:
+
+```
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+```
+
+This was copied from http://getbootstrap.com/getting-started/#download in the CDN section.
+
+
+If you are reading the getbootstrap.com website, you will see lots of ways to install bootstrap. Including npm and bower. I find that for most projects, anything more than the minified files is unnecessary. We can utilize bootstrap without having to extend it or even going into their sass/less. Some web apps will need to do all those things, but I find that most do not. So we are going to focus on the common case.
+
+ 
