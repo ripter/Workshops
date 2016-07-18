@@ -19,7 +19,6 @@ const Toggle = React.createClass({
 
   onClick(evt) {
     const {action} = this.props;
-    console.log('target', evt.target);
 
     action();
   },

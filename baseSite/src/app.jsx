@@ -20,13 +20,12 @@ function renderApp(elm) {
 }
 
 function togglePuppy() {
-  console.log('togglePuppy');
   if (pageState.puppy === 'IN') {
     pageState.puppy = 'OUT';
   }
   else {
     pageState.puppy = 'IN';
   }
-  
+
   renderApp(elApp);
 }

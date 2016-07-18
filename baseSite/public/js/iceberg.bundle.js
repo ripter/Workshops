@@ -46,22 +46,17 @@
 
 	'use strict';
 
-	// jQuery loaded by the surface bundle
-	var $ = window.api.$;
+	// The fif gives us an API that we can use to refrence things on the parent page.
+	var $ = window.API.$;
 	var app = __webpack_require__(1);
 
 	// Get the element on the surface and start the React app.
 	var elApp = $('#app');
 	app(elApp[0]);
 
-	console.log('iceburg jquery version:', $().jquery);
-
-	// Test for the Object.key hack.
-	var testObj = new Array();
-	testObj[0] = 'rose';
-	testObj.type = 'puppy';
-	var keys = Object.keys(testObj);
-	console.log('keys', keys);
+	// The page jquery is 1.11.3
+	// We are using the jquery from surface.js version 3.1.0
+	console.log('iceberg jquery version:', $().jquery);
 
 /***/ },
 /* 1 */
@@ -88,7 +83,6 @@
 	}
 
 	function togglePuppy() {
-	  console.log('togglePuppy');
 	  if (pageState.puppy === 'IN') {
 	    pageState.puppy = 'OUT';
 	  } else {
@@ -21168,7 +21162,6 @@
 	  onClick: function onClick(evt) {
 	    var action = this.props.action;
 
-	    console.log('target', evt.target);
 
 	    action();
 	  }

@@ -50,24 +50,6 @@
 	var $ = __webpack_require__(174);
 	var fif = __webpack_require__(175);
 
-	// Prove that we don't brake iceburg
-	//Break Object.keys
-	Object.keys = function (obj) {
-	  var result = [];
-	  for (var key in obj) {
-	    console.log('key:', key);
-	    result.push(key);
-	  }
-	  return result;
-	};
-
-	console.group('broken Object.keys');
-	var obj = new Array();
-	obj[0] = 'Rose';
-	obj.type = 'puppy';
-	Object.keys(obj);
-	console.groupEnd();
-
 	// Load the rest of the code.
 	fif('js/iceberg.bundle.js', {
 	  $: $
@@ -10167,7 +10149,6 @@
 	 * Pass in an api that will be placed on window.
 	 */
 	module.exports = function (url, api) {
-	  var where = document.getElementsByTagName('script')[0];
 	  var iframe = document.createElement('iframe');
 	  var key, doc;
 
@@ -10175,14 +10156,11 @@
 	  (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0';
 	  iframe.src = 'javascript:false';
 
-	  where.parentNode.insertBefore(iframe, where);
+	  // Attach the iframe to the DOM.
+	  document.body.appendChild(iframe);
 
 	  // surface the api inside the iframe.
-	  iframe.contentWindow.api = api;
-	  // for (key in api) {
-	  //   if (!api.hasOwnProperty(key)) { continue; }
-	  //   iframe.contentWindow[key] = api[key];
-	  // }
+	  iframe.contentWindow.API = api;
 
 	  // Now load the script at url.
 	  doc = iframe.contentWindow.document;

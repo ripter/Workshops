@@ -5,7 +5,6 @@
  * Pass in an api that will be placed on window.
  */
 module.exports = function(url, api) {
-  var where = document.getElementsByTagName('script')[0];
   var iframe = document.createElement('iframe');
   var key, doc;
 
@@ -13,14 +12,11 @@ module.exports = function(url, api) {
   (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0';
   iframe.src = 'javascript:false';
 
-  where.parentNode.insertBefore(iframe, where);
+  // Attach the iframe to the DOM.
+  document.body.appendChild(iframe);
 
   // surface the api inside the iframe.
-  iframe.contentWindow.api = api;
-  // for (key in api) {
-  //   if (!api.hasOwnProperty(key)) { continue; }
-  //   iframe.contentWindow[key] = api[key];
-  // }
+  iframe.contentWindow.API = api;
 
   // Now load the script at url.
   doc = iframe.contentWindow.document;
