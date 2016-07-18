@@ -1,9 +1,13 @@
-const $ = require('jquery');
 
-module.exports = function(url, cb) {
+/**
+ * Friendly iFrame
+ * Load a url inside of a same orgin iframe.
+ * Pass in an api that will be placed on window.
+ */
+module.exports = function(url, api) {
   var where = document.getElementsByTagName('script')[0];
   var iframe = document.createElement('iframe');
-  var doc;
+  var key, doc;
 
   // Documented by Stoyan Stefanov: https://www.facebook.com/note.php?note_id=10151176218703920
   (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0';
@@ -12,7 +16,10 @@ module.exports = function(url, cb) {
   where.parentNode.insertBefore(iframe, where);
 
   // surface api.
-  iframe.contentWindow.$ = $;
+  for (key in api) {
+    if (!api.hasOwnProperty(key)) { continue; }
+    iframe.contentWindow[key] = api[key];
+  }
 
   // Now load the script at url.
   doc = iframe.contentWindow.document;

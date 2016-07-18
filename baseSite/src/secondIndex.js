@@ -2,9 +2,16 @@
 const $ = window.$;
 const app = require('./app.jsx');
 
-console.log('secondIndex loaded!');
-console.log('Woot we have the iceburg');
-
-// jquery is
+// Get the element on the surface and start the React app.
 const elApp = $('#app');
 app(elApp[0])
+
+
+
+
+// Test for the Object.key hack.
+const testObj = new Array();
+testObj[0] = 'rose';
+testObj.type = 'puppy';
+const keys = Object.keys(testObj);
+console.log('keys', keys);

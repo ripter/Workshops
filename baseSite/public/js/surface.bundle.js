@@ -50,9 +50,20 @@
 	var $ = __webpack_require__(173);
 	var fif = __webpack_require__(174);
 
+	// Prove that we don't brake iceburg
+	//Break Object.keys
+	Object.keys = function (obj) {
+	  var result = [];
+	  for (var key in obj) {
+	    console.log('key:', key);
+	    result.push(key);
+	  }
+	  return result;
+	};
+
 	// Load the rest of the code.
-	fif('js/iceburg.bundle.js', function () {
-	  debugger;
+	fif('js/iceburg.bundle.js', {
+	  $: $
 	});
 
 /***/ },
@@ -10139,16 +10150,19 @@
 /***/ },
 
 /***/ 174:
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
-	var $ = __webpack_require__(173);
-
-	module.exports = function (url, cb) {
+	/**
+	 * Friendly iFrame
+	 * Load a url inside of a same orgin iframe.
+	 * Pass in an api that will be placed on window.
+	 */
+	module.exports = function (url, api) {
 	  var where = document.getElementsByTagName('script')[0];
 	  var iframe = document.createElement('iframe');
-	  var doc;
+	  var key, doc;
 
 	  // Documented by Stoyan Stefanov: https://www.facebook.com/note.php?note_id=10151176218703920
 	  (iframe.frameElement || iframe).style.cssText = 'width: 0; height: 0; border: 0';
@@ -10157,7 +10171,12 @@
 	  where.parentNode.insertBefore(iframe, where);
 
 	  // surface api.
-	  iframe.contentWindow.$ = $;
+	  for (key in api) {
+	    if (!api.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    iframe.contentWindow[key] = api[key];
+	  }
 
 	  // Now load the script at url.
 	  doc = iframe.contentWindow.document;
