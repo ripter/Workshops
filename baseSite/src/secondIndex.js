@@ -1,5 +1,6 @@
 // jQuery loaded by the surface bundle
-const $ = window.$;
+const $ = window.api.$;
+const doc = window.api.document;
 const app = require('./app.jsx');
 
 // Get the element on the surface and start the React app.

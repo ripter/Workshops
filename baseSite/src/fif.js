@@ -15,11 +15,12 @@ module.exports = function(url, api) {
 
   where.parentNode.insertBefore(iframe, where);
 
-  // surface api.
-  for (key in api) {
-    if (!api.hasOwnProperty(key)) { continue; }
-    iframe.contentWindow[key] = api[key];
-  }
+  // surface the api inside the iframe.
+  iframe.contentWindow.api = api;
+  // for (key in api) {
+  //   if (!api.hasOwnProperty(key)) { continue; }
+  //   iframe.contentWindow[key] = api[key];
+  // }
 
   // Now load the script at url.
   doc = iframe.contentWindow.document;

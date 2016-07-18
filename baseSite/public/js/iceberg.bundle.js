@@ -21143,6 +21143,7 @@
 	  render: function render() {
 	    var status = this.props.status;
 
+	    var styleLabel = status === 'IN' ? 'success' : 'danger';
 
 	    return React.createElement(
 	      'div',
@@ -21150,12 +21151,16 @@
 	      React.createElement(
 	        'h1',
 	        null,
-	        'The Puppy is: ',
-	        status
+	        'The Puppy is:',
+	        React.createElement(
+	          'span',
+	          { className: 'label label-' + styleLabel },
+	          status
+	        )
 	      ),
 	      React.createElement(
 	        'button',
-	        { onClick: this.onClick },
+	        { onClick: this.onClick, type: 'button', className: 'btn btn-primary' },
 	        'Toggle'
 	      )
 	    );

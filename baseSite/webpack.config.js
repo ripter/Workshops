@@ -1,7 +1,7 @@
 module.exports = {
   entry: {
     surface: './src/index.js',
-    iceburg: './src/secondIndex.js',
+    iceberg: './src/secondIndex.js',
   },
   output: {
     path: __dirname + '/public/js',

@@ -21,6 +21,6 @@ Object.keys(obj);
 console.groupEnd();
 
 // Load the rest of the code.
-fif('js/iceburg.bundle.js', {
+fif('js/iceberg.bundle.js', {
   $: $
 });
