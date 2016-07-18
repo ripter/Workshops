@@ -10141,14 +10141,13 @@
 /***/ 175:
 /***/ function(module, exports) {
 
-	'use strict';
-
 	/**
 	 * Friendly iFrame
-	 * Load a url inside of a same orgin iframe.
-	 * Pass in an api that will be placed on window.
+	 * @param {String} url - url of a JS file to run inside the iframe.
+	 * @param {Object} api - The JS inside the iframe will get this as window.API
+	 * @return {Document} - The iframe's document
 	 */
-	module.exports = function (url, api) {
+	module.exports = function(url, api) {
 	  var iframe = document.createElement('iframe');
 	  var key, doc;
 
@@ -10164,11 +10163,15 @@
 
 	  // Now load the script at url.
 	  doc = iframe.contentWindow.document;
-	  doc.open().write('<body onload="\n    var js = document.createElement(\'script\');\n    js.src = \'' + url + '\';\n    document.body.appendChild(js);">');
+	  doc.open().write('<body onload="'+
+	    'var js = document.createElement(\'script\');'+
+	    'js.src = \''+ url + '\';'+
+	    'document.body.appendChild(js);">');
 	  doc.close();
 
 	  return doc;
 	};
+
 
 /***/ }
 
