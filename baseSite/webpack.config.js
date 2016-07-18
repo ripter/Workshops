@@ -1,8 +1,11 @@
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    surface: './src/index.js',
+    iceburg: './src/secondIndex.js',
+  },
   output: {
     path: __dirname + '/public/js',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
   module: {
     loaders: [
