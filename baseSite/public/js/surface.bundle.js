@@ -47,8 +47,8 @@
 
 	'use strict';
 
-	var $ = __webpack_require__(173);
-	var fif = __webpack_require__(174);
+	var $ = __webpack_require__(174);
+	var fif = __webpack_require__(175);
 
 	// Prove that we don't brake iceburg
 	//Break Object.keys
@@ -61,6 +61,13 @@
 	  return result;
 	};
 
+	console.group('broken Object.keys');
+	var obj = new Array();
+	obj[0] = 'Rose';
+	obj.type = 'puppy';
+	Object.keys(obj);
+	console.groupEnd();
+
 	// Load the rest of the code.
 	fif('js/iceburg.bundle.js', {
 	  $: $
@@ -68,7 +75,7 @@
 
 /***/ },
 
-/***/ 173:
+/***/ 174:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*eslint-disable no-unused-vars*/
@@ -10149,7 +10156,7 @@
 
 /***/ },
 
-/***/ 174:
+/***/ 175:
 /***/ function(module, exports) {
 
 	'use strict';

@@ -13,6 +13,13 @@ Object.keys = function(obj) {
   return result;
 }
 
+console.group('broken Object.keys');
+var obj = new Array();
+obj[0] = 'Rose';
+obj.type = 'puppy';
+Object.keys(obj);
+console.groupEnd();
+
 // Load the rest of the code.
 fif('js/iceburg.bundle.js', {
   $: $

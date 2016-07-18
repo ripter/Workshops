@@ -71,14 +71,32 @@
 
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(34);
+	var Toggle = __webpack_require__(173);
 
-	module.exports = function (elem) {
-	  ReactDOM.render(React.createElement(
-	    'h1',
-	    null,
-	    'Hello, React!'
-	  ), elem);
+	var elApp = void 0;
+	var pageState = {
+	  puppy: 'IN'
 	};
+
+	module.exports = function (elm) {
+	  elApp = elm;
+	  renderApp(elApp);
+	};
+
+	function renderApp(elm) {
+	  ReactDOM.render(React.createElement(Toggle, { status: pageState.puppy, action: togglePuppy }), elm);
+	}
+
+	function togglePuppy() {
+	  console.log('togglePuppy');
+	  if (pageState.puppy === 'IN') {
+	    pageState.puppy = 'OUT';
+	  } else {
+	    pageState.puppy = 'IN';
+	  }
+
+	  renderApp(elApp);
+	}
 
 /***/ },
 /* 2 */
@@ -21111,6 +21129,46 @@
 	var ReactMount = __webpack_require__(165);
 
 	module.exports = ReactMount.renderSubtreeIntoContainer;
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(2);
+
+	var Toggle = React.createClass({
+	  displayName: 'Toggle',
+	  render: function render() {
+	    var status = this.props.status;
+
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        null,
+	        'The Puppy is: ',
+	        status
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.onClick },
+	        'Toggle'
+	      )
+	    );
+	  },
+	  onClick: function onClick(evt) {
+	    var action = this.props.action;
+
+	    console.log('target', evt.target);
+
+	    action();
+	  }
+	});
+	module.exports = Toggle;
 
 /***/ }
 /******/ ]);

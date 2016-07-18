@@ -1,9 +1,32 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Toggle = require('./toggle.jsx');
 
-module.exports = function(elem) {
+let elApp;
+let pageState = {
+  puppy: 'IN'
+};
+
+module.exports = function(elm) {
+  elApp = elm;
+  renderApp(elApp);
+}
+
+function renderApp(elm) {
   ReactDOM.render(
-    <h1>Hello, React!</h1>,
-    elem
+    <Toggle status={pageState.puppy} action={togglePuppy}></Toggle>,
+    elm
   );
+}
+
+function togglePuppy() {
+  console.log('togglePuppy');
+  if (pageState.puppy === 'IN') {
+    pageState.puppy = 'OUT';
+  }
+  else {
+    pageState.puppy = 'IN';
+  }
+  
+  renderApp(elApp);
 }
