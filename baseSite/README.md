@@ -279,3 +279,65 @@ Build and check it out!
 ```
 $ make build
 ```
+
+The webpage should now say Hello, React!
+
+This is a good time to git save.
+
+```
+$ git add --all
+$ git commit -m "react renders"
+```
+
+### Note:
+If you are having issues remembering to run `make build` after changes. You can use a tool to auto run it. I like `watch` (installed with `brew install watch`). Watch will run any bash command every 2 seconds. You can start the auto build with:
+```
+$ watch make build
+```
+
+Webpack also provides watching tools and there are a few dozen popular tools out there for this task. Use whatever works best for you. I personally like watch because it can run any bash command. So it works nicely with everything in my toolchain with no setup nessary.
+
+
+### Reactor Time!
+If you haven't noticed, we have a pattern. Get it working, Git Save, Refactor/Cleanup, Git Save again. Once we add tests we will have another step in this pattern. A beginner mistake is to skip the refactor step. This is just as important as the get it working step. We need to make sure we have a clean base to continue working. Leaving out the refactor step will cause your application to rapidly build technical debt. If we include refactoring into our normal coding style we can handle technical debt before be grows out of control, and it always gives us time to cleanup our code to something we can be proud to share with others.
+
+So what do we need to refactor? That question can often be harder than the refactoring itself. It's easy to get into an over-engineeded refactor loop. We've fall fallen into it, and we will again. It's natural. The key is to detect it early.
+The part to refactor here is that we've created a potentially confusing situation. We are using JSX inside of a .js file. Why is this confusing? because JSX is not valid JavaScript. Our compiler babel can read JavaScript and JSX, which is why our current setup works. But a developer looking at the project could be confused (including ourselves when you come back to a project weeks later.) The solution is simple. JSX files should end with a .jsx extetion, and JavaScript should end in .js.
+
+Let's create our jsx file. `src/app.jsx`
+```
+$ mv src/index.js src/app.jsx
+$ touch src/index.js
+```
+
+We just need to make our jsx file have a jsx extension. So we rename `src/index.js` to `src/app.jsx`. This file is our root application. All other components we load will be children. Next we need to tell our entry point `src/index.js` to use the application. Thanks to the module system webpack, this is easy.
+
+First we have to tell webpack which loader should handle a `.jsx` file.
+In `webpack.config.js`, Update the Babel loader to this:
+```
+{ test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {
+	presets: ['es2015', 'react']
+	}}
+```
+
+All we did was ad `x?` to the babel test. In regex `?` means match anything that has `x` or doesn't have `x`. So it will match all `*.js` and `*.jsx` files.
+Now that webpack knows how to handle the jsx files. We can just require it in!
+
+Replace `src/index.js`
+```
+const app = require('./app.jsx');
+```
+
+Now
+```
+$ make build
+```
+
+And everything should still work! Now as you build react components, you can give them `.jsx` extensions.
+
+Git and Save!
+
+```
+$ git add --all
+$ git commit -m "webpack supports .jsx files"
+```
