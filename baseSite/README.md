@@ -222,3 +222,60 @@ $ make Build
 ```
 
 If everything worked right, you will see `square 4 = 16` on the console. If you use Chrome, you should double check that `public/js/bundle.js` has converted our es6 `square = n => n * n` into es5 `function square(n) {return n * n;};` If it didn't, you'll need to fix it before continuing on.
+
+
+Git Save!
+```
+$ git add --all
+$ git commit -m "using babel"
+```
+
+
+## React
+
+Now that we have our module system (webpack) and our compiler (Babel), we can add our libraries to the project. Our core library is React. As a front end application we want to build and use components. This allows us to build up our application from shareable, re-usable, components.
+
+```
+$ install --save-dev react react-dom babel-preset-react
+```
+
+Update `webpack.config.js`
+```
+{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: {
+  presets: ['es2015', 'react']
+  }}
+```
+
+Then we need to use React in our app.
+`src/index.js`
+
+```
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+ReactDOM.render(
+  <h1>Hello, React!</h1>,
+  document.getElementById('app')
+);
+```
+
+You can `make build` it, then open it in the browser (with console open) to see the result, a nice error message that looks like `Uncaught Invariant Violation: _registerComponent(...): Target container is not a DOM element.`
+
+The reason we are getting that error is because we haven't given React a valid DOM element yet. [`ReactDOM.render`](https://facebook.github.io/react/docs/top-level-api.html#reactdom) takes two arguments.
+* React component
+* DOM element.
+
+This will render the component (and any child components) in the DOM element provided. Since we copied the bootstrap basic template, we don't have a `<div id="app"></div>` yet. So let's add one!
+
+Bootstrap allows you to use a grid system inside of a `.container` element. So we will use that as our base div for the app. This allows the app to use bootstrap rows and columns.
+In `public/index.html`, add the div inside of `<body></body>`
+```
+<body>
+  <div id="app" class="container-fluid"></div>
+</body>
+```
+
+Build and check it out!
+```
+$ make build
+```

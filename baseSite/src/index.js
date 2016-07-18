@@ -1,3 +1,7 @@
-const square = n => n * n;
+var React = require('react');
+var ReactDOM = require('react-dom');
 
-console.log(`square 4 = ${square(4)}`);
+ReactDOM.render(
+  <h1>Hello, React!</h1>,
+  document.getElementById('app')
+);
