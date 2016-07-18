@@ -8,6 +8,7 @@ app(elApp[0])
 
 
 
+console.log('iceburg jquery version:', $().jquery);
 
 // Test for the Object.key hack.
 const testObj = new Array();
