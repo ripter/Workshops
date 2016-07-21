@@ -52,6 +52,14 @@
 	//   debugger;
 	// }
 
+	window.TOUT = {
+	  loadSlot: function loadSlot(elm, intervalID) {
+	    clearInterval(intervalID);
+
+	    console.log('loaded slot', elm);
+	  }
+	};
+
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
