@@ -25,14 +25,23 @@
 
     <div id="sports-one">
       <script>
-        var ID = "sports-one";
-        var intervalID = setInterval(function(){
-          window.TOUT && TOUT.loadSlot(ID, intervalID);
-        }, 100);
+        (function(){
+          var ID = "sports-one";
+          var intervalID = setInterval(function(){
+            window.TOUT && TOUT.loadSlot(ID, intervalID);
+          }, 100);
+        })();
       </script>
     </div>
 
     <div id="app" class="container-fluid"></div>
+
+    <div id="sports-footer-post-flow">
+      <script>
+        (function(ID, i){i = setInterval(function(){window.TOUT && TOUT.loadSlot(ID, i);}, 100);
+        })('sports-footer-post-flow');
+      </script>
+    </div>
 
 
 
@@ -40,6 +49,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <!-- This is where window.TOUT is created -->
     <script src="js/bundle.js"></script>
+
+
+    <div id="sports-footer">
+      <script>
+        (function(ID){
+          var intervalID = setInterval(function(){window.TOUT && TOUT.loadSlot(ID, intervalID);}, 100);
+        })('sports-footer');
+      </script>
+    </div>
+
+
+    <div id="uglified-code">
+      <script>!function(a){var b=setInterval(function(){window.TOUT&&TOUT.loadSlot(a,b)},100)}("uglified-code");</script>
+    </div>
+
   </body>
 </html>
