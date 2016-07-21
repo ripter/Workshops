@@ -23,6 +23,7 @@
   </head>
   <body>
 
+    <!-- Uncompressed slot -->
     <div id="sports-one">
       <script>
         (function(){
@@ -34,8 +35,14 @@
       </script>
     </div>
 
-    <div id="app" class="container-fluid"></div>
 
+    <!-- Uglified Version -->
+    <div id="uglified-code">
+      <script>!function(a){var b=setInterval(function(){window.TOUT&&TOUT.loadSlot(a,b)},100)}("uglified-code");</script>
+    </div>
+
+
+    <!-- Golfed Version -->
     <div id="sports-footer-post-flow">
       <script>
         (function(ID, i){i = setInterval(function(){window.TOUT && TOUT.loadSlot(ID, i);}, 100);
@@ -54,6 +61,7 @@
     <script src="js/bundle.js"></script>
 
 
+    <!-- Another version -->
     <div id="sports-footer">
       <script>
         (function(ID){
@@ -63,9 +71,6 @@
     </div>
 
 
-    <div id="uglified-code">
-      <script>!function(a){var b=setInterval(function(){window.TOUT&&TOUT.loadSlot(a,b)},100)}("uglified-code");</script>
-    </div>
 
   </body>
 </html>
