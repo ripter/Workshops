@@ -48,7 +48,6 @@
 
 	window.TOUT = {
 	  // Called when a slot has loaded on the page and waiting for our response.
-
 	  loadSlot: function loadSlot(elm, intervalID) {
 	    // Cancel the call home.
 	    clearInterval(intervalID);
