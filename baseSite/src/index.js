@@ -4,6 +4,11 @@ window.TOUT = {
     // Cancel the call home.
     clearInterval(intervalID);
 
+    if (typeof elm !== 'string') {
+       // get the parent
+       elm = elm.parentElement.id;
+    }
+
     // Do whatever we want here.
     console.log('loaded slot', elm);
   },
