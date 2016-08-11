@@ -19,6 +19,7 @@ The first thing we need is a simple html hello world page. All web apps are serv
 
 We need an html page to serve, and a server to serve it. Since we are creating just a front end base, we can use a really simple server.
 I'm a big fan of [http-server](https://www.npmjs.com/package/http-server) because it's so simple. It's an npm package, so we need to setup npm first.
+Will: Are setting up npm for the http-server or the project we are starting. And what exactly does npm init do for us?
 
 ```
 npm init
@@ -42,6 +43,7 @@ $ ./node_modules/.bin/http-server
 ```
 
 I since we will be using [Bootstrap](http://getbootstrap.com/getting-started/#download) I copy the basic template and paste it into `public/index.html`.
+Will: Having a link to the base template would be nice for following along
 
 You have to leave the server running, so you'll need to open a new terminal tab. If you `ctl-c` the server, then it will kill the program.
 
@@ -63,13 +65,14 @@ The documentation for make looks scary, but it's actually a basic concept. The `
 .PHONY: server
 
 server:
-	./node_modules/.bin/http-server
+  ./node_modules/.bin/http-server
 ```
 
 Now we can run `make server` to start the server!
 
 We created a single rule called `server` that make can run. This rule will run the bash command `./node_modules/.bin/http-server`. We get the nice short syntax of the global, without the downsides of makeing it global.
 
+Will: How do you inititalize a git repository?
 Now git save all your hard work!
 ```
 $ git commit -a -m "run with make server"
@@ -90,7 +93,7 @@ $ touch public/js/bundle.js
 I know, you are wondering why I called it `bundle.js`. It's because we will add weback later, and we won't have to rename this file later if we just call it build from the first place.
 
 We can start with just a simple hello world.
-
+Will: Where does this js go?
 ```
 const world = 'world';
 console.log(`hello ${world}`);
@@ -114,7 +117,7 @@ Let's git save this! One of the nice things about git saves is that we can alway
 Let's do some cleanup. If you used the bootstrap basic template like I did, you probably have three errors in the console. The basic template assumes you have the style downloaded and are not using the cdn. We could download the files but I find that the cdn is fine most of the time. If you are in a situation where you don't always have internet access. Just download the files and put them in `public/css` and `public/js`.
 
 In `public/index.html` take out the old bootstrap references and replace them with these:
-
+Will: Which references should we remove? Can you show what the file should look like before and afterwards?
 ```
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -149,7 +152,7 @@ Let's take a moment to add another make rule to run webpack. In `Makefile`
 
 ```
 build:
-	./node_modules/.bin/webpack
+  ./node_modules/.bin/webpack
 ```
 
 Next we need a config file for webpack.
@@ -236,10 +239,12 @@ $ git commit -m "using babel"
 Now that we have our module system (webpack) and our compiler (Babel), we can add our libraries to the project. Our core library is React. As a front end application we want to build and use components. This allows us to build up our application from shareable, re-usable, components.
 
 ```
+Will: npm install is what you mean I think
 $ install --save-dev react react-dom babel-preset-react
 ```
 
 Update `webpack.config.js`
+Will: How should this be inserted into the webpack config?
 ```
 { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: {
   presets: ['es2015', 'react']
@@ -274,6 +279,7 @@ In `public/index.html`, add the div inside of `<body></body>`
   <div id="app" class="container-fluid"></div>
 </body>
 ```
+Will: If you put the script tag which includes bundle.js above the app div, you still get the error, but if you move the script tag below the app div, then it works correctly
 
 Build and check it out!
 ```
@@ -297,7 +303,7 @@ $ watch make build
 
 Webpack also provides watching tools and there are a few dozen popular tools out there for this task. Use whatever works best for you. I personally like watch because it can run any bash command. So it works nicely with everything in my toolchain with no setup nessary.
 
-
+Will: I assume you mean refactor time here :D
 ### Reactor Time!
 If you haven't noticed, we have a pattern. Get it working, Git Save, Refactor/Cleanup, Git Save again. Once we add tests we will have another step in this pattern. A beginner mistake is to skip the refactor step. This is just as important as the get it working step. We need to make sure we have a clean base to continue working. Leaving out the refactor step will cause your application to rapidly build technical debt. If we include refactoring into our normal coding style we can handle technical debt before be grows out of control, and it always gives us time to cleanup our code to something we can be proud to share with others.
 
@@ -316,8 +322,8 @@ First we have to tell webpack which loader should handle a `.jsx` file.
 In `webpack.config.js`, Update the Babel loader to this:
 ```
 { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {
-	presets: ['es2015', 'react']
-	}}
+  presets: ['es2015', 'react']
+  }}
 ```
 
 All we did was ad `x?` to the babel test. In regex `?` means match anything that has `x` or doesn't have `x`. So it will match all `*.js` and `*.jsx` files.
