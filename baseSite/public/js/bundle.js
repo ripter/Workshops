@@ -48,9 +48,15 @@
 
 	window.TOUT = {
 	  // Called when a slot has loaded on the page and waiting for our response.
+
 	  loadSlot: function loadSlot(elm, intervalID) {
 	    // Cancel the call home.
 	    clearInterval(intervalID);
+
+	    if (typeof elm !== 'string') {
+	      // get the parent
+	      elm = elm.parentElement.id;
+	    }
 
 	    // Do whatever we want here.
 	    console.log('loaded slot', elm);
