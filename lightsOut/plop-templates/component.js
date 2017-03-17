@@ -1,6 +1,6 @@
-
-
-
+/**
+ * <{{kebabCase tagName}} >
+ */
 export class {{camelCase tagName}} extends HTMLElement {
   /**
    * When one of these attributes changes value, it triggers attributeChangedCallback

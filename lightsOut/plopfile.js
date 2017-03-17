@@ -29,7 +29,7 @@ module.exports = ( plop ) => {
      type: 'modify',
       path: 'src/index.js',
       pattern: /(\/\/ REGISTER COMPONENTS)/g,
-      template: '$1\nVue.component(\'{{kebabCase tagName}}\', {{camelCase tagName}});',
+      template: `$1\ncustomElements.define(\'{{kebabCase tagName}}\', {{camelCase tagName}});`,
     },
     {
       type: 'modify',
