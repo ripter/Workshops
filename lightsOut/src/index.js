@@ -19,6 +19,14 @@ const state = {
     [0,0,1,0,0],
     [0,0,0,0,0],
   ],
+
+  getPoint(index) {
+    const { width, board } = this; // state === this
+    // convert index to x,y
+    const y = 0 | index / width;
+    const x = index - (y * width)
+    return {x, y};
+  },
 };
 
 
@@ -26,24 +34,41 @@ const state = {
 // This maps DOM elements and updates their properties.
 // Inspired by CSS
 const lensUI = {
+  // Match each cell in the grid.
   'game-grid .cell': {
+    // sets elm.className
     className: function(elm, index, array) {
-      const { width, board } = this;
-      const y = 0 | index / width;
-      const x = index - (y * width)
+      const { board } = this; // state === this
+      const { x, y } = this.getPoint(index);
       const val = board[x][y];
-      let result = 'cell';
+      let result = 'cell'; //keep the cell class so we will still match next update.
 
       if (val === 1) {
         result += ' active';
       }
 
-      // console.log('lensUI classList', elm, index);
-      // console.log('this is state', this);
-      // console.log('x,y,index', val, x, y, index)
       return result;
     },
+
+    // adds event listener
+    onclick(evt, elm, index) {
+      //TODO: Turn into Action Light Pressed
+      const { board } = this; // state === this
+      const { x, y } = this.getPoint(index);
+      let val = board[x][y];
+      console.log('click', evt);
+
+      // toggle val
+      if (val === 0) { val = 1; }
+      else { val = 0; }
+
+      board[x][y] = val;
+
+      //TODO: Trigger Render Action
+      updateUI(state, lensUI);
+    },
   },
+  // selectors that don't match are skipped
   'invalid': {
     test: true,
   },
