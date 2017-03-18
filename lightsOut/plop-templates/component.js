@@ -6,7 +6,7 @@ export class {{camelCase tagName}} extends HTMLElement {
    * When one of these attributes changes value, it triggers attributeChangedCallback
    * @return {Array} attribute names.
    */
-  static get observedAttributes() {return ['grid', 'index'];}
+  static get observedAttributes() {return ['id'];}
   constructor() {
     super();
   }

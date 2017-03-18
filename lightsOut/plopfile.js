@@ -16,6 +16,11 @@ module.exports = ( plop ) => {
     },
     {
       type: 'add',
+      path: 'src/components/{{kebabCase tagName}}.test.js',
+      templateFile: 'plop-templates/component.test.js',
+    },
+    {
+      type: 'add',
       path: 'less/{{kebabCase tagName}}.less',
       templateFile: 'plop-templates/component.less',
     },
