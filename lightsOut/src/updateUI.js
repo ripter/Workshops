@@ -1,3 +1,4 @@
+import bind from './bind.js';
 
 /**
  * Updates the UI by finding dom elements in the lens
@@ -35,15 +36,28 @@ function updateElement(properties, element, index, elements) {
     const eventMatch = propertyName.match(/on(\w+)/);
     let value = properties[propertyName];
 
+    console.log('propertyName', propertyName, index)
     // if value is a function,
     if (typeof value === 'function') {
       if (eventMatch) {
+        let unbind = properties[`_${eventMatch[0]}_${index}_of_${elements.length}`];
         //TODO: don't add if it already exists on the element.
-        //INFO: the dom will not add the same event twice.
-        //INFO: So this is fine as long as the function doesn't change.
-        element.addEventListener(eventMatch[1], (evt) => {
+
+        console.log('bind event', eventMatch[0], unbind);
+        //WISH:
+        // const unbind = bind(element, eventName, callback);
+        //ISSUE: Need a place to store unbind.
+        //     : It can not be element because we need to call it when we don't have element.
+        // Unbind the old method and add a new one.
+        if (typeof unbind === 'function') { unbind(); }
+        properties[`_${eventMatch[0]}`] = bind(element, eventMatch[1], (evt) => {
           value.call(this, evt, element, index, elements)
         });
+
+        //BUG: duplicates the events on every callback.
+        // element.addEventListener(eventMatch[1], (evt) => {
+        //   value.call(this, evt, element, index, elements)
+        // });
       }
       else {
         // call it with a forEach signature
