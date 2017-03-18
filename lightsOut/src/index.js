@@ -1,5 +1,5 @@
 import '../less/index.less';
-import updateUI from './updateUI.js';
+import LensDOM from './lensDOM.js';
 
 // IMPORT COMPONENTS
 import { gameGrid } from './components/game-grid.js';
@@ -33,7 +33,7 @@ const state = {
 // UI Lens
 // This maps DOM elements and updates their properties.
 // Inspired by CSS
-const lensUI = {
+const lens = new LensDOM({
   // Match each cell in the grid.
   'game-grid .cell': {
     // sets elm.className
@@ -43,6 +43,8 @@ const lensUI = {
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
 
+      // if the value in the array is 1
+      // give it the class active
       if (val === 1) {
         result += ' active';
       }
@@ -62,23 +64,22 @@ const lensUI = {
       if (val === 0) { val = 1; }
       else { val = 0; }
 
+      // update the state
       board[x][y] = val;
-
-      //TODO: Trigger Render Action
-      updateUI(state, lensUI);
+      // trigger render
+      lens.render(state);
     },
   },
   // selectors that don't match are skipped
   'invalid': {
     test: true,
   },
-};
-
+});
 
 // Render the inital application state
-updateUI(state, lensUI);
+// updateUI(state, lensUI);
+lens.render(state);
 
 // debugging fun
 window.state = state;
-window.lensUI = lensUI;
-window.updateUI = updateUI;
+window.lens = lens;
