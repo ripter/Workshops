@@ -45,19 +45,6 @@ export class gameGrid extends HTMLElement {
     const { template, width, height } = this;
 
     //
-    // for loop version
-    // let html = '';
-    // // Create a grid of cloned templates
-    // for(let y=0; y < height; y++) {
-    //   html += '<div class="row">';
-    //   for(let x=0; x < width; x++) {
-    //     html += template.outerHTML;
-    //   }
-    //   html += '</div>';
-    // }
-    // this.innerHTML = html;
-
-    //
     // DOM API version
     for(let y=0; y < height; y++) {
       const elmRow = document.createElement('div');
@@ -70,16 +57,19 @@ export class gameGrid extends HTMLElement {
         elmRow.appendChild(clone);
       }
     }
-  }
 
-  /**
-   * Triggered when an an observedAttribute has changed.
-   * @param {String} attrName - the attribute name.
-   * @param {Object} oldValue - the old value.
-   * @param {Object} newValue - the new value.
-   */
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    console.log('gameGrid', attrName, oldValue, newValue);
+    //
+    // for loop version
+    // let html = '';
+    // // Create a grid of cloned templates
+    // for(let y=0; y < height; y++) {
+    //   html += '<div class="row">';
+    //   for(let x=0; x < width; x++) {
+    //     html += template.outerHTML;
+    //   }
+    //   html += '</div>';
+    // }
+    // this.innerHTML = html;
   }
 }
 export default gameGrid;
