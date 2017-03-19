@@ -10,7 +10,7 @@ export class LensDOM {
    * Updates the DOM
    * @param {Object} state - object is bound to `this` when rule functions are called.
    */
-  render(state) {
+  update(state) {
     const { rules } = this;
 
     // unbind the old events

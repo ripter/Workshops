@@ -47,7 +47,7 @@ const lens = new LensDOM({
 
 // On change, re-render
 state.onChange(() => {
-  lens.render(state);
+  lens.update(state);
 });
 // trigger inital render
 state.triggerChange();

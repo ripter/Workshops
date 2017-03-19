@@ -108,7 +108,7 @@ class LensDOM {
    * Updates the DOM
    * @param {Object} state - object is bound to `this` when rule functions are called.
    */
-  render(state) {
+  update(state) {
     const { rules } = this;
 
     // unbind the old events
@@ -644,7 +644,7 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
   '.grid .cell': {
     // sets elm.className
     className: function(elm, index) {
-      const { board } = this; // state === this
+      const { board } = this;
       const { x, y } = this.index2Point(index);
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
@@ -668,7 +668,7 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
 
 // On change, re-render
 state.onChange(() => {
-  lens.render(state);
+  lens.update(state);
 });
 // trigger inital render
 state.triggerChange();
