@@ -61,7 +61,6 @@ export class gameGrid extends HTMLElement {
       }
     }
 
-
     //
     // for loop version
     // let html = '';
