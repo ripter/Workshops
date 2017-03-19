@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,10 +71,10 @@
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(3);
+var content = __webpack_require__(2);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
+var update = __webpack_require__(4)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -95,98 +95,7 @@ if(false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- *    <game-grid width="5" height="5">
- *     <p>this can be any element. it will be cloned for each cell in the grid</p>
- *    </game-grid>
- */
-class gameGrid extends HTMLElement {
-  /**
-   * When one of these attributes changes value, it triggers attributeChangedCallback
-   * @return {Array} attribute names.
-   */
-  static get observedAttributes() {return ['width', 'height'];}
-
-  // turn our attributes into properties
-  // convert the attribute strings into numbers
-  get width() {
-    const { width } = this.attributes;
-    return parseInt(width.value || 0, 10);
-  }
-  set width(val) {
-    const { width } = this.attributes;
-    width.value = val;
-  }
-
-  get height() {
-    const { height } = this.attributes;
-    return parseInt(height.value || 0, 10);
-  }
-  set height(val) {
-    const { height } = this.attributes;
-    height.value = val;
-  }
-
-  constructor(self) {
-    // ponyfill caveat: https://github.com/WebReflection/document-register-element#v1-caveat
-    // We need to use self inside the constructor
-    self = super(self);
-
-    // turn the inital child into a template
-    self.template = self.removeChild(self.children[0]);
-    return self;
-  }
-
-  /**
-   * Triggered when the component is mounted on a DOM.
-   * This is a good place to 'render' the component
-   */
-  connectedCallback() {
-    const { template, width, height } = this;
-
-    //
-    // DOM API version
-    for(let y=0; y < height; y++) {
-      const elmRow = document.createElement('div');
-      elmRow.classList.add('row');
-      this.appendChild(elmRow);
-
-      for(let x=0; x < width; x++) {
-        // clone the template and add it as the next cell.
-        const clone = template.cloneNode(true);
-        elmRow.appendChild(clone);
-      }
-    }
-
-
-    //
-    // for loop version
-    // let html = '';
-    // // Create a grid of cloned templates
-    // for(let y=0; y < height; y++) {
-    //   html += '<div class="row">';
-    //   for(let x=0; x < width; x++) {
-    //     html += template.outerHTML;
-    //   }
-    //   html += '</div>';
-    // }
-    // this.innerHTML = html;
-  }
-
-  // ponyfill requires this to be defined: https://github.com/WebReflection/document-register-element
-  attributeChangedCallback() {}
-}
-/* harmony export (immutable) */ exports["a"] = gameGrid;
-
-/* unused harmony default export */ var _unused_webpack_default_export = gameGrid;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bind_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bind_js__ = __webpack_require__(5);
 
 
 class LensDOM {
@@ -305,21 +214,21 @@ function updateElement(properties, element, index, elements) {
 
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(3)();
 // imports
 
 
 // module
-exports.push([module.i, "/* COMPONENT STYLES */\ngame-grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
+exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
 
 // exports
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports) {
 
 /*
@@ -375,7 +284,7 @@ module.exports = function() {
 
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports) {
 
 /*
@@ -627,7 +536,7 @@ function updateLink(linkElement, obj) {
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -652,22 +561,15 @@ function bind(element, eventName, callback) {
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__less_index_less__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_game_grid_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__ = __webpack_require__(1);
 
 
-
-// IMPORT COMPONENTS
-
-
-// REGISTER COMPONENTS
-customElements.define('game-grid', __WEBPACK_IMPORTED_MODULE_2__components_game_grid_js__["a" /* gameGrid */]);
 
 
 // Application State
@@ -725,7 +627,7 @@ const state = {
 // Inspired by CSS
 const lens = new __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__["a" /* default */]({
   // Match each cell in the grid.
-  'game-grid .cell': {
+  '.grid .cell': {
     // sets elm.className
     className: function(elm, index, array) {
       const { board } = this; // state === this

@@ -1,12 +1,6 @@
 import '../less/index.less';
 import LensDOM from './lensDOM.js';
 
-// IMPORT COMPONENTS
-import { gameGrid } from './components/game-grid.js';
-
-// REGISTER COMPONENTS
-customElements.define('game-grid', gameGrid);
-
 
 // Application State
 const state = {
@@ -63,7 +57,7 @@ const state = {
 // Inspired by CSS
 const lens = new LensDOM({
   // Match each cell in the grid.
-  'game-grid .cell': {
+  '.grid .cell': {
     // sets elm.className
     className: function(elm, index, array) {
       const { board } = this; // state === this
