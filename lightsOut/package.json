@@ -10,7 +10,8 @@
   "scripts": {
     "test": "jest",
     "build": "webpack",
-    "plop": "plop"
+    "plop": "plop",
+    "lint": "eslint"
   },
   "author": "Chris Richards <ripter001@gmail.com>",
   "license": "MIT",
