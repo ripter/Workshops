@@ -16,33 +16,11 @@ module.exports = ( plop ) => {
   //     templateFile: 'plop-templates/component.js',
   //   },
   //   {
-  //     type: 'add',
-  //     path: 'src/components/{{kebabCase tagName}}.test.js',
-  //     templateFile: 'plop-templates/component.test.js',
-  //   },
-  //   {
-  //     type: 'add',
-  //     path: 'less/{{kebabCase tagName}}.less',
-  //     templateFile: 'plop-templates/component.less',
-  //   },
-  //   {
   //     type: 'modify',
   //     path: 'src/index.js',
   //     pattern: /(\/\/ IMPORT COMPONENTS)/g,
   //     template: '$1\nimport { {{camelCase tagName}} } from \'./components/{{kebabCase tagName}}.js\';',
-  //   },
-  //   {
-  //    type: 'modify',
-  //     path: 'src/index.js',
-  //     pattern: /(\/\/ REGISTER COMPONENTS)/g,
-  //     template: `$1\ncustomElements.define(\'{{kebabCase tagName}}\', {{camelCase tagName}});`,
-  //   },
-  //   {
-  //     type: 'modify',
-  //     path: 'less/index.less',
-  //     pattern: /(\/\* COMPONENT STYLES \*\/)/g,
-  //     template: '$1\n@import "{{kebabCase tagName}}.less";',
   //   }],
   //
-  // }); // component
+  // });
 };
