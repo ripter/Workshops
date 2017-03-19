@@ -189,8 +189,8 @@ class LensDOM {
 class State {
   constructor(initalState) {
     Object.assign(this, initalState);
-
     this._changeCallbacks = [];
+    this.randomize();
   }
 
   // Register a callback on the change 'event'.
@@ -240,11 +240,22 @@ class State {
       this.toggle(x, y+1);
     }
 
+    // Trigger the change 'event'
     this.triggerChange();
-    // trigger render
-    // lens.render(state);
   }
 
+  // Randomizes the pattern on the board.
+  randomize() {
+    const { width, height } = this;
+    let randomCount = 0|Math.random() * 20;
+    let x, y;
+
+    while (randomCount--) {
+      x = 0|Math.random() * width;
+      y = 0|Math.random() * height;
+      this.action(x, y);
+    }
+  }
 
 }
 /* unused harmony export State */
@@ -650,8 +661,6 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
     // onclick event (event names are always lower case)
     onClick(evt, elm, index) {
       const { x, y } = this.index2Point(index);
-
-      // Action: toggles the light in a cross patter
       this.action(x,y);
     },
   },

@@ -23,7 +23,7 @@ const lens = new LensDOM({
   '.grid .cell': {
     // sets elm.className
     className: function(elm, index) {
-      const { board } = this; // state === this
+      const { board } = this;
       const { x, y } = this.index2Point(index);
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
@@ -40,8 +40,6 @@ const lens = new LensDOM({
     // onclick event (event names are always lower case)
     onClick(evt, elm, index) {
       const { x, y } = this.index2Point(index);
-
-      // Action: toggles the light in a cross patter
       this.action(x,y);
     },
   },
