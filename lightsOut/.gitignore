@@ -1,7 +1,3 @@
-# don't include the bundle file.
-bundle.js
-bundle.js.map
-
 # Logs
 logs
 *.log
