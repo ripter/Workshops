@@ -95,97 +95,6 @@ if(false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- *    <game-grid width="5" height="5">
- *     <p>this can be any element. it will be cloned for each cell in the grid</p>
- *    </game-grid>
- */
-class gameGrid extends HTMLElement {
-  /**
-   * When one of these attributes changes value, it triggers attributeChangedCallback
-   * @return {Array} attribute names.
-   */
-  static get observedAttributes() {return ['width', 'height'];}
-
-  // turn our attributes into properties
-  // convert the attribute strings into numbers
-  get width() {
-    const { width } = this.attributes;
-    return parseInt(width.value || 0, 10);
-  }
-  set width(val) {
-    const { width } = this.attributes;
-    width.value = val;
-  }
-
-  get height() {
-    const { height } = this.attributes;
-    return parseInt(height.value || 0, 10);
-  }
-  set height(val) {
-    const { height } = this.attributes;
-    height.value = val;
-  }
-
-  constructor(self) {
-    // ponyfill caveat: https://github.com/WebReflection/document-register-element#v1-caveat
-    // We need to use self inside the constructor
-    self = super(self);
-
-    // turn the inital child into a template
-    self.template = self.removeChild(self.children[0]);
-    return self;
-  }
-
-  /**
-   * Triggered when the component is mounted on a DOM.
-   * This is a good place to 'render' the component
-   */
-  connectedCallback() {
-    const { template, width, height } = this;
-
-    //
-    // DOM API version
-    for(let y=0; y < height; y++) {
-      const elmRow = document.createElement('div');
-      elmRow.classList.add('row');
-      this.appendChild(elmRow);
-
-      for(let x=0; x < width; x++) {
-        // clone the template and add it as the next cell.
-        const clone = template.cloneNode(true);
-        elmRow.appendChild(clone);
-      }
-    }
-
-
-    //
-    // for loop version
-    // let html = '';
-    // // Create a grid of cloned templates
-    // for(let y=0; y < height; y++) {
-    //   html += '<div class="row">';
-    //   for(let x=0; x < width; x++) {
-    //     html += template.outerHTML;
-    //   }
-    //   html += '</div>';
-    // }
-    // this.innerHTML = html;
-  }
-
-  // ponyfill requires this to be defined: https://github.com/WebReflection/document-register-element
-  attributeChangedCallback() {}
-}
-/* harmony export (immutable) */ exports["a"] = gameGrid;
-
-/* unused harmony default export */ var _unused_webpack_default_export = gameGrid;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bind_js__ = __webpack_require__(6);
 
 
@@ -199,7 +108,7 @@ class LensDOM {
    * Updates the DOM
    * @param {Object} state - object is bound to `this` when rule functions are called.
    */
-  render(state) {
+  update(state) {
     const { rules } = this;
 
     // unbind the old events
@@ -223,6 +132,15 @@ class LensDOM {
     });
   }
 
+  /**
+   * Updates element with properties
+   * `updateElement.call(state, properties, index, elements)`
+   * @param {Object} state - state is set to `this` when calling function
+   * @param {Object} properties - {propertyName: value|function,}
+   * @param {Element} element - DOM/Object with properties, addEventListener
+   * @param {Number} index - element's index in elements
+   * @param {Array} elements - array that contains element.
+   */
   updateElement(state, properties, element, index, elements) {
     // for each of the properties we want to change
     Object.keys(properties).forEach((propertyName) => {
@@ -232,9 +150,10 @@ class LensDOM {
       // if value is a function,
       if (typeof value === 'function') {
         if (eventMatch) {
+          const eventName = eventMatch[1].toLocaleLowerCase();
           // Bind the event
-          const unbind = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bind_js__["a" /* default */])(element, eventMatch[1], (evt) => {
-            value.call(state, evt, element, index, elements)
+          const unbind = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bind_js__["a" /* default */])(element, eventName, (evt) => {
+            value.call(state, evt, element, index, elements);
           });
 
           // save the unbind event.
@@ -259,49 +178,89 @@ class LensDOM {
 
 /* harmony default export */ exports["a"] = LensDOM;
 
-/**
- * Updates element with properties
- * `updateElement.call(state, properties, index, elements)`
- * @this - functions will have their this set to our this.
- * @param {Object} properties - {propertyName: value|function,}
- * @param {Element} element - DOM/Object with properties, addEventListener
- * @param {Number} index - element's index in elements
- * @param {Array} elements - array that contains element.
- */
-function updateElement(properties, element, index, elements) {
-  // this === state
-  // for each of the properties we want to change
-  Object.keys(properties).forEach((propertyName) => {
-    const eventMatch = propertyName.match(/on(\w+)/);
-    let value = properties[propertyName];
 
-    // console.log('propertyName', propertyName, index)
-    // if value is a function,
-    if (typeof value === 'function') {
-      if (eventMatch) {
-        console.log('bind event', eventMatch[0]);
-        let unbind = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bind_js__["a" /* default */])(element, eventMatch[1], (evt) => {
-          value.call(this, evt, element, index, elements)
-        });
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
 
-        //BUG: duplicates the events on every callback.
-        // element.addEventListener(eventMatch[1], (evt) => {
-        //   value.call(this, evt, element, index, elements)
-        // });
-      }
-      else {
-        // call it with a forEach signature
-        // set this to the state object
-        value = value.call(this, element, index, elements);
-        element[propertyName] = value;
-      }
+"use strict";
+
+// Super Simple State/Store/Model for the application.
+class State {
+  constructor(initalState) {
+    Object.assign(this, initalState);
+    this._changeCallbacks = [];
+    this.randomize();
+  }
+
+  // Register a callback on the change 'event'.
+  onChange(callback) {
+    this._changeCallbacks.push(callback);
+  }
+
+  // Trigger the change 'events', calling all the callbacks.
+  triggerChange() {
+    this._changeCallbacks.forEach((callback) => {
+      callback(this);
+    });
+  }
+
+  // Toggle a value on the board
+  toggle(x, y) {
+    const { board } = this;
+    board[x][y] = board[x][y] === 0 ? 1 : 0;
+  }
+
+  // converts array index into a point {x,y}
+  index2Point(index) {
+    const { width } = this; // state === this
+    const y = 0 | index / width;
+    const x = index - (y * width);
+    return {x, y};
+  }
+
+  // Toggle the grid lights starting at point
+  // This toggles the lights in a cross pattern
+  action(x, y) {
+    const { width, height } = this;
+
+    if (y-1 >= 0) {
+      this.toggle(x, y-1);
     }
-    // Not a function, just set the value
-    else {
-      element[propertyName] = value;
+    if (x-1 >= 0) {
+      this.toggle(x-1, y);
     }
-  });
+    if (x >= 0) {
+      this.toggle(x, y);
+    }
+    if (x+1 < width) {
+      this.toggle(x+1, y);
+    }
+    if (y+1 < height) {
+      this.toggle(x, y+1);
+    }
+
+    // Trigger the change 'event'
+    this.triggerChange();
+  }
+
+  // Randomizes the pattern on the board.
+  randomize() {
+    const { width, height } = this;
+    let randomCount = 0|Math.random() * 20;
+    let x, y;
+
+    while (randomCount--) {
+      x = 0|Math.random() * width;
+      y = 0|Math.random() * height;
+      this.action(x, y);
+    }
+  }
+
 }
+/* unused harmony export State */
+
+/* harmony default export */ exports["a"] = State;
 
 
 /***/ },
@@ -313,7 +272,7 @@ exports = module.exports = __webpack_require__(4)();
 
 
 // module
-exports.push([module.i, "/* COMPONENT STYLES */\ngame-grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
+exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
 
 // exports
 
@@ -658,20 +617,15 @@ function bind(element, eventName, callback) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__less_index_less__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_game_grid_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__state_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__ = __webpack_require__(1);
 
 
 
-// IMPORT COMPONENTS
-
-
-// REGISTER COMPONENTS
-customElements.define('game-grid', __WEBPACK_IMPORTED_MODULE_2__components_game_grid_js__["a" /* gameGrid */]);
 
 
 // Application State
-const state = {
+const state = new __WEBPACK_IMPORTED_MODULE_1__state_js__["a" /* default */]({
   width: 5,
   height: 5,
   board: [
@@ -681,55 +635,17 @@ const state = {
     [0,0,1,0,0],
     [0,0,0,0,0],
   ],
-
-  getPoint(index) {
-    const { width, board } = this; // state === this
-    // convert index to x,y
-    const y = 0 | index / width;
-    const x = index - (y * width)
-    return {x, y};
-  },
-
-  // Toggle the grid lights starting at point
-  // This toggles the lights in a cross pattern
-  togglePoint(x, y) {
-    const { board, width, height } = this;
-    const toggle = (x, y) => {
-      board[x][y] = board[x][y] === 0 ? 1 : 0;
-    };
-
-    if (y-1 >= 0) {
-      toggle(x, y-1);
-    }
-    if (x-1 >= 0) {
-      toggle(x-1, y);
-    }
-    if (x >= 0) {
-      toggle(x, y);
-    }
-    if (x+1 < width) {
-      toggle(x+1, y);
-    }
-    if (y+1 < height) {
-      toggle(x, y+1);
-    }
-
-    // trigger render
-    lens.render(state);
-  }
-};
-
+});
 
 // UI Lens
-// This maps DOM elements and updates their properties.
-// Inspired by CSS
-const lens = new __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__["a" /* default */]({
+// Use CSS Selectos to update Elements.
+const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
   // Match each cell in the grid.
-  'game-grid .cell': {
+  '.grid .cell': {
     // sets elm.className
-    className: function(elm, index, array) {
-      const { board } = this; // state === this
-      const { x, y } = this.getPoint(index);
+    className: function(elm, index) {
+      const { board } = this;
+      const { x, y } = this.index2Point(index);
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
 
@@ -742,19 +658,20 @@ const lens = new __WEBPACK_IMPORTED_MODULE_1__lensDOM_js__["a" /* default */]({
       return result;
     },
 
-    // on cell click
-    onclick(evt, elm, index) {
-      const { board } = this; // state === this
-      const { x, y } = this.getPoint(index);
-
-      // Action: toggle point
-      this.togglePoint(x, y);
+    // onclick event (event names are always lower case)
+    onClick(evt, elm, index) {
+      const { x, y } = this.index2Point(index);
+      this.action(x,y);
     },
   },
 });
 
-// Render the inital application state
-lens.render(state);
+// On change, re-render
+state.onChange(() => {
+  lens.update(state);
+});
+// trigger inital render
+state.triggerChange();
 
 // debugging fun
 window.state = state;

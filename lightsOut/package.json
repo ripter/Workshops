@@ -7,11 +7,6 @@
     "url": "git@github.com:ripter/10x10.git",
     "type": "git"
   },
-  "scripts": {
-    "test": "jest",
-    "build": "webpack",
-    "plop": "plop"
-  },
   "author": "Chris Richards <ripter001@gmail.com>",
   "license": "MIT",
   "dependencies": {
