@@ -30,11 +30,14 @@ export class gameGrid extends HTMLElement {
     height.value = val;
   }
 
-  constructor() {
-    super();
+  constructor(self) {
+    // ponyfill caveat: https://github.com/WebReflection/document-register-element#v1-caveat
+    // We need to use self inside the constructor
+    self = super(self);
 
     // turn the inital child into a template
-    this.template = this.removeChild(this.children[0]);
+    self.template = self.removeChild(self.children[0]);
+    return self;
   }
 
   /**
@@ -58,6 +61,7 @@ export class gameGrid extends HTMLElement {
       }
     }
 
+
     //
     // for loop version
     // let html = '';
@@ -71,5 +75,8 @@ export class gameGrid extends HTMLElement {
     // }
     // this.innerHTML = html;
   }
+
+  // ponyfill requires this to be defined: https://github.com/WebReflection/document-register-element
+  attributeChangedCallback() {}
 }
 export default gameGrid;
