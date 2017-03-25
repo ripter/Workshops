@@ -1,4 +1,4 @@
-import bind from './bind.js';
+import bind from 'bind/src/bind.dom.js';
 
 export class LensDOM {
   constructor(rules) {

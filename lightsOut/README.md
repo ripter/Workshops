@@ -3,13 +3,13 @@
 A sample Lights Out game using native web components.
 
 ## Start
+This will build and start the server
 ```
 $ make
 
 ```
 
-
-## Create a new component
+## Build
 ```
-$ make plop
+$ make build
 ```

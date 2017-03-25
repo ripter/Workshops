@@ -95,7 +95,8 @@ if(false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bind_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__);
 
 
 class LensDOM {
@@ -152,7 +153,7 @@ class LensDOM {
         if (eventMatch) {
           const eventName = eventMatch[1].toLocaleLowerCase();
           // Bind the event
-          const unbind = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bind_js__["a" /* default */])(element, eventName, (evt) => {
+          const unbind = __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default()(element, eventName, (evt) => {
             value.call(state, evt, element, index, elements);
           });
 
@@ -587,10 +588,9 @@ function updateLink(linkElement, obj) {
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-"use strict";
-/* unused harmony export bind */
+const NAME = 'bind.dom';
 
 /**
  * bind - listens to event on element, returning a function to stop listening to the event.
@@ -607,7 +607,9 @@ function bind(element, eventName, callback) {
     element.removeEventListener(eventName, callback);
   };
 }
-/* harmony default export */ exports["a"] = bind;
+
+// Exports
+module.exports = bind;
 
 
 /***/ },
