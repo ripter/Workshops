@@ -99,7 +99,12 @@ if(false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__);
 
 
-class LensDOM {
+/**
+ * Creates a lens on the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+ * using CSS Selectors to focus on a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+ * to set propteries on Nodes, HTMLElements, WebComponents, etc.
+ */
+class NodeLens {
   constructor(rules) {
     this.rules = rules;
     this.events = [];
@@ -173,9 +178,9 @@ class LensDOM {
     });
   }
 }
-/* unused harmony export LensDOM */
+/* unused harmony export NodeLens */
 
-/* harmony default export */ exports["a"] = LensDOM;
+/* harmony default export */ exports["a"] = NodeLens;
 
 
 /***/ },
@@ -648,7 +653,7 @@ module.exports = bind;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__less_index_less__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__state_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__ = __webpack_require__(1);
 
 
 
@@ -669,7 +674,7 @@ const state = new __WEBPACK_IMPORTED_MODULE_1__state_js__["a" /* default */]({
 
 // UI Lens
 // Use CSS Selectos to update Elements.
-const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
+const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
   // Match each cell in the grid.
   '.grid .cell': {
     // sets elm.className

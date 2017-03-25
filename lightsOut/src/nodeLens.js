@@ -1,6 +1,11 @@
 import bind from 'bind/src/bind.dom.js';
 
-export class LensDOM {
+/**
+ * Creates a lens on the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+ * using CSS Selectors to focus on a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+ * to set propteries on Nodes, HTMLElements, WebComponents, etc.
+ */
+export class NodeLens {
   constructor(rules) {
     this.rules = rules;
     this.events = [];
@@ -74,4 +79,4 @@ export class LensDOM {
     });
   }
 }
-export default LensDOM;
+export default NodeLens;

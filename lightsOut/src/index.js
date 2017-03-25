@@ -1,6 +1,6 @@
 import '../less/index.less';
 import State from './state.js';
-import LensDOM from './lensDOM.js';
+import NodeLens from './nodeLens.js';
 
 
 // Application State
@@ -18,7 +18,7 @@ const state = new State({
 
 // UI Lens
 // Use CSS Selectos to update Elements.
-const lens = new LensDOM({
+const lens = new NodeLens({
   // Match each cell in the grid.
   '.grid .cell': {
     // sets elm.className
