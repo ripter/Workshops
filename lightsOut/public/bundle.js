@@ -128,7 +128,6 @@ class LensDOM {
 
       // for each element matched by the css selector
       // update it using the properties object
-      // elements.forEach(updateElement.bind(state, properties));
       elements.forEach(this.updateElement.bind(this, state, properties));
     });
   }
@@ -164,7 +163,6 @@ class LensDOM {
           // call it with a forEach signature
           // set this to the state object
           value = value.call(state, element, index, elements);
-          // console.log('setting property value', propertyName, value, element);
           element[propertyName] = value;
         }
       }
@@ -189,15 +187,45 @@ class LensDOM {
 // Super Simple State/Store/Model for the application.
 class State {
   constructor(initalState) {
-    Object.assign(this, initalState);
+    Object.assign(this, {
+      width: 1,
+      height: 1,
+      board: [
+        [0],
+      ],
+    }, initalState);
     this._changeCallbacks = [];
     this.randomize();
   }
 
   // Register a callback on the change 'event'.
+  // @public
   onChange(callback) {
     this._changeCallbacks.push(callback);
   }
+
+  // converts array index into a point {x,y}
+  // @public
+  index2Point(index) {
+    const { width } = this; // state === this
+    const y = 0 | index / width;
+    const x = index - (y * width);
+    return {x, y};
+  }
+
+  // Perform a game action.
+  // Toggles a cross of lights.
+  // Checks for win
+  // @public
+  action(x, y) {
+    this.toggleCross(x,y);
+    this.updateGameOver()
+
+    // Trigger the change 'event'
+    // so the UI can update
+    this.triggerChange();
+  }
+
 
   // Trigger the change 'events', calling all the callbacks.
   triggerChange() {
@@ -212,17 +240,9 @@ class State {
     board[x][y] = board[x][y] === 0 ? 1 : 0;
   }
 
-  // converts array index into a point {x,y}
-  index2Point(index) {
-    const { width } = this; // state === this
-    const y = 0 | index / width;
-    const x = index - (y * width);
-    return {x, y};
-  }
-
   // Toggle the grid lights starting at point
   // This toggles the lights in a cross pattern
-  action(x, y) {
+  toggleCross(x, y) {
     const { width, height } = this;
 
     if (y-1 >= 0) {
@@ -240,9 +260,6 @@ class State {
     if (y+1 < height) {
       this.toggle(x, y+1);
     }
-
-    // Trigger the change 'event'
-    this.triggerChange();
   }
 
   // Randomizes the pattern on the board.
@@ -256,6 +273,17 @@ class State {
       y = 0|Math.random() * height;
       this.action(x, y);
     }
+  }
+
+  // update the isGameOver state
+  updateGameOver() {
+    const { board } = this;
+    // if every cell is off
+    this.isGameOver = board.every((row) => {
+      return row.every((cel) => {
+        return cel === 0;
+      });
+    });
   }
 
 }

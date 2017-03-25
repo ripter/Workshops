@@ -29,7 +29,6 @@ export class LensDOM {
 
       // for each element matched by the css selector
       // update it using the properties object
-      // elements.forEach(updateElement.bind(state, properties));
       elements.forEach(this.updateElement.bind(this, state, properties));
     });
   }
@@ -65,7 +64,6 @@ export class LensDOM {
           // call it with a forEach signature
           // set this to the state object
           value = value.call(state, element, index, elements);
-          // console.log('setting property value', propertyName, value, element);
           element[propertyName] = value;
         }
       }
