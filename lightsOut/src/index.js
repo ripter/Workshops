@@ -19,11 +19,16 @@ const state = new State({
 // UI Lens
 // Use CSS Selectos to update Elements.
 const lens = new NodeLens({
-  // Match each cell in the grid.
+  // update each cell in the gird. This is the "light" the user clicks on.
   '.grid .cell': {
-    // sets elm.className
+    // when the gameboard has a value of 1, give it the .active class
     className: function(elm, index) {
-      const { board } = this;
+      const { board, isGameOver } = this;
+      if (isGameOver) {
+        // This means this lens will no longer match this element.
+        // The events will be automatically unbound on the next update.
+        return 'win';
+      }
       const { x, y } = this.index2Point(index);
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
@@ -37,15 +42,32 @@ const lens = new NodeLens({
       return result;
     },
 
-    // onclick event (event names are always lower case)
+    // When the user clicks on a .grid .cell
+    // perform a game action on it.
     onClick(evt, elm, index) {
+      console.log('click .cell');
       const { x, y } = this.index2Point(index);
       this.action(x,y);
     },
   },
+
+  '.grid .win': {
+    className: function(elm, index) {
+      if (this.isGameOver) {
+        return 'win';
+      }
+      return 'cell active';
+    },
+
+    // click anywhere to reset the game
+    onClick() {
+      console.log('click .win');
+      this.reset();
+    },
+  },
 });
 
-// On change, re-render
+// re-render whenever the state changes
 state.onChange(() => {
   lens.update(state);
 });

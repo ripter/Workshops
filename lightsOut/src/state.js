@@ -8,9 +8,10 @@ export class State {
       board: [
         [0],
       ],
+      isGameOver: false,
     }, initalState);
     this._changeCallbacks = [];
-    this.randomize();
+    // this.randomize();
   }
 
   // Register a callback on the change 'event'.
@@ -41,6 +42,14 @@ export class State {
     this.triggerChange();
   }
 
+  // Reset the game state
+  // @public
+  reset() {
+    this.randomize();
+    this.isGameOver = false;
+    this.triggerChange();
+  }
+
 
   // Trigger the change 'events', calling all the callbacks.
   triggerChange() {
@@ -59,6 +68,7 @@ export class State {
   // This toggles the lights in a cross pattern
   toggleCross(x, y) {
     const { width, height } = this;
+    console.log('toggleCross', x, y);
 
     if (y-1 >= 0) {
       this.toggle(x, y-1);

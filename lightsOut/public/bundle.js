@@ -198,9 +198,10 @@ class State {
       board: [
         [0],
       ],
+      isGameOver: false,
     }, initalState);
     this._changeCallbacks = [];
-    this.randomize();
+    // this.randomize();
   }
 
   // Register a callback on the change 'event'.
@@ -231,6 +232,14 @@ class State {
     this.triggerChange();
   }
 
+  // Reset the game state
+  // @public
+  reset() {
+    this.randomize();
+    this.isGameOver = false;
+    this.triggerChange();
+  }
+
 
   // Trigger the change 'events', calling all the callbacks.
   triggerChange() {
@@ -249,6 +258,7 @@ class State {
   // This toggles the lights in a cross pattern
   toggleCross(x, y) {
     const { width, height } = this;
+    console.log('toggleCross', x, y);
 
     if (y-1 >= 0) {
       this.toggle(x, y-1);
@@ -306,7 +316,7 @@ exports = module.exports = __webpack_require__(4)();
 
 
 // module
-exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
+exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.grid > .row > * {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n}\n.cell {\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n.win {\n  background-color: #2ECC40;\n  animation: spin 3s linear infinite;\n}\n@keyframes spin {\n  from {\n    transform: rotate3d(0, 0, 0, 0deg);\n  }\n  to {\n    transform: rotate3d(-1, -1, 1, 360deg);\n  }\n}\n", ""]);
 
 // exports
 
@@ -675,11 +685,16 @@ const state = new __WEBPACK_IMPORTED_MODULE_1__state_js__["a" /* default */]({
 // UI Lens
 // Use CSS Selectos to update Elements.
 const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
-  // Match each cell in the grid.
+  // update each cell in the gird. This is the "light" the user clicks on.
   '.grid .cell': {
-    // sets elm.className
+    // when the gameboard has a value of 1, give it the .active class
     className: function(elm, index) {
-      const { board } = this;
+      const { board, isGameOver } = this;
+      if (isGameOver) {
+        // This means this lens will no longer match this element.
+        // The events will be automatically unbound on the next update.
+        return 'win';
+      }
       const { x, y } = this.index2Point(index);
       const val = board[x][y];
       let result = 'cell'; //keep the cell class so we will still match next update.
@@ -693,15 +708,32 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
       return result;
     },
 
-    // onclick event (event names are always lower case)
+    // When the user clicks on a .grid .cell
+    // perform a game action on it.
     onClick(evt, elm, index) {
+      console.log('click .cell');
       const { x, y } = this.index2Point(index);
       this.action(x,y);
     },
   },
+
+  '.grid .win': {
+    className: function(elm, index) {
+      if (this.isGameOver) {
+        return 'win';
+      }
+      return 'cell active';
+    },
+
+    // click anywhere to reset the game
+    onClick() {
+      console.log('click .win');
+      this.reset();
+    },
+  },
 });
 
-// On change, re-render
+// re-render whenever the state changes
 state.onChange(() => {
   lens.update(state);
 });
