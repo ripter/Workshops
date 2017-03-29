@@ -131,6 +131,7 @@ class NodeLens {
       // skip selectors that do not match
       if (elements.length === 0) { return; }
 
+      console.log('setting', elements, properties);
       // for each element matched by the css selector
       // update it using the properties object
       elements.forEach(this.updateElement.bind(this, state, properties));
@@ -201,7 +202,7 @@ class State {
       isGameOver: false,
     }, initalState);
     this._changeCallbacks = [];
-    // this.randomize();
+    this.randomize();
   }
 
   // Register a callback on the change 'event'.
@@ -279,15 +280,25 @@ class State {
 
   // Randomizes the pattern on the board.
   randomize() {
-    const { width, height } = this;
-    let randomCount = 0|Math.random() * 20;
-    let x, y;
+    //TEMP: For testing the end game
+    this.board = [
+      [0,0,0,0,0],
+      [0,0,1,0,0],
+      [0,1,1,1,0],
+      [0,0,1,0,0],
+      [0,0,0,0,0],
+    ];
 
-    while (randomCount--) {
-      x = 0|Math.random() * width;
-      y = 0|Math.random() * height;
-      this.action(x, y);
-    }
+    //END TEMP
+    // const { width, height } = this;
+    // let randomCount = 0|Math.random() * 20;
+    // let x, y;
+    //
+    // while (randomCount--) {
+    //   x = 0|Math.random() * width;
+    //   y = 0|Math.random() * height;
+    //   this.action(x, y);
+    // }
   }
 
   // update the isGameOver state
@@ -693,6 +704,7 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
       if (isGameOver) {
         // This means this lens will no longer match this element.
         // The events will be automatically unbound on the next update.
+        // The next lens in the list can target the new .win
         return 'win';
       }
       const { x, y } = this.index2Point(index);
@@ -714,6 +726,10 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
       console.log('click .cell');
       const { x, y } = this.index2Point(index);
       this.action(x,y);
+      // prevent parent click handlers from triggering.
+      // we have handled the click event.
+      evt.stopPropagation();
+      return false;
     },
   },
 
@@ -722,15 +738,20 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
       if (this.isGameOver) {
         return 'win';
       }
-      return 'cell active';
-    },
-
-    // click anywhere to reset the game
-    onClick() {
-      console.log('click .win');
-      this.reset();
+      return 'cell';
+      // return elm.className;
     },
   },
+
+  '.grid': {
+    // click anywhere to reset the game
+    onClick(evt) {
+      console.log('click .grid', evt);
+      if (this.isGameOver) {
+        this.reset();
+      }
+    },
+  }
 });
 
 // re-render whenever the state changes

@@ -27,6 +27,7 @@ const lens = new NodeLens({
       if (isGameOver) {
         // This means this lens will no longer match this element.
         // The events will be automatically unbound on the next update.
+        // The next lens in the list can target the new .win
         return 'win';
       }
       const { x, y } = this.index2Point(index);
@@ -48,6 +49,10 @@ const lens = new NodeLens({
       console.log('click .cell');
       const { x, y } = this.index2Point(index);
       this.action(x,y);
+      // prevent parent click handlers from triggering.
+      // we have handled the click event.
+      evt.stopPropagation();
+      return false;
     },
   },
 
@@ -56,15 +61,20 @@ const lens = new NodeLens({
       if (this.isGameOver) {
         return 'win';
       }
-      return 'cell active';
-    },
-
-    // click anywhere to reset the game
-    onClick() {
-      console.log('click .win');
-      this.reset();
+      return 'cell';
+      // return elm.className;
     },
   },
+
+  '.grid': {
+    // click anywhere to reset the game
+    onClick(evt) {
+      console.log('click .grid', evt);
+      if (this.isGameOver) {
+        this.reset();
+      }
+    },
+  }
 });
 
 // re-render whenever the state changes

@@ -11,7 +11,7 @@ export class State {
       isGameOver: false,
     }, initalState);
     this._changeCallbacks = [];
-    // this.randomize();
+    this.randomize();
   }
 
   // Register a callback on the change 'event'.
@@ -89,15 +89,25 @@ export class State {
 
   // Randomizes the pattern on the board.
   randomize() {
-    const { width, height } = this;
-    let randomCount = 0|Math.random() * 20;
-    let x, y;
+    //TEMP: For testing the end game
+    this.board = [
+      [0,0,0,0,0],
+      [0,0,1,0,0],
+      [0,1,1,1,0],
+      [0,0,1,0,0],
+      [0,0,0,0,0],
+    ];
 
-    while (randomCount--) {
-      x = 0|Math.random() * width;
-      y = 0|Math.random() * height;
-      this.action(x, y);
-    }
+    //END TEMP
+    // const { width, height } = this;
+    // let randomCount = 0|Math.random() * 20;
+    // let x, y;
+    //
+    // while (randomCount--) {
+    //   x = 0|Math.random() * width;
+    //   y = 0|Math.random() * height;
+    //   this.action(x, y);
+    // }
   }
 
   // update the isGameOver state
