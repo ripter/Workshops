@@ -32,7 +32,7 @@ export class NodeLens {
       // skip selectors that do not match
       if (elements.length === 0) { return; }
 
-      console.log('setting', elements, properties);
+      // console.log('setting', elements, properties);
       // for each element matched by the css selector
       // update it using the properties object
       elements.forEach(this.updateElement.bind(this, state, properties));

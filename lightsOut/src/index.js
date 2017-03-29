@@ -19,62 +19,44 @@ const state = new State({
 // UI Lens
 // Use CSS Selectos to update Elements.
 const lens = new NodeLens({
-  // update each cell in the gird. This is the "light" the user clicks on.
+  // match each cell in the grid.
   '.grid .cell': {
-    // when the gameboard has a value of 1, give it the .active class
+    // update the className based on state.
     className: function(elm, index) {
       const { board, isGameOver } = this;
+      const { x, y } = this.index2Point(index);
+      const cell = board[x][y];
+      const value = 'cell ';
+
       if (isGameOver) {
-        // This means this lens will no longer match this element.
-        // The events will be automatically unbound on the next update.
-        // The next lens in the list can target the new .win
-        return 'win';
-      }
-      const { x, y } = this.index2Point(index);
-      const val = board[x][y];
-      let result = 'cell'; //keep the cell class so we will still match next update.
-
-      // if the value in the array is 1
-      // give it the class active
-      if (val === 1) {
-        result += ' active';
+        return value + 'win';
       }
 
-      return result;
+      if (cell === 1) {
+        return value + 'active';
+      }
+      return value;
     },
-
-    // When the user clicks on a .grid .cell
-    // perform a game action on it.
-    onClick(evt, elm, index) {
-      console.log('click .cell');
+    // user presses a cell to perform a game action.
+    onClick: function(evt, elm, index) {
       const { x, y } = this.index2Point(index);
-      this.action(x,y);
-      // prevent parent click handlers from triggering.
-      // we have handled the click event.
+
+      this.actionClick(x, y);
       evt.stopPropagation();
-      return false;
     },
   },
 
-  '.grid .win': {
-    className: function(elm, index) {
-      if (this.isGameOver) {
-        return 'win';
-      }
-      return 'cell';
-      // return elm.className;
-    },
-  },
-
+  // click anywhere to reset the game
   '.grid': {
-    // click anywhere to reset the game
     onClick(evt) {
-      console.log('click .grid', evt);
-      if (this.isGameOver) {
+      const { isGameOver } = this;
+
+      if (isGameOver) {
         this.reset();
+        evt.stopPropagation();
       }
     },
-  }
+  },
 });
 
 // re-render whenever the state changes

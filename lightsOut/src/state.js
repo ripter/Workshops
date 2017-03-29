@@ -29,13 +29,12 @@ export class State {
     return {x, y};
   }
 
-  // Perform a game action.
   // Toggles a cross of lights.
   // Checks for win
   // @public
-  action(x, y) {
+  actionClick(x, y) {
     this.toggleCross(x,y);
-    this.updateGameOver()
+    this.updateGameOver();
 
     // Trigger the change 'event'
     // so the UI can update
@@ -89,25 +88,15 @@ export class State {
 
   // Randomizes the pattern on the board.
   randomize() {
-    //TEMP: For testing the end game
-    this.board = [
-      [0,0,0,0,0],
-      [0,0,1,0,0],
-      [0,1,1,1,0],
-      [0,0,1,0,0],
-      [0,0,0,0,0],
-    ];
+    const { width, height } = this;
+    let randomCount = 0|Math.random() * 20;
+    let x, y;
 
-    //END TEMP
-    // const { width, height } = this;
-    // let randomCount = 0|Math.random() * 20;
-    // let x, y;
-    //
-    // while (randomCount--) {
-    //   x = 0|Math.random() * width;
-    //   y = 0|Math.random() * height;
-    //   this.action(x, y);
-    // }
+    while (randomCount--) {
+      x = 0|Math.random() * width;
+      y = 0|Math.random() * height;
+      this.actionClick(x, y);
+    }
   }
 
   // update the isGameOver state
