@@ -67,7 +67,6 @@ export class State {
   // This toggles the lights in a cross pattern
   toggleCross(x, y) {
     const { width, height } = this;
-    console.log('toggleCross', x, y);
 
     if (y-1 >= 0) {
       this.toggle(x, y-1);
