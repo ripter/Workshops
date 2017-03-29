@@ -1,6 +1,6 @@
 import '../less/index.less';
 import State from './state.js';
-import LensDOM from './lensDOM.js';
+import NodeLens from './nodeLens.js';
 
 
 // Application State
@@ -18,34 +18,48 @@ const state = new State({
 
 // UI Lens
 // Use CSS Selectos to update Elements.
-const lens = new LensDOM({
-  // Match each cell in the grid.
+const lens = new NodeLens({
+  // match each cell in the grid.
   '.grid .cell': {
-    // sets elm.className
+    // update the className based on state.
     className: function(elm, index) {
-      const { board } = this;
+      const { board, isGameOver } = this;
       const { x, y } = this.index2Point(index);
-      const val = board[x][y];
-      let result = 'cell'; //keep the cell class so we will still match next update.
+      const cell = board[x][y];
+      const value = 'cell ';
 
-      // if the value in the array is 1
-      // give it the class active
-      if (val === 1) {
-        result += ' active';
+      if (isGameOver) {
+        return value + 'win';
       }
 
-      return result;
+      if (cell === 1) {
+        return value + 'active';
+      }
+      return value;
     },
-
-    // onclick event (event names are always lower case)
-    onClick(evt, elm, index) {
+    // user presses a cell to perform a game action.
+    onClick: function(evt, elm, index) {
       const { x, y } = this.index2Point(index);
-      this.action(x,y);
+
+      this.actionClick(x, y);
+      evt.stopPropagation();
+    },
+  },
+
+  // click anywhere to reset the game
+  '.grid': {
+    onClick(evt) {
+      const { isGameOver } = this;
+
+      if (isGameOver) {
+        this.reset();
+        evt.stopPropagation();
+      }
     },
   },
 });
 
-// On change, re-render
+// re-render whenever the state changes
 state.onChange(() => {
   lens.update(state);
 });

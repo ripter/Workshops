@@ -19,9 +19,9 @@ module.exports = {
       }
     ]
   },
-  // resolve: {
-  //   alias: {
-  //     'vue$': 'vue/dist/vue.common.js'
-  //   }
-  // }
+  resolve: {
+    alias: {
+      'bind': path.resolve(__dirname, 'node_modules/@ripter/bind/')
+    }
+  }
 }

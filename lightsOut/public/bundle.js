@@ -95,10 +95,16 @@ if(false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bind_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__);
 
 
-class LensDOM {
+/**
+ * Creates a lens on the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+ * using CSS Selectors to focus on a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+ * to set propteries on Nodes, HTMLElements, WebComponents, etc.
+ */
+class NodeLens {
   constructor(rules) {
     this.rules = rules;
     this.events = [];
@@ -125,9 +131,9 @@ class LensDOM {
       // skip selectors that do not match
       if (elements.length === 0) { return; }
 
+      // console.log('setting', elements, properties);
       // for each element matched by the css selector
       // update it using the properties object
-      // elements.forEach(updateElement.bind(state, properties));
       elements.forEach(this.updateElement.bind(this, state, properties));
     });
   }
@@ -152,7 +158,7 @@ class LensDOM {
         if (eventMatch) {
           const eventName = eventMatch[1].toLocaleLowerCase();
           // Bind the event
-          const unbind = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__bind_js__["a" /* default */])(element, eventName, (evt) => {
+          const unbind = __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default()(element, eventName, (evt) => {
             value.call(state, evt, element, index, elements);
           });
 
@@ -163,7 +169,6 @@ class LensDOM {
           // call it with a forEach signature
           // set this to the state object
           value = value.call(state, element, index, elements);
-          // console.log('setting property value', propertyName, value, element);
           element[propertyName] = value;
         }
       }
@@ -174,9 +179,9 @@ class LensDOM {
     });
   }
 }
-/* unused harmony export LensDOM */
+/* unused harmony export NodeLens */
 
-/* harmony default export */ exports["a"] = LensDOM;
+/* harmony default export */ exports["a"] = NodeLens;
 
 
 /***/ },
@@ -188,15 +193,53 @@ class LensDOM {
 // Super Simple State/Store/Model for the application.
 class State {
   constructor(initalState) {
-    Object.assign(this, initalState);
+    Object.assign(this, {
+      width: 1,
+      height: 1,
+      board: [
+        [0],
+      ],
+      isGameOver: false,
+    }, initalState);
     this._changeCallbacks = [];
     this.randomize();
   }
 
   // Register a callback on the change 'event'.
+  // @public
   onChange(callback) {
     this._changeCallbacks.push(callback);
   }
+
+  // converts array index into a point {x,y}
+  // @public
+  index2Point(index) {
+    const { width } = this; // state === this
+    const y = 0 | index / width;
+    const x = index - (y * width);
+    return {x, y};
+  }
+
+  // Toggles a cross of lights.
+  // Checks for win
+  // @public
+  actionClick(x, y) {
+    this.toggleCross(x,y);
+    this.updateGameOver();
+
+    // Trigger the change 'event'
+    // so the UI can update
+    this.triggerChange();
+  }
+
+  // Reset the game state
+  // @public
+  reset() {
+    this.randomize();
+    this.isGameOver = false;
+    this.triggerChange();
+  }
+
 
   // Trigger the change 'events', calling all the callbacks.
   triggerChange() {
@@ -211,17 +254,9 @@ class State {
     board[x][y] = board[x][y] === 0 ? 1 : 0;
   }
 
-  // converts array index into a point {x,y}
-  index2Point(index) {
-    const { width } = this; // state === this
-    const y = 0 | index / width;
-    const x = index - (y * width);
-    return {x, y};
-  }
-
   // Toggle the grid lights starting at point
   // This toggles the lights in a cross pattern
-  action(x, y) {
+  toggleCross(x, y) {
     const { width, height } = this;
 
     if (y-1 >= 0) {
@@ -239,9 +274,6 @@ class State {
     if (y+1 < height) {
       this.toggle(x, y+1);
     }
-
-    // Trigger the change 'event'
-    this.triggerChange();
   }
 
   // Randomizes the pattern on the board.
@@ -253,8 +285,19 @@ class State {
     while (randomCount--) {
       x = 0|Math.random() * width;
       y = 0|Math.random() * height;
-      this.action(x, y);
+      this.actionClick(x, y);
     }
+  }
+
+  // update the isGameOver state
+  updateGameOver() {
+    const { board } = this;
+    // if every cell is off
+    this.isGameOver = board.every((row) => {
+      return row.every((cel) => {
+        return cel === 0;
+      });
+    });
   }
 
 }
@@ -272,7 +315,7 @@ exports = module.exports = __webpack_require__(4)();
 
 
 // module
-exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.cell {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n", ""]);
+exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex;\n}\n.grid > .row > * {\n  font-size: 12px;\n  width: 10em;\n  height: 10em;\n}\n.cell {\n  background-color: #0074D9;\n}\n.active {\n  box-shadow: inset 0px 0px 10em 1em #7FDBFF;\n}\n.win {\n  background-color: #2ECC40;\n  animation: spin 3s linear infinite;\n}\n@keyframes spin {\n  from {\n    transform: rotate3d(0, 0, 0, 0deg);\n  }\n  to {\n    transform: rotate3d(-1, -1, 1, 360deg);\n  }\n}\n", ""]);
 
 // exports
 
@@ -587,10 +630,9 @@ function updateLink(linkElement, obj) {
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-"use strict";
-/* unused harmony export bind */
+const NAME = 'bind.dom';
 
 /**
  * bind - listens to event on element, returning a function to stop listening to the event.
@@ -607,7 +649,9 @@ function bind(element, eventName, callback) {
     element.removeEventListener(eventName, callback);
   };
 }
-/* harmony default export */ exports["a"] = bind;
+
+// Exports
+module.exports = bind;
 
 
 /***/ },
@@ -618,7 +662,7 @@ function bind(element, eventName, callback) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__less_index_less__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__state_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__ = __webpack_require__(1);
 
 
 
@@ -639,34 +683,48 @@ const state = new __WEBPACK_IMPORTED_MODULE_1__state_js__["a" /* default */]({
 
 // UI Lens
 // Use CSS Selectos to update Elements.
-const lens = new __WEBPACK_IMPORTED_MODULE_2__lensDOM_js__["a" /* default */]({
-  // Match each cell in the grid.
+const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
+  // match each cell in the grid.
   '.grid .cell': {
-    // sets elm.className
+    // update the className based on state.
     className: function(elm, index) {
-      const { board } = this;
+      const { board, isGameOver } = this;
       const { x, y } = this.index2Point(index);
-      const val = board[x][y];
-      let result = 'cell'; //keep the cell class so we will still match next update.
+      const cell = board[x][y];
+      const value = 'cell ';
 
-      // if the value in the array is 1
-      // give it the class active
-      if (val === 1) {
-        result += ' active';
+      if (isGameOver) {
+        return value + 'win';
       }
 
-      return result;
+      if (cell === 1) {
+        return value + 'active';
+      }
+      return value;
     },
-
-    // onclick event (event names are always lower case)
-    onClick(evt, elm, index) {
+    // user presses a cell to perform a game action.
+    onClick: function(evt, elm, index) {
       const { x, y } = this.index2Point(index);
-      this.action(x,y);
+
+      this.actionClick(x, y);
+      evt.stopPropagation();
+    },
+  },
+
+  // click anywhere to reset the game
+  '.grid': {
+    onClick(evt) {
+      const { isGameOver } = this;
+
+      if (isGameOver) {
+        this.reset();
+        evt.stopPropagation();
+      }
     },
   },
 });
 
-// On change, re-render
+// re-render whenever the state changes
 state.onChange(() => {
   lens.update(state);
 });

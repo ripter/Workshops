@@ -1,6 +1,11 @@
-import bind from './bind.js';
+import bind from 'bind/src/bind.dom.js';
 
-export class LensDOM {
+/**
+ * Creates a lens on the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+ * using CSS Selectors to focus on a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+ * to set propteries on Nodes, HTMLElements, WebComponents, etc.
+ */
+export class NodeLens {
   constructor(rules) {
     this.rules = rules;
     this.events = [];
@@ -27,9 +32,9 @@ export class LensDOM {
       // skip selectors that do not match
       if (elements.length === 0) { return; }
 
+      // console.log('setting', elements, properties);
       // for each element matched by the css selector
       // update it using the properties object
-      // elements.forEach(updateElement.bind(state, properties));
       elements.forEach(this.updateElement.bind(this, state, properties));
     });
   }
@@ -65,7 +70,6 @@ export class LensDOM {
           // call it with a forEach signature
           // set this to the state object
           value = value.call(state, element, index, elements);
-          // console.log('setting property value', propertyName, value, element);
           element[propertyName] = value;
         }
       }
@@ -76,4 +80,4 @@ export class LensDOM {
     });
   }
 }
-export default LensDOM;
+export default NodeLens;
