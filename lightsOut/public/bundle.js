@@ -61,131 +61,22 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+const domLens = __webpack_require__(4);
+const updateAttributes = __webpack_require__(5);
 
-// load the styles
-var content = __webpack_require__(3);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./index.less", function() {
-			var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./index.less");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+// Default to the updateAttributes rules
+module.exports = domLens.bind(null, updateAttributes);
+
 
 /***/ },
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js__);
-
-
-/**
- * Creates a lens on the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
- * using CSS Selectors to focus on a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
- * to set propteries on Nodes, HTMLElements, WebComponents, etc.
- */
-class NodeLens {
-  constructor(rules) {
-    this.rules = rules;
-    this.events = [];
-  }
-
-  /**
-   * Updates the DOM
-   * @param {Object} state - object is bound to `this` when rule functions are called.
-   */
-  update(state) {
-    const { rules } = this;
-
-    // unbind the old events
-    // This prevents duplicate events and events on detached elements.
-    this.events.forEach((unbind) => {
-      unbind();
-    });
-
-    // rule key is a css selector
-    // loop over all the rules
-    Object.keys(rules).forEach((cssSelector) => {
-      const elements = document.querySelectorAll(cssSelector);
-      const properties = rules[cssSelector];
-      // skip selectors that do not match
-      if (elements.length === 0) { return; }
-
-      // console.log('setting', elements, properties);
-      // for each element matched by the css selector
-      // update it using the properties object
-      elements.forEach(this.updateElement.bind(this, state, properties));
-    });
-  }
-
-  /**
-   * Updates element with properties
-   * `updateElement.call(state, properties, index, elements)`
-   * @param {Object} state - state is set to `this` when calling function
-   * @param {Object} properties - {propertyName: value|function,}
-   * @param {Element} element - DOM/Object with properties, addEventListener
-   * @param {Number} index - element's index in elements
-   * @param {Array} elements - array that contains element.
-   */
-  updateElement(state, properties, element, index, elements) {
-    // for each of the properties we want to change
-    Object.keys(properties).forEach((propertyName) => {
-      const eventMatch = propertyName.match(/on(\w+)/);
-      let value = properties[propertyName];
-
-      // if value is a function,
-      if (typeof value === 'function') {
-        if (eventMatch) {
-          const eventName = eventMatch[1].toLocaleLowerCase();
-          // Bind the event
-          const unbind = __WEBPACK_IMPORTED_MODULE_0_bind_src_bind_dom_js___default()(element, eventName, (evt) => {
-            value.call(state, evt, element, index, elements);
-          });
-
-          // save the unbind event.
-          this.events.push(unbind);
-        }
-        else {
-          // call it with a forEach signature
-          // set this to the state object
-          value = value.call(state, element, index, elements);
-          element[propertyName] = value;
-        }
-      }
-      // Not a function, just set the value
-      else {
-        element[propertyName] = value;
-      }
-    });
-  }
-}
-/* unused harmony export NodeLens */
-
-/* harmony default export */ exports["a"] = NodeLens;
-
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -196,10 +87,8 @@ class State {
     Object.assign(this, {
       width: 1,
       height: 1,
-      board: [
-        [0],
-      ],
-      isGameOver: false,
+      board: [[0]],
+      isGameOver: false
     }, initalState);
     this._changeCallbacks = [];
     this.randomize();
@@ -216,15 +105,15 @@ class State {
   index2Point(index) {
     const { width } = this; // state === this
     const y = 0 | index / width;
-    const x = index - (y * width);
-    return {x, y};
+    const x = index - y * width;
+    return { x, y };
   }
 
   // Toggles a cross of lights.
   // Checks for win
   // @public
   actionClick(x, y) {
-    this.toggleCross(x,y);
+    this.toggleCross(x, y);
     this.updateGameOver();
 
     // Trigger the change 'event'
@@ -240,10 +129,9 @@ class State {
     this.triggerChange();
   }
 
-
   // Trigger the change 'events', calling all the callbacks.
   triggerChange() {
-    this._changeCallbacks.forEach((callback) => {
+    this._changeCallbacks.forEach(callback => {
       callback(this);
     });
   }
@@ -259,32 +147,32 @@ class State {
   toggleCross(x, y) {
     const { width, height } = this;
 
-    if (y-1 >= 0) {
-      this.toggle(x, y-1);
+    if (y - 1 >= 0) {
+      this.toggle(x, y - 1);
     }
-    if (x-1 >= 0) {
-      this.toggle(x-1, y);
+    if (x - 1 >= 0) {
+      this.toggle(x - 1, y);
     }
     if (x >= 0) {
       this.toggle(x, y);
     }
-    if (x+1 < width) {
-      this.toggle(x+1, y);
+    if (x + 1 < width) {
+      this.toggle(x + 1, y);
     }
-    if (y+1 < height) {
-      this.toggle(x, y+1);
+    if (y + 1 < height) {
+      this.toggle(x, y + 1);
     }
   }
 
   // Randomizes the pattern on the board.
   randomize() {
     const { width, height } = this;
-    let randomCount = 0|Math.random() * 20;
+    let randomCount = 0 | Math.random() * 20;
     let x, y;
 
     while (randomCount--) {
-      x = 0|Math.random() * width;
-      y = 0|Math.random() * height;
+      x = 0 | Math.random() * width;
+      y = 0 | Math.random() * height;
       this.actionClick(x, y);
     }
   }
@@ -293,8 +181,8 @@ class State {
   updateGameOver() {
     const { board } = this;
     // if every cell is off
-    this.isGameOver = board.every((row) => {
-      return row.every((cel) => {
+    this.isGameOver = board.every(row => {
+      return row.every(cel => {
         return cel === 0;
       });
     });
@@ -305,12 +193,153 @@ class State {
 
 /* harmony default export */ exports["a"] = State;
 
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(6);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(8)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./index.less", function() {
+			var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./index.less");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+/**
+ * bind - listens to event on element, returning a function to stop listening to the event.
+ * Inspired by Atom's Disposable
+ * @param {EventTarget} element - https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
+ * @param {String} eventName - Name of the event. Like 'click', or 'did-custom-event'
+ * @param {Function} callback -
+ * @return unbind - function that unbinds the callback from the event on element.
+ */
+function bind(element, eventName, callback) {
+  element.addEventListener(eventName, callback);
+
+  return function unbind() {
+    element.removeEventListener(eventName, callback);
+  };
+}
+
+// Exports
+module.exports = bind;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+
+/**
+ * Acts as a lens that matches a [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) with a context.
+ * Loops over rules document.querySelectorAll the key.
+ * @param {Function} forEach - A forEach callback function. It will be invoked for every Node matched in every rule.
+ * @param {Object} rules - Key is CSS Selector, Value is passed into the forEach with context.
+ * @param {Object} context - set as the `this` context in the forEach callback.
+ * @module domLens
+ */
+function domLens(forEach, rules, context) {
+  // rule key is a css selector
+  // loop over all the rules
+  Object.keys(rules).forEach((selector) => {
+    const elements = document.querySelectorAll(selector);
+    const rule = rules[selector];
+
+    // skip selectors that do not match
+    if (elements.length === 0) { return; }
+    // call the forEach function bound to context and rule value.
+    elements.forEach(forEach.bind(context, rule));
+  });
+}
+
+module.exports = domLens;
+
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+// use [EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
+const bindEvent = __webpack_require__(3);
+const UNBIND = Symbol('unbind');
+
+/**
+ * Updates node's attributes with the values from attribtues.
+ * @example:
+ domLens({
+   '.cell': {
+     // keys are Node attributes (including events), values are anything (including functions).
+     className: () => '.cell .is-updated',
+   }, updateAttributes, state);
+ });
+ * @param {Object} attributes - and object of attributes and values to set on the node.
+ * @param {Node} node - the node matched by the rule.
+ * @param {Number} index - the node's index in the nodeList.
+ * @param {NodeList} nodeList - the nodeList returned from the rule.
+ * @name updateAttributes
+ */
+function updateAttributes(attributes, node, index, nodeList) {
+  // unbind any existing event listeners before we bind the new ones.
+  if (typeof node[UNBIND] === 'function') {
+    node[UNBIND]();
+  }
+
+  Object.keys(attributes).forEach((attrName) => {
+    const attrValue = attributes[attrName];
+    const isCallback = typeof attrValue === 'function';
+    const isEvent = attrName.match(/on(\w+)/);
+    let callback;
+
+    // If the value is not a function, just set it and move on.
+    if (!isCallback) {
+      node[attrName] = attrValue;
+      return;
+    }
+
+    // bind the function context.
+    // eslint-disable-next-line no-invalid-this
+    callback = attrValue.bind(this);
+
+    // if it is an event with callback
+    if (isEvent && isCallback) {
+      // bind the event handler. save the unbind method on the node.
+      node[UNBIND] = bindEvent(node, isEvent[1].toLocaleLowerCase(), (evt) => {
+        callback(evt, node, index, nodeList);
+      });
+      return;
+    }
+    // Not an event
+    // set the value to the result of the attribute function
+    node[attrName] = callback(node, index, nodeList);
+  });
+}
+
+module.exports = updateAttributes;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(7)();
 // imports
 
 
@@ -321,7 +350,7 @@ exports.push([module.i, "/* COMPONENT STYLES */\n.grid > .row {\n  display: flex
 
 
 /***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports) {
 
 /*
@@ -377,7 +406,7 @@ module.exports = function() {
 
 
 /***/ },
-/* 5 */
+/* 8 */
 /***/ function(module, exports) {
 
 /*
@@ -629,67 +658,36 @@ function updateLink(linkElement, obj) {
 
 
 /***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-const NAME = 'bind.dom';
-
-/**
- * bind - listens to event on element, returning a function to stop listening to the event.
- * Inspired by Atom's Disposable
- * @param {EventTarget} element - https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
- * @param {String} eventName - Name of the event. Like 'click', or 'did-custom-event'
- * @param {Function} callback -
- * @return unbind - function that unbinds the callback from the event on element.
- */
-function bind(element, eventName, callback) {
-  element.addEventListener(eventName, callback);
-
-  return function unbind() {
-    element.removeEventListener(eventName, callback);
-  };
-}
-
-// Exports
-module.exports = bind;
-
-
-/***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__less_index_less___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__less_index_less__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__state_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__state_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_domLens__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_domLens___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_domLens__);
 
 
+// import NodeLens from './nodeLens.js';
 
 
-
-// Application State
+// Initial Application State
 const state = new __WEBPACK_IMPORTED_MODULE_1__state_js__["a" /* default */]({
   width: 5,
   height: 5,
-  board: [
-    [0,0,0,0,0],
-    [0,0,1,0,0],
-    [0,1,1,1,0],
-    [0,0,1,0,0],
-    [0,0,0,0,0],
-  ],
+  board: [[0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 1, 1, 1, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]]
 });
 
-// UI Lens
-// Use CSS Selectos to update Elements.
-const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
-  // match each cell in the grid.
+// Create rules that map our state to the UI.
+const rules = {
   '.grid .cell': {
-    // update the className based on state.
-    className: function(elm, index) {
-      const { board, isGameOver } = this;
-      const { x, y } = this.index2Point(index);
+    /**
+     * Sets the cell's className based on `state.board[x][y]`
+     */
+    className: function (elm, index) {
+      const { board, isGameOver } = state;
+      const { x, y } = state.index2Point(index);
       const cell = board[x][y];
       const value = 'cell ';
 
@@ -702,39 +700,43 @@ const lens = new __WEBPACK_IMPORTED_MODULE_2__nodeLens_js__["a" /* default */]({
       }
       return value;
     },
-    // user presses a cell to perform a game action.
-    onClick: function(evt, elm, index) {
-      const { x, y } = this.index2Point(index);
 
-      this.actionClick(x, y);
+    /**
+     * User plays by clicking one of the grid cells.
+     * This triggers a game action.
+     */
+    onClick: function (evt, elm, index) {
+      const { x, y } = state.index2Point(index);
+
+      state.actionClick(x, y);
       evt.stopPropagation();
-    },
+    }
   },
 
-  // click anywhere to reset the game
+  // match the entire grid so the user can
+  // click anywhere to reset the game.
   '.grid': {
     onClick(evt) {
-      const { isGameOver } = this;
+      const { isGameOver } = state;
 
       if (isGameOver) {
-        this.reset();
+        state.reset();
         evt.stopPropagation();
       }
-    },
-  },
-});
+    }
+  }
+};
 
 // re-render whenever the state changes
 state.onChange(() => {
-  lens.update(state);
+  __WEBPACK_IMPORTED_MODULE_2_domLens___default()(rules, state);
 });
 // trigger inital render
 state.triggerChange();
 
 // debugging fun
 window.state = state;
-window.lens = lens;
-
+window.rules = rules;
 
 /***/ }
 /******/ ]);

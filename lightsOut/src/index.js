@@ -1,9 +1,10 @@
 import '../less/index.less';
 import State from './state.js';
-import NodeLens from './nodeLens.js';
+// import NodeLens from './nodeLens.js';
+import domLens from 'domLens';
 
 
-// Application State
+// Initial Application State
 const state = new State({
   width: 5,
   height: 5,
@@ -16,15 +17,15 @@ const state = new State({
   ],
 });
 
-// UI Lens
-// Use CSS Selectos to update Elements.
-const lens = new NodeLens({
-  // match each cell in the grid.
+// Create rules that map our state to the UI.
+const rules = {
   '.grid .cell': {
-    // update the className based on state.
+    /**
+     * Sets the cell's className based on `state.board[x][y]`
+     */
     className: function(elm, index) {
-      const { board, isGameOver } = this;
-      const { x, y } = this.index2Point(index);
+      const { board, isGameOver } = state;
+      const { x, y } = state.index2Point(index);
       const cell = board[x][y];
       const value = 'cell ';
 
@@ -37,35 +38,41 @@ const lens = new NodeLens({
       }
       return value;
     },
-    // user presses a cell to perform a game action.
-    onClick: function(evt, elm, index) {
-      const { x, y } = this.index2Point(index);
 
-      this.actionClick(x, y);
+    /**
+     * User plays by clicking one of the grid cells.
+     * This triggers a game action.
+     */
+    onClick: function(evt, elm, index) {
+      const { x, y } = state.index2Point(index);
+
+      state.actionClick(x, y);
       evt.stopPropagation();
     },
   },
 
-  // click anywhere to reset the game
+  // match the entire grid so the user can
+  // click anywhere to reset the game.
   '.grid': {
     onClick(evt) {
-      const { isGameOver } = this;
+      const { isGameOver } = state;
 
       if (isGameOver) {
-        this.reset();
+        state.reset();
         evt.stopPropagation();
       }
     },
   },
-});
+};
+
 
 // re-render whenever the state changes
 state.onChange(() => {
-  lens.update(state);
+  domLens(rules, state);
 });
 // trigger inital render
 state.triggerChange();
 
 // debugging fun
 window.state = state;
-window.lens = lens;
+window.rules = rules;
