@@ -1,0 +1,3 @@
+--recursive
+--require jsdom-global/register
+--require babel-register

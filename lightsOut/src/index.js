@@ -1,7 +1,7 @@
 import '../less/index.less';
 import State from './state.js';
 // import NodeLens from './nodeLens.js';
-import domLens from 'domLens';
+import domLens from 'domlens';
 
 
 // Initial Application State

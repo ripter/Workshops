@@ -13,14 +13,14 @@ node_modules/: package.json
 	yarn
 
 test: node_modules/
-	$(NODE_BIN)/jest
+	$(NODE_BIN)/mocha --opts mocha.opts src/**/*.test.js
+
+test-nyan: node_modules/
+	$(NODE_BIN)/mocha --opts mocha.opts -R nyan src/**/*.test.js
 
 lint:
 	$(NODE_BIN)/eslint test/ src/
 
-
-test-nyan: node_modules/
-	$(NODE_BIN)/mocha -R nyan --recursive
 
 test-blink1: node_modules/
 	watch $(NODE_BIN)/mocha -R @ripter/mocha-reporter-blink1 --recursive

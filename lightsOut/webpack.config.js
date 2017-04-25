@@ -24,7 +24,7 @@ module.exports = {
       // I like npm namespaces, but I don't like typing them.
       // alias them without the namespace
       'bind': path.resolve(__dirname, 'node_modules/@ripter/bind/'),
-      'domLens': path.resolve(__dirname, 'node_modules/@ripter/domLens'),
+      'domlens': path.resolve(__dirname, 'node_modules/@ripter/domLens'),
     }
   }
 }
