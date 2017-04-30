@@ -9,10 +9,10 @@ const state = new State({
   width: 5,
   height: 5,
   board: [
+    [1,1,0,1,1],
+    [1,0,0,0,1],
     [0,0,0,0,0],
-    [0,0,1,0,0],
-    [0,1,1,1,0],
-    [0,0,1,0,0],
+    [0,0,0,0,0],
     [0,0,0,0,0],
   ],
 });
@@ -26,7 +26,7 @@ const rules = {
     className: function(elm, index) {
       const { board, isGameOver } = state;
       const { x, y } = state.index2Point(index);
-      const cell = board[x][y];
+      const cell = board[y][x];
       const value = 'cell ';
 
       if (isGameOver) {

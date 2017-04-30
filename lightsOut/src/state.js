@@ -1,17 +1,24 @@
 
 // Super Simple State/Store/Model for the application.
-export class State {
+export default class State {
   constructor(initalState) {
     Object.assign(this, {
       width: 1,
       height: 1,
-      board: [
-        [0],
-      ],
+      board: [],
       isGameOver: false,
     }, initalState);
     this._changeCallbacks = [];
-    this.randomize();
+
+    // board is optional
+    if (this.board.length === 0) {
+      this.board = new Array(this.height);
+
+      for (let y=0; y < this.height; y++) {
+        this.board[y] = new Array(this.width).fill(0);
+      }
+      this.randomize();
+    }
   }
 
   // Register a callback on the change 'event'.
@@ -60,7 +67,8 @@ export class State {
   // Toggle a value on the board
   toggle(x, y) {
     const { board } = this;
-    board[x][y] = board[x][y] === 0 ? 1 : 0;
+    // because the board is nested array, it's row, column = y, x
+    board[y][x] = board[y][x] === 0 ? 1 : 0;
   }
 
   // Toggle the grid lights starting at point
@@ -108,6 +116,4 @@ export class State {
       });
     });
   }
-
 }
-export default State;
