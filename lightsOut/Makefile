@@ -13,10 +13,10 @@ node_modules/: package.json
 	yarn
 
 test: node_modules/
-	$(NODE_BIN)/mocha --opts mocha.opts src/**/*.test.js
+	$(NODE_BIN)/mocha --opts mocha.opts ./src/**/*.test.js
 
 test-nyan: node_modules/
-	$(NODE_BIN)/mocha --opts mocha.opts -R nyan src/**/*.test.js
+	$(NODE_BIN)/mocha --opts mocha.opts -R nyan ./src/**/*.test.js
 
 lint:
 	$(NODE_BIN)/eslint test/ src/
