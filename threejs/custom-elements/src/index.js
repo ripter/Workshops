@@ -1,4 +1,9 @@
+import 'document-register-element';
 import * as THREE from 'three';
+
+// Register custom elements
+import ENtity from './elements/e-ntity.js';
+customElements.define('e-ntity', ENtity);
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
