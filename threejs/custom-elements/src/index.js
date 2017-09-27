@@ -37,7 +37,7 @@ var animate = function () {
   cube.rotation.x += 0.1;
   cube.rotation.y += 0.1;
 
-  elScene.renderer.render(scene, elCamera.camera);
+  elScene.renderer.render(elScene.scene, elCamera.camera);
 };
 
 animate();
