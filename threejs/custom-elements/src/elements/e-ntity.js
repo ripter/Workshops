@@ -14,7 +14,7 @@ class ENtity extends HTMLElement {
   constructor(self) {
     self = super(self);
 
-    console.log('e-ntity created');
+    console.log('e-ntity created', arguments);
     return self;
   }
  /**
@@ -22,7 +22,7 @@ class ENtity extends HTMLElement {
    */
   connectedCallback() {
     const state = {};
-    console.log('e-ntity connectedCallback');
+    console.log('e-ntity connectedCallback', arguments);
     this.render(state);
   }
 
