@@ -1,0 +1,10 @@
+/* Portrait layout (default) */
+body {
+  font-size: 35px;
+}
+
+@media screen and (orientation: landscape) {
+  body {
+    font-size: 30px;
+  }
+}

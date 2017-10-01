@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Adventure Jam</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="bundle.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-asset-item id="modelTable" src="models/tabletop.dae"></a-asset-item>
+      </a-assets>
+
+      <!-- Level -->
+      <a-entity>
+        <a-camera active-camera="level"
+          position="0 0 -1"
+          user-height="1.6"
+          look-controls>
+        </a-camera>
+
+        <a-entity collada-model="#modelTable"></a-entity>
+    </a-scene>
+  </body>
+</html>
