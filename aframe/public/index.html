@@ -12,7 +12,8 @@
   <body>
     <a-scene>
       <a-assets>
-        <a-asset-item id="modelTable" src="models/tabletop.dae"></a-asset-item>
+        <a-asset-item id="modelTabletop" src="models/tabletop.gltf"></a-asset-item>
+        <a-asset-item id="modelSpaceSet" src="models/space-set.gltf"></a-asset-item>
       </a-assets>
 
       <!-- Level -->
@@ -23,7 +24,7 @@
           look-controls>
         </a-camera>
 
-        <a-entity collada-model="#modelTable"></a-entity>
+        <a-entity gltf-model="#modelSpaceSet"></a-entity>
     </a-scene>
   </body>
 </html>
