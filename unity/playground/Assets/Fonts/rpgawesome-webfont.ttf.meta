@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: df9a7cce0abe84d7eab2f510b7f3b2c3
+timeCreated: 1524964090
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: rpg-awesome
+  fontNames:
+  - rpg-awesome
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
