@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// Moves the player forward and allows horizontal maneuvering.
 public class MovePlayer : MonoBehaviour {
 	public Rigidbody playerBody;
 	public float forwardSpeed = 1000f;
