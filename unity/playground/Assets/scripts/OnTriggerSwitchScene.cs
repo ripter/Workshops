@@ -7,11 +7,11 @@ public class OnTriggerSwitchScene : MonoBehaviour {
 
 	void OnTriggerEnter (Collider collider) {
 		// Wait 1 second, then load the next level.
-		Invoke ("LoadNextScene", delay);
+		Invoke ("LoadScene", delay);
 	}
 
 	// Reloads the current scene
-	public void LoadNextScene() {
+	public void LoadScene() {
 		SceneManager.LoadScene (sceneName);
 	}
 }
