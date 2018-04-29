@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33156657256507792}
   - component: {fileID: 65221767814279148}
   - component: {fileID: 23746079532269990}
-  - component: {fileID: 114556209344844220}
+  - component: {fileID: 114064971125482594}
   m_Layer: 0
   m_Name: Goal
   m_TagString: Untagged
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1934856330615226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 171.2}
+  m_LocalPosition: {x: 0, y: 0, z: 167.49}
   m_LocalScale: {x: 10, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -96,7 +96,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114556209344844220
+--- !u!114 &114064971125482594
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -104,6 +104,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1934856330615226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 544b07109ddbf47208727edb6a91bed8, type: 3}
+  m_Script: {fileID: 11500000, guid: 30eb49e0adf654fec9ca56e09be7947e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  delay: 1
+  sceneName: start

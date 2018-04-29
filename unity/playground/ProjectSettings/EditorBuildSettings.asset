@@ -12,5 +12,11 @@ EditorBuildSettings:
     path: Assets/level1.unity
     guid: 1dec27df4d9c340999431f0daf0e5756
   - enabled: 1
+    path: Assets/navmesh_one.unity
+    guid: 51929875b84cb47e994d2df483065788
+  - enabled: 0
+    path: Assets/navScreen.unity
+    guid: 3bafbb8722c704a62a5b545314b8a064
+  - enabled: 0
     path: Assets/gameover.unity
     guid: 71c2e4abeadc349d0b3353b42142fc13

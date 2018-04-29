@@ -3,17 +3,15 @@ using UnityEngine.AI;
 
 // Moves the player using a NavMesh and NavAgent
 public class NavPlayer : MonoBehaviour {
-	public Transform goal;
 	NavMeshAgent agent;
 
-	// Use this for initialization
 	void Start () {
+		// Get the NavMeshAgent component instance that is on our gameObject.
 		agent = GetComponent<NavMeshAgent> ();
-		//agent.destination = goal.position;
 	}
 
 	void Update() {
-		
+		// Fire1 is mouse left click.
 		if (Input.GetButton("Fire1")) {
 			RaycastHit hit;
 
