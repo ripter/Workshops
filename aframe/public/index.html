@@ -12,7 +12,7 @@
   <script src="./bundle.js"></script>
 </head>
 <body>
-  <a-scene>
+  <a-scene stats>
     <a-assets>
       <img id="texCube" src="assets/tex_test.png">
       <img id="cubeSide1" src="assets/birch_log.png">
@@ -24,24 +24,37 @@
     </a-assets>
 
 
-      <!--       material="shader: phong; src: #texCube;" -->
+    <!-- 12 triangles, 1 call; -->
+    <!-- <a-box position="-1 0.5 -3" src="#texCube"></a-box> -->
+    <!-- 12 triangles, 6 calls; -->
     <a-entity
       position="-1 0.5 -3"
       geometry="primitive: box; width: 1; height: 1; depth: 1"
       material-cube="top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;"
       >
-
     </a-entity>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-    <a-sky color="#ECECEC"></a-sky>
 
 
-    <a-entity camera
-          position="0 1.8 0"
-          wasd-controls="fly:false;acceleration:350;"
-          look-controls="pointerLockEnabled: true;">
+    <a-entity
+      position="0 1.8 0"
+      wasd-controls="fly:false;acceleration:350;"
+      look-controls="pointerLockEnabled: true;"
+      >
+      <a-entity position="0 0 -0.5"
+        geometry="primitive: ring; radiusInner: 0.002; radiusOuter: 0.003;"
+        material="color: black; shader: flat"
+        cursor="maxDistance: 30; fuse: true"
+        >
+      </a-entity>
+      <a-entity camera></a-entity>
+      <a-entity position="-0.15 0 -0.20">
+        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"></a-entity>
+        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" line="color: #118A7E"></a-entity>
+      </a-entity>
     </a-entity>
   </a-scene>
 
+      <!-- <a-entity laser-controls="hand: right"></a-entity> -->
 </body>
 </html>
