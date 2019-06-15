@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 3rd Party Libraries, use global cache instead of building in our own copy -->
+  <title>A-Frame Testing</title>
+  <script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+  <link rel="stylesheet" href="./index.css"></link>
+  <script src="./bundle.js"></script>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <img id="cubeSide" src="assets/birch_log.png">
+      <img id="cubeTop" src="assets/birch_log_top.png">
+    </a-assets>
+
+
+    <a-entity
+      position="-1 0.5 -3"
+      geometry="primitive: box; width: 1; height: 1; depth: 1"
+      material-cube="top: #cubeTop; bottom: #cubeBottom; front: #cubeSide; back: #cubeSide; left: #cubeSide; right: #cubeSide;"
+      >
+    </a-entity>
+    <a-box position="-2 0.5 -6" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+
+</body>
+</html>
