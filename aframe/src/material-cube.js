@@ -1,66 +1,59 @@
+/**
+ * Material that takes six textures, one for each side fo the cube.
+ * @type {Object}
+ */
 AFRAME.registerComponent('material-cube', {
   schema: {
-    // Add properties.
-    top: {default: ''},
-    bottom: {default: ''},
-    front: {default: ''},
-    back: {default: ''},
-    left: {default: ''},
-    right: {default: ''},
+    top: {type: 'map'},
+    bottom: {type: 'map'},
+    front: {type: 'map'},
+    back: {type: 'map'},
+    left: {type: 'map'},
+    right: {type: 'map'},
   },
 
   init() {
-    console.log('c-cube .init', this);
+    // Use the standard material system.
+    this.system = this.el.sceneEl.systems.material;
     this.loadMaterial();
-    // this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShaderMaterial({
-    //   // ...
-    // });
-  },
-
-  update() {
-    console.log('c-cube .update', this.data);
-    // Update `this.material`.
   },
 
   loadMaterial() {
-    const { el } = this;
+    const { el, system } = this;
     const { top, bottom, front, back, left, right } = this.data;
-    // const loader = new THREE.CubeTextureLoader();
-    // loader.setPath( 'assets/' );
-    // const textureCube = loader.load([
-    //   'birch_log_top.png', 'birch_log_top.png',
-    //   'birch_log1.png', 'birch_log1.png',
-    //   'birch_log3.png', 'birch_log4.png',
-    // ]);
-    // const textureCube = loader.load([
-    //   top, bottom,
-    //   front, back,
-    //   left, right,
-    // ]);
-
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: 0xffffff,
-    //   envMap: textureCube
-    // });
-    const material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
-    });
-
-
-    console.log('material', material);
-
     const mesh = el.getObject3D('mesh');
     if (!mesh) { throw new Error('No Mesh!'); }
-    mesh.material = material;
+
+    // Load all the textures before updating the materials
+    Promise.all([
+      loadTexture(system, right),
+      loadTexture(system, left),
+      loadTexture(system, top),
+      loadTexture(system, bottom),
+      loadTexture(system, front),
+      loadTexture(system, back),
+    ]).then((textures) => {
+      for (let i=0; i < textures.length; i++) {
+        mesh.material[i].map = textures[i];
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
+
+    // Setup default blank materials while we load the textures
+    mesh.material = Array(6).fill().map(() => new THREE.MeshPhongMaterial({}));
   },
 
 });
 
-
-/**
- * Dispose of material from memory and unsubscribe material from scene updates like fog.
- */
-function disposeMaterial (material, system) {
-  material.dispose();
-  // system.unregisterMaterial(material);
+// Wrapper to return Promise from system.loadImage
+function loadTexture(system, src, data = {}) {
+  if (!data.src) {
+    data.src = src;
+  }
+  return new Promise((resolve, reject) => {
+    system.loadImage(src, data, (texture) => {
+      resolve(texture);
+    });
+  });
 }
