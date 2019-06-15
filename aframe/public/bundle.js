@@ -26,84 +26,41 @@
     },
 
     loadMaterial() {
+      const { el } = this;
       const { top, bottom, front, back, left, right } = this.data;
-      const loader = new THREE.CubeTextureLoader();
-      loader.setPath( 'assets/' );
-      const textureCube = loader.load([
-        'birch_log_top.png', 'birch_log_top.png',
-        'birch_log1.png', 'birch_log1.png',
-        'birch_log3.png', 'birch_log4.png',
-      ]);
+      // const loader = new THREE.CubeTextureLoader();
+      // loader.setPath( 'assets/' );
+      // const textureCube = loader.load([
+      //   'birch_log_top.png', 'birch_log_top.png',
+      //   'birch_log1.png', 'birch_log1.png',
+      //   'birch_log3.png', 'birch_log4.png',
+      // ]);
       // const textureCube = loader.load([
       //   top, bottom,
       //   front, back,
       //   left, right,
       // ]);
 
-      const material = new THREE.MeshBasicMaterial({
+      // const material = new THREE.MeshBasicMaterial({
+      //   color: 0xffffff,
+      //   envMap: textureCube
+      // });
+      const material = new THREE.MeshPhongMaterial({
         color: 0xffffff,
-        envMap: textureCube
       });
+
+
       console.log('material', material);
-      this.setMaterial(material);
+
+      const mesh = el.getObject3D('mesh');
+      if (!mesh) { throw new Error('No Mesh!'); }
+      mesh.material = material;
     },
 
-    /**
-     * (Re)create new material. Has side-effects of setting `this.material` and updating
-     * material registration in scene.
-     *
-     * @param {object} data - Material component data.
-     * @param {object} type - Material type to create.
-     * @returns {object} Material.
-     */
-    setMaterial(material) {
-      var el = this.el;
-      var mesh;
-      // var system = this.system;
-
-      if (this.material) { disposeMaterial(this.material); }
-
-      this.material = material;
-      // system.registerMaterial(material);
-
-      // Set on mesh. If mesh does not exist, wait for it.
-      mesh = el.getObject3D('mesh');
-      if (mesh) {
-        mesh.material = material;
-      } else {
-        el.addEventListener('object3dset', function waitForMesh (evt) {
-          if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
-          el.getObject3D('mesh').material = material;
-          el.removeEventListener('object3dset', waitForMesh);
-        });
-      }
-    },
   });
 
+  const _loadAt = (new Date()).toISOString();
 
-  /**
-   * Dispose of material from memory and unsubscribe material from scene updates like fog.
-   */
-  function disposeMaterial (material, system) {
-    material.dispose();
-    // system.unregisterMaterial(material);
-  }
-
-  AFRAME.registerShader('cubeshader', {
-    schema: {
-      emissive: {default: '#000'},
-      wireframe: {default: true},
-      src: {default: ''},
-    },
-
-    update() {
-      console.group('cubeshader.update');
-      console.log('this', this);
-      console.log('arguments', arguments);
-      console.groupEnd();
-    }
-  });
-
-  console.log('Index loaded');
+  console.log('bundle.js loaded at', _loadAt);
 
 }());
