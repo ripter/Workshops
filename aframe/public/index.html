@@ -47,10 +47,14 @@
         cursor="maxDistance: 30; fuse: true"
         >
       </a-entity>
-      <a-entity camera></a-entity>
+      <a-entity camera>
+        <a-text id="logDebug2" position="0 0 -3" color="orange" value="[]"></a-text>
+      </a-entity>
       <a-entity position="-0.15 0 -0.20">
-        <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable"></a-entity>
-        <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable" line="color: #118A7E"></a-entity>
+        <a-entity id="hand"
+          laser-controls
+          control-minecraft
+          raycaster="objects: .clickable"></a-entity>
       </a-entity>
     </a-entity>
   </a-scene>
