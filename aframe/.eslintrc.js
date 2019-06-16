@@ -9,8 +9,8 @@ module.exports = {
     es6: true,
   },
   globals: {
-    d3: 'readonly',
-    lighterhtml: 'readonly',
+    THREE: 'readonly',
+    AFRAME: 'readonly',
   },
   rules: {
     //
