@@ -75,6 +75,7 @@
     init() {
       const { el } = this;
 
+      this.player = document.querySelector('#player').object3D;
       this.velocity = new THREE.Vector3();
       this.easing = 1.1;
       this.axis = [0,0];
@@ -93,7 +94,7 @@
     },
 
     tick(time, delta) {
-      const player = document.querySelector('#player').object3D;
+      const { player } = this;
 
       // Update velocity.
       delta = delta / 1000;
@@ -132,10 +133,10 @@
       if (!this.data.enabled) { return; }
 
       // Update velocity using keys pressed.
-      if (this.axis[0] < 0) { velocity.x -= acceleration * delta; }
-      if (this.axis[0] > 0) { velocity.x += acceleration * delta; }
       if (this.axis[1] < 0) { velocity.z -= acceleration * delta; }
-      if (this.axis[1] > 0) { velocity.z += acceleration * delta; }
+      else if (this.axis[1] > 0) { velocity.z += acceleration * delta; }
+      else if (this.axis[0] < 0) { velocity.x -= acceleration * delta; }
+      else if (this.axis[0] > 0) { velocity.x += acceleration * delta; }
 
       const elLog = document.querySelector('#logDebug2');
       // elLog.setAttribute('value', `vel: ${velocity.x},${velocity.z}`);
@@ -147,9 +148,10 @@
       const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
       return function (delta) {
+        const { player, velocity } = this;
         // var rotation = this.el.getAttribute('rotation');
-        const rotation = this.el.object3D.rotation;
-        const { velocity } = this;
+        // const rotation = this.el.object3D.rotation;
+        const { rotation } = player;
         let xRotation = 0;
 
         directionVector.copy(velocity);
