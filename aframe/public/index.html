@@ -36,19 +36,19 @@
     <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
 
 
-    <a-entity
+    <a-entity id="player"
       position="0 1.8 0"
       wasd-controls="fly:false;acceleration:350;"
       look-controls="pointerLockEnabled: true;"
       >
+      <a-entity camera>
+        <a-text id="logDebug2" position="-2.25 0 -3" color="orange" value=""></a-text>
+      </a-entity>
       <a-entity position="0 0 -0.5"
         geometry="primitive: ring; radiusInner: 0.002; radiusOuter: 0.003;"
         material="color: black; shader: flat"
         cursor="maxDistance: 30; fuse: true"
         >
-      </a-entity>
-      <a-entity camera>
-        <a-text id="logDebug2" position="0 0 -3" color="orange" value="[]"></a-text>
       </a-entity>
       <a-entity position="-0.15 0 -0.20">
         <a-entity id="hand"
