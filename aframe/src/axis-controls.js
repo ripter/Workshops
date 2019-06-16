@@ -14,7 +14,6 @@ AFRAME.registerComponent('axis-controls', {
     this.velocity = new THREE.Vector3();
     this.easing = 1.1;
     this.axis = [0,0];
-    this.keys = {};
 
     el.addEventListener('trackpadchanged', (e) => {
       const { pressed } = e.detail;
@@ -26,9 +25,6 @@ AFRAME.registerComponent('axis-controls', {
       else {
         this.axis = [0,0];
       }
-      //
-      // const elLog = document.querySelector('#logDebug2');
-      // elLog.setAttribute('value', `${pressed}: ${axis}`);
     });
   },
 
@@ -40,7 +36,6 @@ AFRAME.registerComponent('axis-controls', {
     this.updateVelocity(delta);
 
     if (!this.velocity.x && !this.velocity.z) { return; }
-
     // Get movement vector and translate position.
     player.position.add(this.getMovementVector(delta));
   },
@@ -106,8 +101,3 @@ AFRAME.registerComponent('axis-controls', {
     };
   })(),
 });
-
-function logIt(event) {
-  const elLog = document.querySelector('#logDebug2');
-  elLog.setAttribute('value', `${event.type}: ${JSON.stringify(event.detail)}`);
-}

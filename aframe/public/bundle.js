@@ -40,6 +40,7 @@
           mesh.material[i].map = textures[i];
         }
       }).catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err);
       });
 
@@ -54,36 +55,12 @@
     if (!data.src) {
       data.src = src;
     }
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       system.loadImage(src, data, (texture) => {
         resolve(texture);
       });
     });
   }
-
-  AFRAME.registerShader('phong', {
-    schema: {
-      color: {default: '#fff'},
-      wireframe: {default: false},
-      src: {type: 'map'},
-    },
-
-    init(data) {
-      const system = this.el.sceneEl.systems.material;
-      // Load the src as a Texture and apply it to the material
-      system.loadImage(data.src, data, (texture) => {
-        // Update the material with the loaded texture
-        this.material.map = texture;
-        this.material.needsUpdate = true;
-      });
-
-      // initial material
-      this.material = new THREE.MeshPhongMaterial({
-        color: data.color,
-        wireframe: data.wireframe,
-      });
-    },
-  });
 
   const CLAMP_VELOCITY = 0.00001;
   const MAX_DELTA = 0.2;
@@ -101,7 +78,6 @@
       this.velocity = new THREE.Vector3();
       this.easing = 1.1;
       this.axis = [0,0];
-      this.keys = {};
 
       el.addEventListener('trackpadchanged', (e) => {
         const { pressed } = e.detail;
@@ -113,9 +89,6 @@
         else {
           this.axis = [0,0];
         }
-        //
-        // const elLog = document.querySelector('#logDebug2');
-        // elLog.setAttribute('value', `${pressed}: ${axis}`);
       });
     },
 
@@ -127,7 +100,6 @@
       this.updateVelocity(delta);
 
       if (!this.velocity.x && !this.velocity.z) { return; }
-
       // Get movement vector and translate position.
       player.position.add(this.getMovementVector(delta));
     },
@@ -194,8 +166,33 @@
     })(),
   });
 
+  AFRAME.registerShader('phong', {
+    schema: {
+      color: {default: '#fff'},
+      wireframe: {default: false},
+      src: {type: 'map'},
+    },
+
+    init(data) {
+      const system = this.el.sceneEl.systems.material;
+      // Load the src as a Texture and apply it to the material
+      system.loadImage(data.src, data, (texture) => {
+        // Update the material with the loaded texture
+        this.material.map = texture;
+        this.material.needsUpdate = true;
+      });
+
+      // initial material
+      this.material = new THREE.MeshPhongMaterial({
+        color: data.color,
+        wireframe: data.wireframe,
+      });
+    },
+  });
+
   const _loadAt = (new Date()).toISOString();
 
+  // eslint-disable-next-line no-console
   console.log('bundle.js loaded at', _loadAt);
 
 }());

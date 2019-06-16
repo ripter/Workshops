@@ -37,6 +37,7 @@ AFRAME.registerComponent('material-cube', {
         mesh.material[i].map = textures[i];
       }
     }).catch((err) => {
+      // eslint-disable-next-line no-console
       console.error(err);
     });
 
@@ -51,7 +52,7 @@ function loadTexture(system, src, data = {}) {
   if (!data.src) {
     data.src = src;
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     system.loadImage(src, data, (texture) => {
       resolve(texture);
     });
