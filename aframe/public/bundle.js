@@ -147,17 +147,23 @@
     getMovementVector: (function () {
       const directionVector = new THREE.Vector3(0, 0, 0);
       const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+      const quaternion = new THREE.Quaternion();
 
       return function (delta) {
         const { camera, player, velocity } = this;
-        const { rotation } = player;
+        // const { rotation } = player;
         // const { rotation } = camera;
         // let xRotation = 0;
+
+        camera.getWorldQuaternion(quaternion);
+        // Cancel rotation on x and z to keep us flat
+        quaternion.x = 0;
+        quaternion.z = 0;
 
 
       //DEBUG:
       const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `rotation: ${rotation.y}`);
+      elLog.setAttribute('value', `quaternion: ${quaternion.y}`);
       //DEBUG END
 
         directionVector.copy(velocity);
@@ -169,6 +175,9 @@
         // Transform direction relative to heading.
         // rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
         // directionVector.applyEuler(rotationEuler);
+
+        // Rotate the direction
+        directionVector.applyQuaternion(quaternion);
         return directionVector;
       };
     })(),
