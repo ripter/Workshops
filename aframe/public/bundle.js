@@ -111,6 +111,9 @@
       player.position.add(this.getMovementVector(delta));
     },
 
+    /**
+     * Updates this.velocity based on axis state.
+     */
     updateVelocity(delta) {
       const { axis, data, easing, velocity } = this;
       const { acceleration } = data;
@@ -149,6 +152,10 @@
       }
     },
 
+    /**
+     * Returns a Vector3 rotated with velocity applied
+     * @return {Vector3}
+     */
     getMovementVector: (function () {
       const directionVector = new THREE.Vector3(0, 0, 0);
       const quaternion = new THREE.Quaternion();
