@@ -27,8 +27,15 @@ AFRAME.registerComponent('axis-controls', {
       else {
         this.axis = [0,0];
       }
+
+
+      //DEBUG:
+      const elLog = document.querySelector('#logDebug2');
+      elLog.setAttribute('value', `axis: ${this.axis}`);
+      //DEBUG END
     });
   },
+
 
   tick(time, delta) {
     const { player } = this;
@@ -86,32 +93,15 @@ AFRAME.registerComponent('axis-controls', {
     const quaternion = new THREE.Quaternion();
 
     return function (delta) {
-      const { camera, player, velocity } = this;
-      // const { rotation } = player;
-      // const { rotation } = camera;
-      // let xRotation = 0;
+      const { camera, velocity } = this;
+
+      directionVector.copy(velocity);
+      directionVector.multiplyScalar(delta);
 
       camera.getWorldQuaternion(quaternion);
       // Cancel rotation on x and z to keep us flat
       quaternion.x = 0;
       quaternion.z = 0;
-
-
-    //DEBUG:
-    const elLog = document.querySelector('#logDebug2');
-    elLog.setAttribute('value', `quaternion: ${quaternion.y}`);
-    //DEBUG END
-
-      directionVector.copy(velocity);
-      directionVector.multiplyScalar(delta);
-
-      // Absolute.
-      // if (!rotation) { return directionVector; }
-
-      // Transform direction relative to heading.
-      // rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
-      // directionVector.applyEuler(rotationEuler);
-
       // Rotate the direction
       directionVector.applyQuaternion(quaternion);
       return directionVector;
