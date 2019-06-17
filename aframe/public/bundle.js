@@ -76,6 +76,7 @@
       const { el } = this;
 
       this.player = document.querySelector('#player').object3D;
+      this.camera = document.querySelector('#player [camera]').object3D;
       this.velocity = new THREE.Vector3();
       this.easing = 1.1;
       this.axis = [0,0];
@@ -134,19 +135,13 @@
 
       // Find the strongest direction, and only accelerate in that direction.
       if (Math.abs(axis[1]) >= Math.abs(axis[0])) {
-        if (this.axis[1] < 0) { velocity.z -= acceleration * delta; }
-        else if (this.axis[1] > 0) { velocity.z += acceleration * delta; }
+        if (axis[1] < 0) { velocity.z -= acceleration * delta; }
+        else if (axis[1] > 0) { velocity.z += acceleration * delta; }
       }
       else {
-        if (this.axis[0] < 0) { velocity.x -= acceleration * delta; }
-        else if (this.axis[0] > 0) { velocity.x += acceleration * delta; }
+        if (axis[0] < 0) { velocity.x -= acceleration * delta; }
+        else if (axis[0] > 0) { velocity.x += acceleration * delta; }
       }
-
-
-      //DEBUG:
-      const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `axis: ${this.axis}`);
-      //DEBUG END
     },
 
     getMovementVector: (function () {
@@ -154,19 +149,26 @@
       const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
       return function (delta) {
-        const { player, velocity } = this;
+        const { camera, player, velocity } = this;
         const { rotation } = player;
-        let xRotation = 0;
+        // const { rotation } = camera;
+        // let xRotation = 0;
+
+
+      //DEBUG:
+      const elLog = document.querySelector('#logDebug2');
+      elLog.setAttribute('value', `rotation: ${rotation.y}`);
+      //DEBUG END
 
         directionVector.copy(velocity);
         directionVector.multiplyScalar(delta);
 
         // Absolute.
-        if (!rotation) { return directionVector; }
+        // if (!rotation) { return directionVector; }
 
         // Transform direction relative to heading.
-        rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
-        directionVector.applyEuler(rotationEuler);
+        // rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
+        // directionVector.applyEuler(rotationEuler);
         return directionVector;
       };
     })(),
