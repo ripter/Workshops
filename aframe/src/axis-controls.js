@@ -2,7 +2,6 @@ const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;
 
 AFRAME.registerComponent('axis-controls', {
-  // dependencies: ['laser-controls'],
   schema: {
     acceleration: {default: 65},
     enabled: {default: true},
@@ -28,7 +27,6 @@ AFRAME.registerComponent('axis-controls', {
         this.axis = [0,0];
       }
 
-
       //DEBUG:
       const elLog = document.querySelector('#logDebug2');
       elLog.setAttribute('value', `axis: ${this.axis}`);
@@ -50,7 +48,7 @@ AFRAME.registerComponent('axis-controls', {
   },
 
   updateVelocity(delta) {
-    const { axis, data, velocity } = this;
+    const { axis, data, easing, velocity } = this;
     const { acceleration } = data;
 
     // If FPS too low, reset velocity.
@@ -61,7 +59,7 @@ AFRAME.registerComponent('axis-controls', {
     }
 
     // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
-    const scaledEasing = Math.pow(1 / this.easing, delta * 60);
+    const scaledEasing = Math.pow(1 / easing, delta * 60);
     // Velocity Easing.
     if (velocity.x !== 0) {
       velocity.x -= velocity.x * scaledEasing;
@@ -89,7 +87,6 @@ AFRAME.registerComponent('axis-controls', {
 
   getMovementVector: (function () {
     const directionVector = new THREE.Vector3(0, 0, 0);
-    const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
     const quaternion = new THREE.Quaternion();
 
     return function (delta) {
