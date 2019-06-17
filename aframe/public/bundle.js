@@ -106,7 +106,7 @@
     },
 
     updateVelocity(delta) {
-      const { data, velocity } = this;
+      const { axis, data, velocity } = this;
       const { acceleration } = data;
 
       // If FPS too low, reset velocity.
@@ -132,15 +132,21 @@
 
       if (!this.data.enabled) { return; }
 
-      // Update velocity using keys pressed.
-      if (this.axis[1] < 0) { velocity.z -= acceleration * delta; }
-      else if (this.axis[1] > 0) { velocity.z += acceleration * delta; }
-      else if (this.axis[0] < 0) { velocity.x -= acceleration * delta; }
-      else if (this.axis[0] > 0) { velocity.x += acceleration * delta; }
+      // Find the strongest direction, and only accelerate in that direction.
+      if (Math.abs(axis[1]) >= Math.abs(axis[0])) {
+        if (this.axis[1] < 0) { velocity.z -= acceleration * delta; }
+        else if (this.axis[1] > 0) { velocity.z += acceleration * delta; }
+      }
+      else {
+        if (this.axis[0] < 0) { velocity.x -= acceleration * delta; }
+        else if (this.axis[0] > 0) { velocity.x += acceleration * delta; }
+      }
 
+
+      //DEBUG:
       const elLog = document.querySelector('#logDebug2');
-      // elLog.setAttribute('value', `vel: ${velocity.x},${velocity.z}`);
       elLog.setAttribute('value', `axis: ${this.axis}`);
+      //DEBUG END
     },
 
     getMovementVector: (function () {
@@ -149,8 +155,6 @@
 
       return function (delta) {
         const { player, velocity } = this;
-        // var rotation = this.el.getAttribute('rotation');
-        // const rotation = this.el.object3D.rotation;
         const { rotation } = player;
         let xRotation = 0;
 
