@@ -12,7 +12,7 @@ AFRAME.registerShader('phong', {
     system.loadImage(data.src, data, (texture) => {
       // Update the material with the loaded texture
       this.material.map = texture;
-      this.material.needsUpdate = true;
+      this.material.needsUpdate = true; //Is this needed? It appears to work without it. It was copied from standard shader's code.
     });
 
     // initial material

@@ -26,11 +26,6 @@ AFRAME.registerComponent('axis-controls', {
       else {
         this.axis = [0,0];
       }
-
-      //DEBUG:
-      const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `axis: ${this.axis}`);
-      //DEBUG END
     });
   },
 

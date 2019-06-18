@@ -28,9 +28,11 @@
     <!-- <a-box position="-1 0.5 -3" src="#texCube"></a-box> -->
     <!-- 12 triangles, 6 calls; -->
     <a-entity
+      class="clickable"
       position="-1 0.5 -3"
       geometry="primitive: box; width: 1; height: 1; depth: 1"
       material-cube="top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;"
+      clickable
       >
     </a-entity>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
@@ -45,17 +47,24 @@
         <a-text id="logDebug2" position="-2.25 0 -3" color="orange" value=""></a-text>
       </a-entity>
       <a-entity position="0 0 -0.5"
-        geometry="primitive: ring; radiusInner: 0.002; radiusOuter: 0.003;"
-        material="color: black; shader: flat"
-        cursor="maxDistance: 30; fuse: true"
+        cursor
+        block-cursor="target: #cursor;"
+        raycaster="objects: .clickable; showLine: true;"
         >
       </a-entity>
-      <a-entity position="-0.15 0 -0.20">
+      <a-entity id="cursor"
+        geometry="primitive: ring; radius-outer: 0.2; radius-inner: 0.06"
+        material="color: lightblue;"
+        opacity="0.7"
+        >
+      </a-entity>
+      <!-- <a-entity position="-0.15 0 -0.20">
         <a-entity id="hand"
           laser-controls
           axis-controls
+          block-cursor
           raycaster="objects: .clickable"></a-entity>
-      </a-entity>
+      </a-entity> -->
     </a-entity>
   </a-scene>
 
