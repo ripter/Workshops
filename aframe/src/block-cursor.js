@@ -23,7 +23,13 @@ AFRAME.registerComponent('block-cursor', {
     const { raycaster } = this.el.components;
     if (!raycaster) { return; }
     const { intersections } = raycaster;
-    if (!intersections || intersections.length === 0) { return; }
+    if (!intersections || intersections.length === 0) {
+      //DEBUG:
+      const elLog = document.querySelector('#logDebug2');
+      elLog.setAttribute('value', '');
+      //DEBUG END
+      return;
+    }
 
     // console.log('intersection', intersections[0]);
     const { distance } = intersections[0];
