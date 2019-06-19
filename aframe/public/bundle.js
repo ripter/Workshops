@@ -193,6 +193,12 @@
     });
   }
 
+  // Helper to log something in front of the camera.
+  function logCamera(msg) {
+    const elLog = document.querySelector('#logDebug2');
+    elLog.setAttribute('value', msg);
+  }
+
   AFRAME.registerComponent('block-cursor', {
     // schema: {
     //   target: {type: 'selector'},
@@ -217,19 +223,12 @@
       if (!raycaster) { return; }
       const { intersections } = raycaster;
       if (!intersections || intersections.length === 0) {
-        //DEBUG:
-        const elLog = document.querySelector('#logDebug2');
-        elLog.setAttribute('value', '');
-        //DEBUG END
+        logCamera('');
         return;
       }
-
       // console.log('intersection', intersections[0]);
       const { distance } = intersections[0];
-      //DEBUG:
-      const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `dist: ${fmtNumber(distance)}`);
-      //DEBUG END
+      logCamera(`dist: ${fmtNumber(distance)}`);
     },
 
     initCursor() {

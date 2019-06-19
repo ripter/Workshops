@@ -1,4 +1,5 @@
 import { fmtNumber } from './fmtNumber.js';
+import { logCamera } from './logCamera.js';
 
 AFRAME.registerComponent('block-cursor', {
   // schema: {
@@ -24,19 +25,12 @@ AFRAME.registerComponent('block-cursor', {
     if (!raycaster) { return; }
     const { intersections } = raycaster;
     if (!intersections || intersections.length === 0) {
-      //DEBUG:
-      const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', '');
-      //DEBUG END
+      logCamera('');
       return;
     }
-
     // console.log('intersection', intersections[0]);
     const { distance } = intersections[0];
-    //DEBUG:
-    const elLog = document.querySelector('#logDebug2');
-    elLog.setAttribute('value', `dist: ${fmtNumber(distance)}`);
-    //DEBUG END
+    logCamera(`dist: ${fmtNumber(distance)}`);
   },
 
   initCursor() {
