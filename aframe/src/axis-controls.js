@@ -1,3 +1,5 @@
+import { fmtNumber } from './fmtNumber.js';
+
 const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;
 
@@ -18,7 +20,7 @@ AFRAME.registerComponent('axis-controls', {
 
     el.addEventListener('trackpadchanged', (e) => {
       const { pressed } = e.detail;
-      const axis = this.el.components['tracked-controls'].axis.map(num => (0|num*100)/100);
+      const axis = this.el.components['tracked-controls'].axis.map(fmtNumber);
 
       if (pressed) {
         this.axis = axis;
