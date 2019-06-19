@@ -120,8 +120,6 @@
     // },
 
     init() {
-      console.log('init clickable', this);
-
       this.el.addEventListener('click', function (evt) {
         const { distance } = evt.detail.intersection;
         console.log('click', evt.detail);
@@ -201,41 +199,38 @@
     // },
 
     init() {
-      console.log('init block-cursor', this.data, this);
-      // const elCursor = document.querySelector('#block-cursor--cursor') || document.createElement('a-entity');
-      // elCursor.id = 'block-cursor--cursor';
-      // this.el.sceneEl.append(elCursor)
-      // const cursor = this.data.target.object3D;
-      // const cursor = this.cursor = document.querySelector(this.data.target).object3D;
+      // console.log('init block-cursor', this.data, this);
+      this.elCursor = this.initCursor();
 
-      this.el.addEventListener('raycaster-intersection', this.onIntersection.bind(this));
+      // this.el.addEventListener('raycaster-intersection', (evt) => {
+      //   console.log('intersection', evt);
+      //   this.raycaster = evt.detail.els
+      // });
+      // this.el.addEventListener('raycaster-intersected-cleared', () => {
+      //   console.log('clear intersection')
+      //   this.raycaster = null
+      // });
     },
 
-    onIntersection(evt) {
-      const { els, intersections } = evt.detail;
-      if (intersections.length < 1) { return; }
-      const { distance, point } = intersections[0];
+    tick() {
+      const { raycaster } = this.el.components;
+      if (!raycaster) { return; }
+      const { intersections } = raycaster;
+      if (!intersections || intersections.length === 0) { return; }
 
-      console.log('intersection', evt.detail);
-      // cursor.position.set(point.x, point.y, point.z);
-
+      // console.log('intersection', intersections[0]);
+      const { distance } = intersections[0];
       //DEBUG:
       const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `intersection ${fmtNumber(point.x)},${fmtNumber(point.y)},${fmtNumber(point.z)}`);
+      elLog.setAttribute('value', `dist: ${fmtNumber(distance)}`);
       //DEBUG END
     },
 
-    
-    getCursor() {
-      if (this._elCursor) { return this._elCursor; }
-
-      let elm = document.querySelector('#block-cursor--cursor');
-      if (!elm) {
-        elm = document.createElement('a-entity');
-        elm.id = 'block-cursor--cursor';
-        this.el.sceneEl.append(elm);
-      }
-      return this._elCursor = elm;
+    initCursor() {
+      const elm = document.createElement('a-entity');
+      elm.id = 'block-cursor--cursor';
+      this.el.sceneEl.append(elm);
+      return elm;
     },
   });
 
