@@ -33,7 +33,24 @@
       clickable
       >
     </a-entity>
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+
+    <a-entity
+      class="clickable"
+      position="9 0.5 -13"
+      geometry="primitive: box; width: 1; height: 1; depth: 1"
+      material-cube="top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;"
+      clickable
+      >
+    </a-entity>
+    <a-entity
+      class="clickable"
+      position="9 1.5 -13"
+      geometry="primitive: box; width: 1; height: 1; depth: 1"
+      material-cube="top: #cubeTop; bottom: #cubeTop; front: #cubeSide4; back: #cubeSide1; left: #cubeSide2; right: #cubeSide3;"
+      clickable
+      >
+    </a-entity>
+    <a-plane position="3 0 -10" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
 
 
     <a-entity id="player"
