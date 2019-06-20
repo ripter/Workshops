@@ -32,12 +32,29 @@ AFRAME.registerComponent('block-cursor', {
       return;
     }
     // console.log('intersection', intersections[0]);
-    const { distance, point } = intersections[0];
-    console.log('intersection', intersections[0]);
+    const { distance, point, object } = intersections[0];
+    // console.log('intersection', intersections[0]);
     logCamera(`dist: ${fmtNumber(distance)}`);
 
+    // const offset = object.position.clone().sub(point);
+    // console.log('offset', offset);
+    const objPoisition = new THREE.Vector3();
+    object.getWorldPosition(objPoisition);
+    // const offset = objPoisition.clone().sub(point);
+    const offset = point.clone().sub(objPoisition);
+    console.group('tick');
+    console.log('objPoisition', `${objPoisition.x}, ${objPoisition.y}, ${objPoisition.z}`);
+    console.log('point', `${point.x}, ${point.y}, ${point.z}`);
+    console.log('offset', `${offset.x}, ${offset.y}, ${offset.z}`);
+    console.groupEnd();
+
+
     cursor.visible = true;
-    cursor.position.set(point.x, point.y, point.z);
+    cursor.position.set(point.x, objPoisition.y, objPoisition.z);
+    // cursor.position.set(point.x, point.y, point.z);
+    // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z);
+    // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z - offset.z);
+    // cursor.position.set(offset.x, offset.y, offset.z);
   },
 
   initCursor() {
