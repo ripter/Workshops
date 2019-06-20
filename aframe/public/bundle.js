@@ -193,18 +193,13 @@
     });
   }
 
-  // Helper to log something in front of the camera.
-  function logCamera(msg) {
-    const elLog = document.querySelector('#logDebug2');
-    elLog.setAttribute('value', msg);
-  }
-
   AFRAME.registerComponent('block-cursor', {
     // schema: {
     //   target: {type: 'selector'},
     // },
 
     init() {
+      this.intersectedPosition = new THREE.Vector3();
       // console.log('init block-cursor', this.data, this);
       this.elCursor = this.initCursor();
       this.cursor = this.elCursor.object3D;
@@ -220,34 +215,26 @@
     },
 
     tick() {
-      const { cursor } = this;
+      const { cursor, intersectedPosition } = this;
       const { raycaster } = this.el.components;
       if (!raycaster) { return; }
       const { intersections } = raycaster;
+
       if (!intersections || intersections.length === 0) {
         cursor.visible = false;
-        logCamera('');
         return;
       }
-      // console.log('intersection', intersections[0]);
       const { distance, point, object } = intersections[0];
-      // console.log('intersection', intersections[0]);
-      logCamera(`dist: ${fmtNumber(distance)}`);
 
-      // const offset = object.position.clone().sub(point);
-      // console.log('offset', offset);
-      const objPoisition = new THREE.Vector3();
-      object.getWorldPosition(objPoisition);
-      // const offset = objPoisition.clone().sub(point);
-      const offset = point.clone().sub(objPoisition);
-      console.group('tick');
-      console.log('objPoisition', `${objPoisition.x}, ${objPoisition.y}, ${objPoisition.z}`);
-      console.log('point', `${point.x}, ${point.y}, ${point.z}`);
-      console.log('offset', `${offset.x}, ${offset.y}, ${offset.z}`);
-      console.groupEnd();
-      let { x, y, z } = objPoisition;
+      // Get the intersected object's world position.
+      object.getWorldPosition(intersectedPosition);
+      const offset = point.clone().sub(intersectedPosition);
+      let { x, y, z } = intersectedPosition;
 
-      if (Math.abs(offset.x) > Math.abs(offset.z)) {
+      if (Math.abs(offset.y) > Math.abs(offset.z) && Math.abs(offset.y) > Math.abs(offset.z)) {
+        y = point.y;
+      }
+      else if (Math.abs(offset.x) > Math.abs(offset.z)) {
         x = point.x;
       }
       else {
