@@ -58,10 +58,6 @@ AFRAME.registerComponent('block-cursor', {
 
     cursor.visible = true;
     cursor.position.set(x, y, z);
-    // cursor.position.set(point.x, point.y, point.z);
-    // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z);
-    // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z - offset.z);
-    // cursor.position.set(offset.x, offset.y, offset.z);
   },
 
   initCursor() {
