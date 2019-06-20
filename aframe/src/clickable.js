@@ -6,7 +6,7 @@ AFRAME.registerComponent('clickable', {
   init() {
     this.el.addEventListener('click', function (evt) {
       const { distance } = evt.detail.intersection;
-      console.log('click', evt.detail);
+      // console.log('click', evt.detail);
 
       //DEBUG:
       const elLog = document.querySelector('#logDebug2');

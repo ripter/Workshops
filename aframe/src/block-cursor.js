@@ -1,25 +1,9 @@
-import { fmtNumber } from './fmtNumber.js';
-import { logCamera } from './logCamera.js';
 
 AFRAME.registerComponent('block-cursor', {
-  // schema: {
-  //   target: {type: 'selector'},
-  // },
-
   init() {
     this.intersectedPosition = new THREE.Vector3();
-    // console.log('init block-cursor', this.data, this);
     this.elCursor = this.initCursor();
     this.cursor = this.elCursor.object3D;
-
-    // this.el.addEventListener('raycaster-intersection', (evt) => {
-    //   console.log('intersection', evt);
-    //   this.raycaster = evt.detail.els
-    // });
-    // this.el.addEventListener('raycaster-intersected-cleared', () => {
-    //   console.log('clear intersection')
-    //   this.raycaster = null
-    // });
   },
 
   tick() {
@@ -32,7 +16,7 @@ AFRAME.registerComponent('block-cursor', {
       cursor.visible = false;
       return;
     }
-    const { distance, point, object } = intersections[0];
+    const { point, object } = intersections[0];
 
     // Get the intersected object's world position.
     object.getWorldPosition(intersectedPosition);
@@ -60,7 +44,9 @@ AFRAME.registerComponent('block-cursor', {
     elm.setAttribute('depth', 0.5);
     elm.setAttribute('width', 0.5);
     elm.setAttribute('height', 0.5);
-    this.el.sceneEl.append(elm)
+    elm.setAttribute('transparent', true);
+    elm.setAttribute('opacity', 0.75);
+    this.el.sceneEl.append(elm);
     return elm;
   },
 });
