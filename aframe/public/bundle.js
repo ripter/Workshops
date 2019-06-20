@@ -245,10 +245,17 @@
       console.log('point', `${point.x}, ${point.y}, ${point.z}`);
       console.log('offset', `${offset.x}, ${offset.y}, ${offset.z}`);
       console.groupEnd();
+      let { x, y, z } = objPoisition;
 
+      if (Math.abs(offset.x) > Math.abs(offset.z)) {
+        x = point.x;
+      }
+      else {
+        z = point.z;
+      }
 
       cursor.visible = true;
-      cursor.position.set(point.x, objPoisition.y, objPoisition.z);
+      cursor.position.set(x, y, z);
       // cursor.position.set(point.x, point.y, point.z);
       // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z);
       // cursor.position.set(objPoisition.x, objPoisition.y, objPoisition.z - offset.z);
