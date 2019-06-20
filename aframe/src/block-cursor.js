@@ -47,6 +47,7 @@ AFRAME.registerComponent('block-cursor', {
     console.log('point', `${point.x}, ${point.y}, ${point.z}`);
     console.log('offset', `${offset.x}, ${offset.y}, ${offset.z}`);
     console.groupEnd();
+    let x, y, z;
 
 
     cursor.visible = true;
