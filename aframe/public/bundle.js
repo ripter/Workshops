@@ -115,23 +115,65 @@
     })(),
   });
 
-  // Helper to log something in front of the camera.
-  function logCamera(msg) {
-    const elLog = document.querySelector('#logDebug2');
-    elLog.setAttribute('value', msg);
-  }
+  const intersectionDirection = (() => {
+    const worldPosition = new THREE.Vector3();
+    const offset = new THREE.Vector3();
+
+    return (width, {point, object}) => {
+      // half width of the object, which we are assuming because it's always a 1x1x1 block for now.
+      const halfWidth = 0.5;
+
+      // convert the object position into a world position.
+      object.getWorldPosition(worldPosition);
+      // Subtrack the point, so we can figure out which side to use.
+      offset.copy(worldPosition).sub(point);
+
+      if (Math.abs(offset.y) === halfWidth) {
+        worldPosition.y += offset.y < 0 ? width : -1 * width;
+      }
+      else if (Math.abs(offset.x) === halfWidth) {
+        worldPosition.x += offset.x < 0 ? width : -1 * width;
+      }
+      else {
+        worldPosition.z += offset.z < 0 ? width : -1 * width;
+      }
+
+      return worldPosition;
+    }
+  })();
+
+  const COLORS = ['#0074D9', '#FF851B', '#7FDBFF', '#FF4136', '#2ECC40', '#B10DC9', '#FFDC00'];
+  let COLOR_INDEX = 0;
 
   AFRAME.registerComponent('clickable', {
     // schema: {
     // },
 
     init() {
+      this.cursorPosition = new THREE.Vector3();
+      this.cusorOffset = new THREE.Vector3();
       this.el.addEventListener('click', this.onClick.bind(this));
     },
 
     onClick(event) {
-      const { distance } = event.detail.intersection;
-      logCamera(`click: ${(0|distance*100)/100}`);
+      const direction = intersectionDirection(1, event.detail.intersection);
+      this.placeBlock(direction);
+    },
+
+    placeBlock(position) {
+      const elBlock = this.createBlock();
+      elBlock.setAttribute('position', position);
+    },
+
+    createBlock() {
+      const elm = document.createElement('a-box');
+      elm.setAttribute('color', COLORS[COLOR_INDEX]);
+      elm.setAttribute('clickable', true);
+      elm.classList.add('clickable');
+      this.el.sceneEl.append(elm);
+
+      COLOR_INDEX = (COLOR_INDEX + 1) % COLORS.length;
+      return elm;
     },
   });
 
@@ -213,25 +255,10 @@
         cursor.visible = false;
         return;
       }
-      const { point, object } = intersections[0];
 
-      // Get the intersected object's world position.
-      object.getWorldPosition(intersectedPosition);
-      const offset = point.clone().sub(intersectedPosition);
-      let { x, y, z } = intersectedPosition;
-
-      if (Math.abs(offset.y) > Math.abs(offset.z) && Math.abs(offset.y) > Math.abs(offset.z)) {
-        y = point.y;
-      }
-      else if (Math.abs(offset.x) > Math.abs(offset.z)) {
-        x = point.x;
-      }
-      else {
-        z = point.z;
-      }
-
+      const direction = intersectionDirection(0.5, intersections[0]);
       cursor.visible = true;
-      cursor.position.set(x, y, z);
+      cursor.position.copy(direction);
     },
 
     initCursor() {

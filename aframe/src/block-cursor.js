@@ -1,3 +1,5 @@
+import { intersectionDirection } from './util/intersectionDirection.js';
+
 AFRAME.registerComponent('block-cursor', {
   init() {
     this.intersectedPosition = new THREE.Vector3();
@@ -15,25 +17,10 @@ AFRAME.registerComponent('block-cursor', {
       cursor.visible = false;
       return;
     }
-    const { point, object } = intersections[0];
 
-    // Get the intersected object's world position.
-    object.getWorldPosition(intersectedPosition);
-    const offset = point.clone().sub(intersectedPosition);
-    let { x, y, z } = intersectedPosition;
-
-    if (Math.abs(offset.y) > Math.abs(offset.z) && Math.abs(offset.y) > Math.abs(offset.z)) {
-      y = point.y;
-    }
-    else if (Math.abs(offset.x) > Math.abs(offset.z)) {
-      x = point.x;
-    }
-    else {
-      z = point.z;
-    }
-
+    const direction = intersectionDirection(0.5, intersections[0])
     cursor.visible = true;
-    cursor.position.set(x, y, z);
+    cursor.position.copy(direction);
   },
 
   initCursor() {
