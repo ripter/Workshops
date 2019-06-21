@@ -1,14 +1,13 @@
-import { intersectionDirection } from './util/intersectionDirection.js';
+import { intersectionDirection } from '../util/intersectionDirection.js';
 
 AFRAME.registerComponent('block-cursor', {
   init() {
-    this.intersectedPosition = new THREE.Vector3();
     this.elCursor = this.initCursor();
     this.cursor = this.elCursor.object3D;
   },
 
   tick() {
-    const { cursor, intersectedPosition } = this;
+    const { cursor } = this;
     const { raycaster } = this.el.components;
     if (!raycaster) { return; }
     const { intersections } = raycaster;
@@ -18,7 +17,7 @@ AFRAME.registerComponent('block-cursor', {
       return;
     }
 
-    const direction = intersectionDirection(0.5, intersections[0])
+    const direction = intersectionDirection(0.5, intersections[0]);
     cursor.visible = true;
     cursor.position.copy(direction);
   },

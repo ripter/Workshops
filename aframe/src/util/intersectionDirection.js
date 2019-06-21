@@ -23,5 +23,5 @@ export const intersectionDirection = (() => {
     }
 
     return worldPosition;
-  }
+  };
 })();

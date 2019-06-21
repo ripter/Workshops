@@ -139,7 +139,7 @@
       }
 
       return worldPosition;
-    }
+    };
   })();
 
   AFRAME.registerComponent('clickable', {
@@ -164,12 +164,7 @@
 
     createBlock() {
       const elm = document.createElement('c-cube');
-      // elm.setAttribute('color', COLORS[COLOR_INDEX]);
-      // elm.setAttribute('clickable', true);
-      // elm.classList.add('clickable');
       this.el.sceneEl.append(elm);
-
-      // COLOR_INDEX = (COLOR_INDEX + 1) % COLORS.length;
       return elm;
     },
   });
@@ -237,13 +232,12 @@
 
   AFRAME.registerComponent('block-cursor', {
     init() {
-      this.intersectedPosition = new THREE.Vector3();
       this.elCursor = this.initCursor();
       this.cursor = this.elCursor.object3D;
     },
 
     tick() {
-      const { cursor, intersectedPosition } = this;
+      const { cursor } = this;
       const { raycaster } = this.el.components;
       if (!raycaster) { return; }
       const { intersections } = raycaster;
@@ -283,7 +277,7 @@
           this.setAttribute('geometry', 'primitive: box; width: 1; height: 1; depth: 1');
           this.setAttribute('material-cube', 'top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;');
           this.setAttribute('clickable', true);
-        }
+        },
       },
       // play: {
       //   value: function() {

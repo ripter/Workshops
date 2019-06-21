@@ -1,8 +1,8 @@
 const _loadAt = (new Date()).toISOString();
-import './axis-controls.js';
-import './clickable.js';
-import './material-cube.js';
-import './block-cursor.js';
+import './components/axis-controls.js';
+import './components/clickable.js';
+import './components/material-cube.js';
+import './components/block-cursor.js';
 
 import './elements/c-cube.js';
 

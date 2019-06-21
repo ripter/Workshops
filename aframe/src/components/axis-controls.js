@@ -1,4 +1,4 @@
-import { fmtNumber } from './fmtNumber.js';
+import { fmtNumber } from '../util/fmtNumber.js';
 
 const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;

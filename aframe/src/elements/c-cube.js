@@ -10,7 +10,7 @@ AFRAME.registerElement('c-cube', {
         this.setAttribute('geometry', 'primitive: box; width: 1; height: 1; depth: 1');
         this.setAttribute('material-cube', 'top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;');
         this.setAttribute('clickable', true);
-      }
+      },
     },
     // play: {
     //   value: function() {

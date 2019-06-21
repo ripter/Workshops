@@ -1,8 +1,4 @@
-import { intersectionDirection } from './util/intersectionDirection.js';
-import { logCamera } from './logCamera.js';
-
-const COLORS = ['#0074D9', '#FF851B', '#7FDBFF', '#FF4136', '#2ECC40', '#B10DC9', '#FFDC00'];
-let COLOR_INDEX = 0;
+import { intersectionDirection } from '../util/intersectionDirection.js';
 
 AFRAME.registerComponent('clickable', {
   // schema: {
@@ -26,12 +22,7 @@ AFRAME.registerComponent('clickable', {
 
   createBlock() {
     const elm = document.createElement('c-cube');
-    // elm.setAttribute('color', COLORS[COLOR_INDEX]);
-    // elm.setAttribute('clickable', true);
-    // elm.classList.add('clickable');
     this.el.sceneEl.append(elm);
-
-    // COLOR_INDEX = (COLOR_INDEX + 1) % COLORS.length;
     return elm;
   },
 });
