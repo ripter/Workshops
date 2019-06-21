@@ -24,7 +24,7 @@ AFRAME.registerComponent('material-cube', {
     const mesh = el.getObject3D('mesh');
     if (!mesh) { throw new Error('No Mesh!'); }
 
-    // Load all the textures before updating the materials
+    // Load all the textures into the system before using the materials
     Promise.all([
       loadTexture(system, right),
       loadTexture(system, left),

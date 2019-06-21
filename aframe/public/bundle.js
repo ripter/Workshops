@@ -195,7 +195,7 @@
       const mesh = el.getObject3D('mesh');
       if (!mesh) { throw new Error('No Mesh!'); }
 
-      // Load all the textures before updating the materials
+      // Load all the textures into the system before using the materials
       Promise.all([
         loadTexture(system, right),
         loadTexture(system, left),
@@ -266,25 +266,40 @@
     },
   });
 
+  /**
+   * Returns materials for a cube with the sides randomized.
+   * @param  {String} [assetType='birch'] [description]
+   * @return {Object}
+   */
+  function getRandomCubeMaterials(assetType = 'birch') {
+    const imgTop = document.querySelector(`.img-${assetType}-top`);
+    const imgBottom = document.querySelector(`.img-${assetType}-bottom`);
+    const imgSides = Array.from(document.querySelectorAll(`.img-${assetType}-side`)).sort(() => 0.5 - Math.random());
+
+    return {
+      top: '#' + imgTop.id,
+      bottom: '#' + imgBottom.id,
+      front: '#' + imgSides[0].id,
+      back: '#' + imgSides[1].id,
+      left: '#' + imgSides[2].id,
+      right: '#' + imgSides[3].id,
+    }
+  }
+
   // Create a new element based on a-entity
   // We can do things here that are not possible with a mixin
   AFRAME.registerElement('c-cube', {
     prototype: Object.create(AFRAME.AEntity.prototype, {
-
+      // Called when created.
       createdCallback: {
         value: function () {
-          this.classList.add('clickable');
           this.setAttribute('geometry', 'primitive: box; width: 1; height: 1; depth: 1');
-          this.setAttribute('material-cube', 'top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;');
+          this.setAttribute('material-cube', getRandomCubeMaterials());
+          this.classList.add('clickable');
           this.setAttribute('clickable', true);
         },
       },
-      // play: {
-      //   value: function() {
-      //     console.log('play called', this);
-      //   }
-      // }
-    }),
+    }), // end prototype:
   });
 
   const _loadAt = (new Date()).toISOString();

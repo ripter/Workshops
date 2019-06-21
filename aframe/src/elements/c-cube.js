@@ -1,21 +1,17 @@
+import { getRandomCubeMaterials } from '../util/getRandomCubeMaterials.js';
 
 // Create a new element based on a-entity
 // We can do things here that are not possible with a mixin
 AFRAME.registerElement('c-cube', {
   prototype: Object.create(AFRAME.AEntity.prototype, {
-
+    // Called when created.
     createdCallback: {
       value: function () {
-        this.classList.add('clickable');
         this.setAttribute('geometry', 'primitive: box; width: 1; height: 1; depth: 1');
-        this.setAttribute('material-cube', 'top: #cubeTop; bottom: #cubeTop; front: #cubeSide1; back: #cubeSide2; left: #cubeSide3; right: #cubeSide4;');
+        this.setAttribute('material-cube', getRandomCubeMaterials());
+        this.classList.add('clickable');
         this.setAttribute('clickable', true);
       },
     },
-    // play: {
-    //   value: function() {
-    //     console.log('play called', this);
-    //   }
-    // }
-  }),
+  }), // end prototype:
 });
