@@ -1,17 +1,15 @@
+import { logCamera } from './logCamera.js';
 
 AFRAME.registerComponent('clickable', {
   // schema: {
   // },
 
   init() {
-    this.el.addEventListener('click', function (evt) {
-      const { distance } = evt.detail.intersection;
-      // console.log('click', evt.detail);
+    this.el.addEventListener('click', this.onClick.bind(this));
+  },
 
-      //DEBUG:
-      const elLog = document.querySelector('#logDebug2');
-      elLog.setAttribute('value', `click: ${(0|distance*100)/100}`);
-      //DEBUG END
-    });
+  onClick(event) {
+    const { distance } = event.detail.intersection;
+    logCamera(`click: ${(0|distance*100)/100}`);
   },
 });

@@ -115,20 +115,23 @@
     })(),
   });
 
+  // Helper to log something in front of the camera.
+  function logCamera(msg) {
+    const elLog = document.querySelector('#logDebug2');
+    elLog.setAttribute('value', msg);
+  }
+
   AFRAME.registerComponent('clickable', {
     // schema: {
     // },
 
     init() {
-      this.el.addEventListener('click', function (evt) {
-        const { distance } = evt.detail.intersection;
-        // console.log('click', evt.detail);
+      this.el.addEventListener('click', this.onClick.bind(this));
+    },
 
-        //DEBUG:
-        const elLog = document.querySelector('#logDebug2');
-        elLog.setAttribute('value', `click: ${(0|distance*100)/100}`);
-        //DEBUG END
-      });
+    onClick(event) {
+      const { distance } = event.detail.intersection;
+      logCamera(`click: ${(0|distance*100)/100}`);
     },
   });
 
@@ -239,7 +242,7 @@
       elm.setAttribute('width', 0.5);
       elm.setAttribute('height', 0.5);
       elm.setAttribute('transparent', true);
-      elm.setAttribute('opacity', 0.5);
+      elm.setAttribute('opacity', 0.75);
       this.el.sceneEl.append(elm);
       return elm;
     },

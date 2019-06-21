@@ -1,4 +1,3 @@
-
 AFRAME.registerComponent('block-cursor', {
   init() {
     this.intersectedPosition = new THREE.Vector3();
