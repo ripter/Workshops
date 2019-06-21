@@ -25,13 +25,13 @@ AFRAME.registerComponent('clickable', {
   },
 
   createBlock() {
-    const elm = document.createElement('a-box');
-    elm.setAttribute('color', COLORS[COLOR_INDEX]);
-    elm.setAttribute('clickable', true);
-    elm.classList.add('clickable');
+    const elm = document.createElement('c-cube');
+    // elm.setAttribute('color', COLORS[COLOR_INDEX]);
+    // elm.setAttribute('clickable', true);
+    // elm.classList.add('clickable');
     this.el.sceneEl.append(elm);
 
-    COLOR_INDEX = (COLOR_INDEX + 1) % COLORS.length;
+    // COLOR_INDEX = (COLOR_INDEX + 1) % COLORS.length;
     return elm;
   },
 });
