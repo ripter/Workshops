@@ -10,13 +10,16 @@ AFRAME.registerComponent('axis-controls', {
   },
 
   init() {
-    const { el } = this;
+    const { el, sceneEl } = this;
 
     this.player = document.querySelector('#player').object3D;
     this.camera = document.querySelector('#player [camera]').object3D;
     this.velocity = new THREE.Vector3();
     this.easing = 1.1;
     this.axis = [0,0];
+    // this.systemMovement = sceneEl.systems.movement;
+    //
+    // console.log('this.systemMovement', this.systemMovement);
 
     el.addEventListener('trackpadchanged', (e) => {
       const { pressed } = e.detail;

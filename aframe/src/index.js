@@ -1,4 +1,8 @@
 const _loadAt = (new Date()).toISOString();
+
+import './systems/movement.js';
+
+import './components/desktop-movement.js';
 import './components/axis-controls.js';
 import './components/clickable.js';
 import './components/material-cube.js';
