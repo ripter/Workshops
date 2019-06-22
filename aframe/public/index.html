@@ -40,28 +40,28 @@
     <a-entity id="player"
       position="0 1.8 0"
       desktop-movement
+      axis-movement
       look-controls="pointerLockEnabled: true;"
       >
       <a-entity id="player-head" camera>
 
         <a-text id="logDebug2" position="-2.25 0 -3" color="orange" value=""></a-text>
-        <a-entity id="player-hand-right" position="0.5 -0.5 -0.5">
+        <!-- <a-entity id="player-hand-right" position="0.5 -0.5 -0.5">
           <a-entity
             block-cursor
             cursor
             raycaster="objects: .clickable; showLine: true; far: 10; near: 0.5"
             >
           </a-entity>
-        </a-entity>
+        </a-entity> -->
       </a-entity>
 
-      <!-- <a-entity id="player-hand-right"  position="-0.25 0 -0.25">
+      <a-entity id="player-hand-right"  position="-0.25 0 -0.25">
         <a-entity
           laser-controls
-          axis-controls
           block-cursor
           raycaster="objects: .clickable; far: 10; near: 0.5;"></a-entity>
-      </a-entity> -->
+      </a-entity>
     </a-entity>
   </a-scene>
 

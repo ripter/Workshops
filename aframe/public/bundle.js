@@ -245,7 +245,8 @@
   const CLAMP_VELOCITY$1 = 0.00001;
   const MAX_DELTA$1 = 0.2;
 
-  AFRAME.registerComponent('axis-controls', {
+  AFRAME.registerComponent('axis-movement', {
+    dependencies: ['tracked-controls'],
     schema: {
       acceleration: {default: 65},
       enabled: {default: true},
