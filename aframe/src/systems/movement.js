@@ -6,12 +6,11 @@
  */
 AFRAME.registerSystem('movement', {
   init() {
-    console.log('system movement init', arguments, this);
     this.agents = [];
   },
 
 
-  tick(time, delta) {
+  tick(/*time, delta*/) {
     const { agents } = this;
 
     // Update the position of all the agents

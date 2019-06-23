@@ -1,8 +1,18 @@
-var CLAMP_VELOCITY = 0.00001;
-var MAX_DELTA = 0.2;
-var KEYS = [
+const KEYCODE_TO_CODE = {
+  '38': 'ArrowUp',
+  '37': 'ArrowLeft',
+  '40': 'ArrowDown',
+  '39': 'ArrowRight',
+  '87': 'KeyW',
+  '65': 'KeyA',
+  '83': 'KeyS',
+  '68': 'KeyD',
+};
+const CLAMP_VELOCITY = 0.00001;
+const MAX_DELTA = 0.2;
+const KEYS = [
   'KeyW', 'KeyA', 'KeyS', 'KeyD',
-  'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'
+  'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown',
 ];
 
 AFRAME.registerComponent('desktop-movement', {
@@ -15,7 +25,7 @@ AFRAME.registerComponent('desktop-movement', {
     fly: {default: false},
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
     wsEnabled: {default: true},
-    wsInverted: {default: false}
+    wsInverted: {default: false},
   },
 
   init() {
@@ -41,7 +51,6 @@ AFRAME.registerComponent('desktop-movement', {
   tick(time, delta) {
     // console.log('component.tick');
     var data = this.data;
-    var el = this.el;
     var velocity = this.velocity;
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
@@ -178,7 +187,8 @@ AFRAME.registerComponent('desktop-movement', {
   onVisibilityChange() {
     if (document.hidden) {
       this.onBlur();
-    } else {
+    }
+    else {
       this.onFocus();
     }
   },
@@ -196,8 +206,8 @@ AFRAME.registerComponent('desktop-movement', {
   },
 });
 
-function isEmptyObject (keys) {
-  var key;
-  for (key in keys) { return false; }
+function isEmptyObject (obj) {
+  // eslint-disable-next-line guard-for-in
+  for (let key in obj) { return false; }
   return true;
 }

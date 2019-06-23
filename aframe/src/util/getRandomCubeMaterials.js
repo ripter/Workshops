@@ -16,5 +16,5 @@ export function getRandomCubeMaterials(assetType = 'birch') {
     back: '#' + imgSides[1].id,
     left: '#' + imgSides[2].id,
     right: '#' + imgSides[3].id,
-  }
+  };
 }

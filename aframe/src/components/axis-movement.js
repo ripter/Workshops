@@ -11,7 +11,7 @@ AFRAME.registerComponent('axis-movement', {
   },
 
   init() {
-    const { el, sceneEl } = this;
+    const { el/*, sceneEl*/ } = this;
 
     this.player = document.querySelector('#player').object3D;
     this.camera = document.querySelector('#player [camera]').object3D;
