@@ -18,11 +18,20 @@
     </script>
     <script>
       const render = (template, params) => {
-      
+
       }
 
-      const template = document.querySelector("#template1").innerText;
-      const params = {foo: "item1", bar: "item2", button_name: "submit", nested: {one: {two: "item nested"}}}
+      const template = document.querySelector('#template1').innerText;
+      const params = {
+        click_count: 0,
+        button_name: 'submit',
+        nested: { one: { two: 'item nested' } }
+      };
+
+      const elApp = window.app;
+      const component = document.createElement('div');
+      component.innerHTML = render(template, params);
+      elApp.appendChild(component);
     </script>
   </body>
 </html>

@@ -8,6 +8,7 @@ function depsort(edges) {
 }
 
 
-//console.log(depsort([ [1, 2], [2, 3], [2, 4] ]))
-//console.log(depsort([ [2, 3], [2, 4], [1, 2] ]))
+
 console.log(depsort([['eggs', 'cheese'], ['cheese', 'milk'], ['cheese', 'flour']]))
+// => ['milk', 'flour', 'cheese', 'eggs']
+// => ['flour', 'milk', 'cheese', 'eggs']
