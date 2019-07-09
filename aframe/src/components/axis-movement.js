@@ -23,8 +23,10 @@ AFRAME.registerComponent('axis-movement', {
     // console.log('this.systemMovement', this.systemMovement);
 
     el.addEventListener('trackpadchanged', (e) => {
+      console.log('trackpadchanged', e.detail);
       const { pressed } = e.detail;
       const axis = this.el.components['tracked-controls'].axis.map(fmtNumber);
+      // console.log('axis', axis);
 
       if (pressed) {
         this.axis = axis;
@@ -36,17 +38,17 @@ AFRAME.registerComponent('axis-movement', {
   },
 
 
-  tick(time, delta) {
-    const { player } = this;
-
-    // Update velocity.
-    delta = delta / 1000;
-    this.updateVelocity(delta);
-
-    if (!this.velocity.x && !this.velocity.z) { return; }
-    // Get movement vector and translate position.
-    player.position.add(this.getMovementVector(delta));
-  },
+  // tick(time, delta) {
+  //   const { player } = this;
+  //
+  //   // Update velocity.
+  //   delta = delta / 1000;
+  //   this.updateVelocity(delta);
+  //
+  //   if (!this.velocity.x && !this.velocity.z) { return; }
+  //   // Get movement vector and translate position.
+  //   player.position.add(this.getMovementVector(delta));
+  // },
 
   /**
    * Updates this.velocity based on axis state.
