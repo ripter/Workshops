@@ -4,7 +4,7 @@ const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;
 
 AFRAME.registerComponent('axis-movement', {
-  dependencies: ['tracked-controls'],
+  // dependencies: ['tracked-controls'],
   schema: {
     acceleration: {default: 65},
     enabled: {default: true},
@@ -13,6 +13,7 @@ AFRAME.registerComponent('axis-movement', {
   init() {
     const { el/*, sceneEl*/ } = this;
 
+    console.log('axis-movement init', el);
     this.player = document.querySelector('#player').object3D;
     this.camera = document.querySelector('#player [camera]').object3D;
     this.velocity = new THREE.Vector3();
@@ -22,39 +23,61 @@ AFRAME.registerComponent('axis-movement', {
     //
     // console.log('this.systemMovement', this.systemMovement);
 
-    el.addEventListener('trackpadchanged', (e) => {
-      console.log('trackpadchanged', e.detail);
-      const { pressed } = e.detail;
-      const axis = this.el.components['tracked-controls'].axis.map(fmtNumber);
-      // console.log('axis', axis);
+    this.gamepadMovement = null;
+    window.addEventListener('gamepadconnected', (e) => {
+      const isTouch = /oculus touch/i;
+      const isLeft = /left/i;
+      const { id } = e.gamepad;
 
-      if (pressed) {
-        this.axis = axis;
-      }
-      else {
-        this.axis = [0,0];
+      // if it's a touch controller, we have left and right, so wait for left.
+      if (isTouch.test(id) && isLeft.test(id)) {
+        this.gamepadMovement = e.gamepad;
+        console.log('gamepadconnected', this);
       }
     });
+
+    // window.playerHandRight.addEventListener('pistolstart', (e) => {
+    //   console.log('pistolstart', e.detail);
+    // });
+    // window.playerHandRight.addEventListener('trackpadchanged', (e) => {
+    //   console.log('trackpadchanged', e.detail);
+    // });
+    //
+    // el.addEventListener('trackpadchanged', (e) => {
+    //   const { pressed } = e.detail;
+    //   const axis = this.el.components['tracked-controls'].axis.map(fmtNumber);
+    //   // console.log('axis', axis);
+    //
+    //   if (pressed) {
+    //     this.axis = axis;
+    //   }
+    //   else {
+    //     this.axis = [0,0];
+    //   }
+    // });
   },
 
 
-  // tick(time, delta) {
-  //   const { player } = this;
-  //
-  //   // Update velocity.
-  //   delta = delta / 1000;
-  //   this.updateVelocity(delta);
-  //
-  //   if (!this.velocity.x && !this.velocity.z) { return; }
-  //   // Get movement vector and translate position.
-  //   player.position.add(this.getMovementVector(delta));
-  // },
+  tick(time, delta) {
+    const { player, gamepadMovement } = this;
+
+    if (!gamepadMovement) { return; }
+    // console.log('axis', gamepadMovement);
+
+    // Update velocity.
+    delta = delta / 1000;
+    this.updateVelocity(delta, gamepadMovement.axes);
+
+    if (!this.velocity.x && !this.velocity.z) { return; }
+    // Get movement vector and translate position.
+    player.position.add(this.getMovementVector(delta));
+  },
 
   /**
    * Updates this.velocity based on axis state.
    */
-  updateVelocity(delta) {
-    const { axis, data, easing, velocity } = this;
+  updateVelocity(delta, axis) {
+    const { data, easing, velocity } = this;
     const { acceleration } = data;
 
     // If FPS too low, reset velocity.
