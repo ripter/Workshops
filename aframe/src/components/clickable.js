@@ -1,6 +1,6 @@
 import { intersectionDirection } from '../util/intersectionDirection.js';
 
-AFRAME.registerComponent('clickable', {
+AFRAME.registerComponent('cr-clickable', {
   // schema: {
   // },
 

@@ -472,7 +472,7 @@
     };
   })();
 
-  AFRAME.registerComponent('clickable', {
+  AFRAME.registerComponent('cr-clickable', {
     // schema: {
     // },
 
