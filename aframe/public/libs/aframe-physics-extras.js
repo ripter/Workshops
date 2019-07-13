@@ -68,6 +68,8 @@ AFRAME.registerComponent('physics-collider', {
     ignoreSleep: { default: true }
   },
   init: function () {
+    this.physics = null;
+
     this.collisions = new Set();
     this.currentCollisions = new Set();
     this.newCollisions = [];
@@ -77,6 +79,11 @@ AFRAME.registerComponent('physics-collider', {
       clearedEls: this.clearedCollisions
     };
   },
+
+  play() {
+    this.physics = AFRAME.scenes[0].systems.physics.driver;
+  },
+
   update: function () {
     if (this.el.body) {
       this.updateBody();
@@ -84,9 +91,35 @@ AFRAME.registerComponent('physics-collider', {
       this.el.addEventListener('body-loaded', this.updateBody.bind(this), { once: true });
     }
   },
-  tick: function () {
+
+  tick2: (function() {
+    return function innerTick(time) {
+      const { physics } = this;
+
+      if (physics && physics.dispatcher) {
+
+        const numManifolds = physics.dispatcher.getNumManifolds();
+        for (let i = 0; i < numManifolds; i++) {
+          const persistentManifold = physics.dispatcher.getManifoldByIndexInternal(i);
+          const body0ptr = Ammo.getPointer(persistentManifold.getBody0());
+          const body1ptr = Ammo.getPointer(persistentManifold.getBody1());
+          // console.log('persistentManifold', persistentManifold);
+          // console.log('body0ptr', body0ptr, physics.els.get(body0ptr));
+          // console.log('body1ptr', body1ptr, physics.els.get(body1ptr));
+          // const elBody = Ammo.els.get(body0ptr);
+        }
+
+
+        (document.querySelector('#logDebug2')).setAttribute('value', `numManifolds: ${numManifolds}`);
+      }
+
+    }
+  })(),
+  // It looks like it finds world collisions and emits 'collisions' if the collision list changes.
+  tickOrg: function () {
     const uppperMask = 0xFFFF0000;
     const lowerMask = 0x0000FFFF;
+
     return function () {
       if (!this.el.body) return;
       const currentCollisions = this.currentCollisions;
