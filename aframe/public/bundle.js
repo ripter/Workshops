@@ -4,6 +4,7 @@
   AFRAME.registerComponent('player-hand', {
     schema: {
       isGrip: {type: 'bool', default: false},
+      name: {type: 'string', default: 'Rose'},
     },
 
     init() {
@@ -11,6 +12,18 @@
       this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
       this.el.addEventListener('gripdown', this.onGripDown.bind(this));
       this.el.addEventListener('gripup', this.onGripUp.bind(this));
+    },
+
+
+
+    update(oldData) {
+      console.log('player-hand update', this.data);
+      // Did isGrip change?
+      if (this.data.isGrip !== oldData.isGrip) {
+        this.el.setAttribute('ammo-body', {
+          disableCollision: !this.data.isGrip,
+        });
+      }
     },
 
     onCollideStart(event) {
@@ -22,11 +35,19 @@
     },
 
     onGripDown(event) {
-      this.data.isGrip = true;
+      //Question: this feels weird since we are player-hand, but it does trigger the update()
+      this.el.setAttribute('player-hand', {
+        isGrip: true,
+      });
+      // this.data.isGrip = true;
       // console.log('player-hand gripdown', event);
     },
     onGripUp(event) {
-      this.data.isGrip = false;
+      //Question: this feels weird since we are player-hand, but it does trigger the update()
+      this.el.setAttribute('player-hand', {
+        isGrip: false,
+      });
+      // this.data.isGrip = false;
       // console.log('player-hand gripdown', event);
     },
   });
@@ -60,6 +81,7 @@
     // },
 
     init() {
+      // AFRAME.utils.entity.setComponentProperty(this.el, 'ammo-body.disableCollision', true);
       this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
       this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
     },
@@ -68,13 +90,13 @@
       const { targetEl } = event.detail;
       const hand = targetEl.components['player-hand'];
       if (!hand) { return; }
-      
-      console.log('hover-able collidestart', hand.data, targetEl);
+      const shouldRespondWithPhysics = hand.data.isGrip;
+
     },
 
     onCollideEnd(event) {
       const { targetEl } = event.detail;
-      console.log('hover-able collideend', event);
+      // console.log('hover-able collideend', event);
     },
   });
 
