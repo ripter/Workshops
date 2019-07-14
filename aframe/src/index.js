@@ -7,6 +7,7 @@ import './components/axis-movement.js';
 import './components/clickable.js';
 import './components/material-cube.js';
 import './components/block-cursor.js';
+import './components/player-hand.js';
 
 import './elements/c-cube.js';
 

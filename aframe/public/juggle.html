@@ -12,7 +12,7 @@
   <script src="libs/aframe-event-set-component.js"></script>
   <script src="libs/aframe-physics-system.js"></script>
   <!-- <script src="libs/aframe-physics-extras.js"></script> -->
-  <script src="libs/super-hands.js"></script>
+  <!-- <script src="libs/super-hands.js"></script> -->
   <script>
     // turn controller's physics presence on only while button held down
     AFRAME.registerComponent('phase-shift', {
@@ -37,12 +37,14 @@
         geometry="primitive: box; width: 0.33; height: 0.33; depth: 0.33"
         ammo-body="type: dynamic"
         ammo-shape="type: box"
-        grabbable
+        grabbable hoverable
         shadow></a-mixin>
       <a-mixin id="touch"
-        ammo-body="type: dynamic"
+        ammo-body="type: kinematic"
         ammo-shape="type: sphere; sphereRadius: 0.02; fit: manual;"
-        super-hands></a-assets>
+        player-hand
+        ></a-mixin>
+      </a-assets>
 
 
 
@@ -68,10 +70,12 @@
       </a-entity>
       <a-entity id="playerHandLeft"
         mixin="touch"
-        hand-controls="left"></a-entity>
+        hand-controls="left">
+      </a-entity>
       <a-entity id="playerHandRight"
         mixin="touch"
-        hand-controls="right"></a-entity>
+        hand-controls="right">
+      </a-entity>
     </a-entity>
 
   </a-scene>
