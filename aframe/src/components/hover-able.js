@@ -13,7 +13,10 @@ AFRAME.registerComponent('hover-able', {
 
   onCollideStart(event) {
     const { targetEl } = event.detail;
-    console.log('hover-able collidestart', event);
+    const hand = targetEl.components['player-hand'];
+    if (!hand) { return; }
+    
+    console.log('hover-able collidestart', hand.data, targetEl);
   },
 
   onCollideEnd(event) {
