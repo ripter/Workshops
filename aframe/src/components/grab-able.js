@@ -1,5 +1,8 @@
 
-AFRAME.registerComponent('player-hand', {
+/**
+ * Marks the object as something player-hands can grab and pick up.
+ */
+AFRAME.registerComponent('grab-able', {
   // schema: {
   // },
 
@@ -9,10 +12,10 @@ AFRAME.registerComponent('player-hand', {
   },
 
   onCollideStart(event) {
-    console.log('player-hand collidestart', event);
+    console.log('grab-able collidestart', event);
   },
 
   onCollideEnd(event) {
-    console.log('player-hand collideend', event);
+    console.log('grab-able collideend', event);
   },
 });

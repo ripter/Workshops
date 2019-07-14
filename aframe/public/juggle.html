@@ -11,22 +11,6 @@
   <script src="libs/aframe-extras.js"></script>
   <script src="libs/aframe-event-set-component.js"></script>
   <script src="libs/aframe-physics-system.js"></script>
-  <!-- <script src="libs/aframe-physics-extras.js"></script> -->
-  <!-- <script src="libs/super-hands.js"></script> -->
-  <script>
-    // turn controller's physics presence on only while button held down
-    AFRAME.registerComponent('phase-shift', {
-      init: function () {
-        var el = this.el
-        el.addEventListener('gripdown', function () {
-          el.setAttribute('collision-filter', {collisionForces: true})
-        })
-        el.addEventListener('gripup', function () {
-          el.setAttribute('collision-filter', {collisionForces: false})
-        })
-      }
-    });
-  </script>
   <link rel="stylesheet" href="./index.css"></link>
   <script src="./bundle.js"></script>
 </head>
@@ -37,10 +21,10 @@
         geometry="primitive: box; width: 0.33; height: 0.33; depth: 0.33"
         ammo-body="type: dynamic"
         ammo-shape="type: box"
-        grabbable hoverable
+        grab-able hover-able
         shadow></a-mixin>
       <a-mixin id="touch"
-        ammo-body="type: kinematic"
+        ammo-body="type: kinematic;"
         ammo-shape="type: sphere; sphereRadius: 0.02; fit: manual;"
         player-hand
         ></a-mixin>
