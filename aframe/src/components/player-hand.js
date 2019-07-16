@@ -18,6 +18,7 @@ AFRAME.registerComponent('player-hand', {
     console.log('player-hand update', this.data);
     // Did isGrip change?
     if (this.data.isGrip !== oldData.isGrip) {
+      // Gripping activates physics and collisions
       this.el.setAttribute('ammo-body', {
         disableCollision: !this.data.isGrip,
       });

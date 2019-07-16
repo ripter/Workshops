@@ -20,6 +20,7 @@
       console.log('player-hand update', this.data);
       // Did isGrip change?
       if (this.data.isGrip !== oldData.isGrip) {
+        // Gripping activates physics and collisions
         this.el.setAttribute('ammo-body', {
           disableCollision: !this.data.isGrip,
         });
@@ -81,23 +82,44 @@
     // },
 
     init() {
-      // AFRAME.utils.entity.setComponentProperty(this.el, 'ammo-body.disableCollision', true);
-      this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
-      this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
+      this.hands = [];
+      this.extents = {x: 0, y: 0, z: 0};
     },
 
-    onCollideStart(event) {
-      const { targetEl } = event.detail;
-      const hand = targetEl.components['player-hand'];
-      if (!hand) { return; }
-      const shouldRespondWithPhysics = hand.data.isGrip;
-
+    play() {
+      this.hands = Array.from(document.querySelectorAll('#player [player-hand]'));
+      const geometry = AFRAME.utils.entity.getComponentProperty(this.el, 'geometry');
+      this.shapeDistance = geometry.depth / 2;
     },
 
-    onCollideEnd(event) {
-      const { targetEl } = event.detail;
-      // console.log('hover-able collideend', event);
-    },
+    tick: (function() {
+      const myWorldPosition = new THREE.Vector3();
+      const handWorldPosition = new THREE.Vector3();
+      let isHovering = false;
+
+      return function tick2() {
+        isHovering = false;
+        this.el.object3D.getWorldPosition(myWorldPosition);
+
+        // Check each hand to see if it is close enough.
+        for (let i=0; i < this.hands.length; i++) {
+          const handObject3D = this.hands[i].object3D;
+          handObject3D.getWorldPosition(handWorldPosition);
+
+          const distance = myWorldPosition.distanceToSquared(handWorldPosition);
+          if (distance <= this.shapeDistance) {
+            isHovering = true;
+          }
+        }
+
+        if (isHovering) {
+          AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.5);
+        }
+        else {
+          AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.0);
+        }
+      }
+    })(),
   });
 
   const _loadAt = (new Date()).toISOString();
