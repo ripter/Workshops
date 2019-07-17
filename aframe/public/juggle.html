@@ -15,7 +15,7 @@
   <script src="./bundle.js"></script>
 </head>
 <body>
-  <a-scene stats physics="driver: ammo; debug: true; debugDrawMode: 1;">
+  <a-scene stats physics="driver: ammo; debug: false; debugDrawMode: 1;">
     <a-assets>
       <a-asset-item id="glbTable" src="assets/vintage_table.glb"></a-asset-item>
       <a-mixin id="cube"
@@ -33,24 +33,28 @@
 
 
       <a-entity class="desk" position="0 0 -0.8">
-        <a-gltf-model
-          src="#glbTable"
-          shadow
-          ></a-gltf-model>
-        <a-box
-          width="1.95"
-          height="1.34"
-          depth="0.8"
-          ammo-body="type: static;"
-          ammo-shape="type: box;"
-          opacity="0.0"
-          ></a-box>
-    </a-entity>
+        <a-entity position="0 0.53 0" scale="0.8 0.8 0.8">
+          <a-gltf-model
+            src="#glbTable"
+            shadow
+            >
+          </a-gltf-model>
+          <a-box
+            width="1.95"
+            height="1.34"
+            depth="0.8"
+            ammo-body="type: static;"
+            ammo-shape="type: box;"
+            opacity="0.0"
+            >
+          </a-box>
+        </a-entity>
+      </a-entity>
 
     <a-plane
       ammo-body="type: static; mass: 0;"
       ammo-shape="type: box;"
-      position="0 -0.63 0"
+      position="0 0 0"
       rotation="-90 -1.5 0"
       width="20"
       height="20"
@@ -59,10 +63,10 @@
 
       <a-entity class="cube" mixin="cube" position="0 2 -1" material="color: red"></a-entity>
       <a-entity class="cube" mixin="cube" position="0 2 -0.5" material="color: red"></a-entity>
-      <a-entity class="cube" mixin="cube" position="-0.8 2 -1" material="color: blue"></a-entity>
-      <a-entity class="cube" mixin="cube" position="-0.8 2 -0.5" material="color: blue"></a-entity>
-      <a-entity class="cube" mixin="cube" position="0.8 2 -1" material="color: green"></a-entity>
-      <a-entity class="cube" mixin="cube" position="0.8 2 -0.5" material="color: green"></a-entity>
+      <a-entity class="cube" mixin="cube" position="-0.6 2 -1" material="color: blue"></a-entity>
+      <a-entity class="cube" mixin="cube" position="-0.6 2 -0.5" material="color: blue"></a-entity>
+      <a-entity class="cube" mixin="cube" position="0.6 2 -1" material="color: green"></a-entity>
+      <a-entity class="cube" mixin="cube" position="0.6 2 -0.5" material="color: green"></a-entity>
 
 
     <a-entity id="player">
