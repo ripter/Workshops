@@ -1,6 +1,56 @@
 (function () {
   'use strict';
 
+  /**
+   * Interaction System
+   * Emits events based on Entity and Hand distance.
+   */
+  AFRAME.registerSystem('interaction', {
+    init() {
+      this.interactAbles = new Set();
+      this.hands = new Set();
+    },
+
+    tick() {
+
+    },
+
+    addEntity(entity) {
+      this.interactAbles.add(entity);
+    },
+    removeEntity(entity) {
+      this.interactAbles.remove(entity);
+    },
+
+    addHand(entity) {
+      this.hands.add(entity);
+    },
+    removeHand(entity) {
+      this.hands.remove(entity);
+    },
+  });
+
+  AFRAME.registerComponent('interaction', {
+    // schema: {
+    // },
+
+    init() {
+      const { system } = this;
+
+      if (!system) {
+        throw new Error('interaction System not found.');
+      }
+
+      // Register the entity in the system so it can receive events.
+      system.addEntity(this.el);
+    },
+
+    remove() {
+      // Remove the entity so the system will stop tracking it.
+      this.system.removeEntity(this.el);
+    },
+  });
+
   AFRAME.registerComponent('player-hand', {
     schema: {
       isGrip: {type: 'bool', default: false},
@@ -126,7 +176,6 @@
 
 
   // import './systems/movement.js';
-
   // import './components/desktop-movement.js';
   // import './components/axis-movement.js';
   // import './components/clickable.js';

@@ -17,11 +17,14 @@
 <body>
   <a-scene stats physics="driver: ammo; debug: false; debugDrawMode: 1;">
     <a-assets>
-      <a-asset-item id="glbTable" src="assets/vintage_table.glb"></a-asset-item>
+      <a-asset-item id="glbTable" src="assets/vintage_table.glb">
+        https://sketchfab.com/3d-models/low-poly-old-vintage-table-desk-free-c802441e808c4ae9a0cb1448ce3b6e82
+      </a-asset-item>
       <a-mixin id="cube"
         geometry="primitive: box; width: 0.13; height: 0.13; depth: 0.13"
         ammo-body="type: dynamic"
         ammo-shape="type: box"
+        interaction
         hover-able
         shadow></a-mixin>
       <a-mixin id="touch"
