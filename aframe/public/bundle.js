@@ -116,7 +116,7 @@
           AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.5);
         }
         else {
-          AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.0);
+          AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
         }
       }
     })(),
