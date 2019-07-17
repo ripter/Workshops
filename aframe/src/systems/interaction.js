@@ -7,11 +7,21 @@ AFRAME.registerSystem('interaction', {
   init() {
     this.interactAbles = new Set();
     this.hands = new Set();
+    this.distance = new WeakMap();
   },
 
-  tick() {
+  tick: (function() {
+    return function tick2() {
+      const { hands, interactAbles } = this;
 
-  },
+      // Update the distance values for each interactAble & hand
+      this.hands.forEach((hand) => {
+        this.interactAbles.forEach((entity) => {
+          // console.log('hand', hand, 'entity', entity);
+        });
+      });
+    }
+  })(),
 
   addEntity(entity) {
     this.interactAbles.add(entity);

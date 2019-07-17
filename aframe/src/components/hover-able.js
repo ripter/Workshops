@@ -6,17 +6,24 @@ AFRAME.registerComponent('hover-able', {
   // },
 
   init() {
-    this.hands = [];
-    this.extents = {x: 0, y: 0, z: 0};
+    // this.hands = [];
+    // this.extents = {x: 0, y: 0, z: 0};
+
+    this.el.addEventListener('handenter', (event) => {
+      AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.5);
+    });
+    this.el.addEventListener('handleave', (event) => {
+      AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
+    });
   },
 
-  play() {
+  _play() {
     this.hands = Array.from(document.querySelectorAll('#player [player-hand]'));
     const geometry = AFRAME.utils.entity.getComponentProperty(this.el, 'geometry');
     this.shapeDistance = geometry.depth / 2;
   },
 
-  tick: (function() {
+  _tick: (function() {
     const myWorldPosition = new THREE.Vector3();
     const handWorldPosition = new THREE.Vector3();
     let isHovering = false;

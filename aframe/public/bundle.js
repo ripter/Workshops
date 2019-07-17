@@ -9,11 +9,20 @@
     init() {
       this.interactAbles = new Set();
       this.hands = new Set();
+      this.distance = new WeakMap();
     },
 
-    tick() {
+    tick: (function() {
+      return function tick2() {
 
-    },
+        // Update the distance values for each interactAble & hand
+        this.hands.forEach((hand) => {
+          this.interactAbles.forEach((entity) => {
+            // console.log('hand', hand, 'entity', entity);
+          });
+        });
+      }
+    })(),
 
     addEntity(entity) {
       this.interactAbles.add(entity);
@@ -58,16 +67,22 @@
     },
 
     init() {
+      this.system = this.el.sceneEl.systems.interaction;
+      this.system.addHand(this.el);
+      
       this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
       this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
       this.el.addEventListener('gripdown', this.onGripDown.bind(this));
       this.el.addEventListener('gripup', this.onGripUp.bind(this));
     },
 
-
+    remove() {
+      // Remove the entity so the system will stop tracking it.
+      this.system.removeHand(this.el);
+    },
 
     update(oldData) {
-      console.log('player-hand update', this.data);
+      // console.log('player-hand update', this.data);
       // Did isGrip change?
       if (this.data.isGrip !== oldData.isGrip) {
         // Gripping activates physics and collisions
@@ -132,17 +147,24 @@
     // },
 
     init() {
-      this.hands = [];
-      this.extents = {x: 0, y: 0, z: 0};
+      // this.hands = [];
+      // this.extents = {x: 0, y: 0, z: 0};
+
+      this.el.addEventListener('handenter', (event) => {
+        AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 0.5);
+      });
+      this.el.addEventListener('handleave', (event) => {
+        AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
+      });
     },
 
-    play() {
+    _play() {
       this.hands = Array.from(document.querySelectorAll('#player [player-hand]'));
       const geometry = AFRAME.utils.entity.getComponentProperty(this.el, 'geometry');
       this.shapeDistance = geometry.depth / 2;
     },
 
-    tick: (function() {
+    _tick: (function() {
       const myWorldPosition = new THREE.Vector3();
       const handWorldPosition = new THREE.Vector3();
       let isHovering = false;

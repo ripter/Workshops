@@ -6,16 +6,22 @@ AFRAME.registerComponent('player-hand', {
   },
 
   init() {
+    this.system = this.el.sceneEl.systems.interaction;
+    this.system.addHand(this.el);
+    
     this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
     this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
     this.el.addEventListener('gripdown', this.onGripDown.bind(this));
     this.el.addEventListener('gripup', this.onGripUp.bind(this));
   },
 
-
+  remove() {
+    // Remove the entity so the system will stop tracking it.
+    this.system.removeHand(this.el);
+  },
 
   update(oldData) {
-    console.log('player-hand update', this.data);
+    // console.log('player-hand update', this.data);
     // Did isGrip change?
     if (this.data.isGrip !== oldData.isGrip) {
       // Gripping activates physics and collisions
