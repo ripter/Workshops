@@ -2,7 +2,7 @@
 
 AFRAME.registerComponent('interaction', {
   schema: {
-    minRadius: {default: 0.5},
+    minRadius: {default: 0.1},
   },
 
   init() {

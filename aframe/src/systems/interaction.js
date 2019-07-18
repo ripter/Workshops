@@ -17,7 +17,8 @@ AFRAME.registerSystem('interaction', {
     return function tick2() {
       const { hand } = this;
 
-      // Update the distance values for each interactAble & hand
+      // Loop over each hand & interactAble entity.
+      // Updates the distanceInfo for each entity.
       [hand.left, hand.right].forEach((hand, handIndex) => {
         if (!hand) { return; }
         // get the hand's world position
@@ -40,7 +41,7 @@ AFRAME.registerSystem('interaction', {
       });
 
       // Loop over all the entities and emit events as needed.
-      // Emit events based on changes to the distance and user input.
+      // Emit events based on changes to distanceInfo and user input.
       this.interactAbles.forEach((entity) => {
         const distance = this.distanceInfo.get(entity);
         const minDistance = Math.min(distance.leftHand, distance.rightHand);
@@ -72,6 +73,12 @@ AFRAME.registerSystem('interaction', {
     }
   })(),
 
+
+  /**
+   * Adds an interactable entity to the system.
+   * Entity will start getting Interaction Events.
+   * @param {AEntity} entity
+   */
   addEntity(entity) {
     this.interactAbles.add(entity);
     this.distanceInfo.set(entity, {
@@ -80,11 +87,22 @@ AFRAME.registerSystem('interaction', {
       isTouching: false,
     });
   },
+  /**
+   * Removes an entity from the system.
+   * Entity will no longer receive Interaction Events.
+   * @param  {AEntity} entity
+   */
   removeEntity(entity) {
     this.interactAbles.remove(entity);
     this.distanceInfo.delete(entity);
   },
 
+
+  /**
+   * Adds Left/Right Hand to the system
+   * @param {AEntity} entity
+   * @param {String} [hand='left'] left or right
+   */
   addHand(entity, hand = 'left') {
     if (hand === 'left') {
       this.hand.left = entity;
@@ -92,6 +110,11 @@ AFRAME.registerSystem('interaction', {
       this.hand.right = entity;
     }
   },
+  /**
+   * Removes Left/Right Hand to the system
+   * @param {AEntity} entity
+   * @param {String} [hand='left'] left or right
+   */
   removeHand(entity, hand = 'left') {
     if (hand === 'left') {
       this.hand.left = null;
