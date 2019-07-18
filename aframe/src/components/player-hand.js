@@ -1,14 +1,16 @@
 
 AFRAME.registerComponent('player-hand', {
+  dependencies: ['hand-controls'],
   schema: {
     isGrip: {type: 'bool', default: false},
     name: {type: 'string', default: 'Rose'},
   },
 
   init() {
+    // Register as a hand in the interaction system
     this.system = this.el.sceneEl.systems.interaction;
-    this.system.addHand(this.el);
-    
+    this.system.addHand(this.el, this.el.components['hand-controls'].data);
+
     this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
     this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
     this.el.addEventListener('gripdown', this.onGripDown.bind(this));
