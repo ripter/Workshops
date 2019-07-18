@@ -45,7 +45,7 @@ AFRAME.registerSystem('interaction', {
       this.interactAbles.forEach((entity) => {
         const distance = this.distanceInfo.get(entity);
         const minDistance = Math.min(distance.leftHand, distance.rightHand);
-        const minRadius = entity.components.interaction.data.minRadius;
+        const minRadius = entity.components.interaction.getMinRadius();
 
         // Are we in touching distance?
         if (minDistance <= minRadius) {
