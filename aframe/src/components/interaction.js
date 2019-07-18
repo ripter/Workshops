@@ -3,11 +3,10 @@
 AFRAME.registerComponent('interaction', {
   schema: {
     fit: { default: 'auto', oneOf: ['auto', 'manual'] },
-    minRadius: {default: 0.1},
+    minRadius: {default: 0.001},
   },
 
   init() {
-    console.log('component init', this.el, this);
     // Skip trying to figure out the radius on a manual fit.
     if (this.data.fit === 'manual') {
       this.setMinRadius(this.data.minRadius);
@@ -24,6 +23,10 @@ AFRAME.registerComponent('interaction', {
     this.system.removeEntity(this.el);
   },
 
+  /**
+   * Returns the minimum radius to use when detecting interactions.
+   * @return {[type]} [description]
+   */
   getMinRadius() {
     // geometry can take some time to load, so delay fetching until required
     if (!this._minRadius) {
@@ -36,7 +39,7 @@ AFRAME.registerComponent('interaction', {
     this._minRadius = value;
   },
 
-
+  //POC: utility function to get the radius to use for interactions based on the mesh.
   getGeometryRadius(entity) {
     const mesh = entity.getObject3D('mesh');
     const { geometry } = mesh;
