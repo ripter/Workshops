@@ -1,17 +1,15 @@
 
 
 AFRAME.registerComponent('interaction', {
-  // schema: {
-  // },
+  schema: {
+    minRadius: {default: 0.5},
+  },
 
   init() {
     const { system } = this;
 
-    if (!system) {
-      throw new Error('interaction System not found.');
-    }
-
     // Register the entity in the system so it can receive events.
+    if (!system) { throw new Error('interaction System not found.'); }
     system.addEntity(this.el);
   },
 

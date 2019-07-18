@@ -44,8 +44,30 @@ AFRAME.registerSystem('interaction', {
       this.interactAbles.forEach((entity) => {
         const distance = this.distanceInfo.get(entity);
         const minDistance = Math.min(distance.leftHand, distance.rightHand);
+        const minRadius = entity.components.interaction.data.minRadius;
 
-        // console.log(minDistance, entity);
+        // Are we in touching distance?
+        if (minDistance <= minRadius) {
+          // Did we move into range?
+          if (!distance.isTouching) {
+            distance.isTouching = true;
+            entity.emit('handenter', {
+              hand: distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right,
+              data: distance,
+            });
+          }
+        }
+        // We are not in touching distance.
+        else {
+          // Did we move out of range?
+          if (distance.isTouching) {
+            distance.isTouching = false;
+            entity.emit('handleave', {
+              hand: distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right,
+              data: distance,
+            });
+          }
+        }
       });
     }
   })(),
