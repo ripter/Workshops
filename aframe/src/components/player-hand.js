@@ -11,15 +11,16 @@ AFRAME.registerComponent('player-hand', {
     this.system = this.el.sceneEl.systems.interaction;
     this.system.addHand(this.el, this.el.components['hand-controls'].data);
 
-    this.el.addEventListener('collidestart', this)
-    this.el.addEventListener('collideend', this)
-    this.el.addEventListener('gripdown', this.onGripDown.bind(this));
-    this.el.addEventListener('gripup', this.onGripUp.bind(this));
-    this.el.addEventListener('handenter', this);
+    // this.el.addEventListener('collidestart', this)
+    // this.el.addEventListener('collideend', this)
+    this.el.addEventListener('gripdown', this);
+    this.el.addEventListener('gripup', this);
+    // this.el.addEventListener('handenter', this);
   },
 
   handleEvent(event) {
     // console.log('player-hand.handleEvent', event.type, event, this);
+    this[`on${event.type}`](event);
   },
 
   remove() {
@@ -46,7 +47,8 @@ AFRAME.registerComponent('player-hand', {
     // console.log('player-hand collideend', event);
   },
 
-  onGripDown(event) {
+  ongripdown(event) {
+    const { system } = this;
     //Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
       isGrip: true,
@@ -55,7 +57,7 @@ AFRAME.registerComponent('player-hand', {
     // this.data.isGrip = true;
     // console.log('player-hand gripdown', event);
   },
-  onGripUp(event) {
+  ongripup(event) {
     //Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
       isGrip: false,

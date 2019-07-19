@@ -16,7 +16,6 @@ AFRAME.registerSystem('interaction', {
 
     return function tick2() {
       const { hand } = this;
-
       // Loop over each hand & interactAble entity.
       // Updates the distanceInfo for each entity.
       [hand.left, hand.right].forEach((hand, handIndex) => {
@@ -77,6 +76,10 @@ AFRAME.registerSystem('interaction', {
     }
   })(),
 
+  getClosestEntity(handType = 'left') {
+    const hand = handType === 'left' ? this.hand.left : this.hand.right;
+    //TODO: Loop over all the interactAbles and return the one closest to the hand.
+  },
 
   /**
    * Adds an interactable entity to the system.

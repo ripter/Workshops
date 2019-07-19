@@ -28,7 +28,7 @@ AFRAME.registerComponent('grab-able', {
         break;
       case 'collideend':
       case 'handleave':
-        AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
+        // AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
         break;
       default:
         throw new Error(`hover-able does not have a case for event "${event.type}"`);
@@ -40,7 +40,6 @@ AFRAME.registerComponent('grab-able', {
     console.log('isHandGripped', isHandGripped);
     if (!isHandGripped) { return; }
 
-    console.log('GRIP!', hand);
     // Bind to the hand.
     hand.setAttribute('ammo-constraint', 'target: #gripMe;');
   },
