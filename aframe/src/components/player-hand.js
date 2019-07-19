@@ -11,10 +11,15 @@ AFRAME.registerComponent('player-hand', {
     this.system = this.el.sceneEl.systems.interaction;
     this.system.addHand(this.el, this.el.components['hand-controls'].data);
 
-    this.el.addEventListener('collidestart', this.onCollideStart.bind(this));
-    this.el.addEventListener('collideend', this.onCollideEnd.bind(this));
+    this.el.addEventListener('collidestart', this)
+    this.el.addEventListener('collideend', this)
     this.el.addEventListener('gripdown', this.onGripDown.bind(this));
     this.el.addEventListener('gripup', this.onGripUp.bind(this));
+    this.el.addEventListener('handenter', this);
+  },
+
+  handleEvent(event) {
+    console.log('handleEvent', event, this);
   },
 
   remove() {
@@ -46,6 +51,7 @@ AFRAME.registerComponent('player-hand', {
     this.el.setAttribute('player-hand', {
       isGrip: true,
     });
+    //         ammo-constraint="target: #gripMe;"
     // this.data.isGrip = true;
     // console.log('player-hand gripdown', event);
   },

@@ -44,29 +44,33 @@ AFRAME.registerSystem('interaction', {
       // Emit events based on changes to distanceInfo and user input.
       this.interactAbles.forEach((entity) => {
         const distance = this.distanceInfo.get(entity);
-        const minDistance = Math.min(distance.leftHand, distance.rightHand);
+        const closestHand = distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right;
+        const closestDistance = Math.min(distance.leftHand, distance.rightHand);
         const minRadius = entity.components.interaction.getMinRadius();
+        // const isHandGripped = AFRAME.utils.entity.getComponentProperty(closestHand, 'player-hand.isGrip');
+        const eventData = {
+          hand: closestHand,
+          distance: closestDistance,
+          data: distance,
+        };
+
+        // console.log('isHandGripped', isHandGripped);
 
         // Are we in touching distance?
-        if (minDistance <= minRadius) {
-          // Did we move into range?
+        if (closestDistance <= minRadius) {
+          // Did we move into range; after being out of range?
           if (!distance.isTouching) {
             distance.isTouching = true;
-            entity.emit('handenter', {
-              hand: distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right,
-              data: distance,
-            });
+            entity.emit('handenter', eventData);
           }
+          // Is this a grip action?
         }
         // We are not in touching distance.
         else {
-          // Did we move out of range?
+          // Did we move out of range? (After being in range)
           if (distance.isTouching) {
             distance.isTouching = false;
-            entity.emit('handleave', {
-              hand: distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right,
-              data: distance,
-            });
+            entity.emit('handleave', eventData);
           }
         }
       });
