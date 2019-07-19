@@ -3,13 +3,13 @@ AFRAME.registerComponent('player-hand', {
   dependencies: ['hand-controls'],
   schema: {
     isGrip: {type: 'bool', default: false},
-    name: {type: 'string', default: 'Rose'},
   },
 
   init() {
     // Register as a hand in the interaction system
     this.system = this.el.sceneEl.systems.interaction;
-    this.system.addHand(this.el, this.el.components['hand-controls'].data);
+    this.handType = this.el.components['hand-controls'].data;
+    this.system.addHand(this.el, this.handType);
 
     // this.el.addEventListener('collidestart', this)
     // this.el.addEventListener('collideend', this)
@@ -53,9 +53,11 @@ AFRAME.registerComponent('player-hand', {
     this.el.setAttribute('player-hand', {
       isGrip: true,
     });
-    //         ammo-constraint="target: #gripMe;"
-    // this.data.isGrip = true;
-    // console.log('player-hand gripdown', event);
+
+    const entityToGrab = system.getClosestEntity(this.handType);
+    if (entityToGrab) {
+      this.el.setAttribute('ammo-constraint', 'target: #gripMe;');
+    }
   },
   ongripup(event) {
     //Question: this feels weird since we are player-hand, but it does trigger the update()
@@ -64,5 +66,6 @@ AFRAME.registerComponent('player-hand', {
     });
     // this.data.isGrip = false;
     // console.log('player-hand gripdown', event);
+    this.el.removeAttribute('ammo-constraint');
   },
 });

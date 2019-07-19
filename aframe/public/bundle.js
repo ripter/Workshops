@@ -18,7 +18,6 @@
 
       return function tick2() {
         const { hand } = this;
-
         // Loop over each hand & interactAble entity.
         // Updates the distanceInfo for each entity.
         [hand.left, hand.right].forEach((hand, handIndex) => {
@@ -79,6 +78,12 @@
       }
     })(),
 
+    getClosestEntity(handType = 'left') {
+      const hand = handType === 'left' ? this.hand.left : this.hand.right;
+      //TODO: Loop over all the interactAbles and return the one closest to the hand.
+      const itr =  this.interactAbles.values();
+      return itr.next().value;
+    },
 
     /**
      * Adds an interactable entity to the system.
@@ -185,23 +190,24 @@
     dependencies: ['hand-controls'],
     schema: {
       isGrip: {type: 'bool', default: false},
-      name: {type: 'string', default: 'Rose'},
     },
 
     init() {
       // Register as a hand in the interaction system
       this.system = this.el.sceneEl.systems.interaction;
-      this.system.addHand(this.el, this.el.components['hand-controls'].data);
+      this.handType = this.el.components['hand-controls'].data;
+      this.system.addHand(this.el, this.handType);
 
-      this.el.addEventListener('collidestart', this);
-      this.el.addEventListener('collideend', this);
-      this.el.addEventListener('gripdown', this.onGripDown.bind(this));
-      this.el.addEventListener('gripup', this.onGripUp.bind(this));
-      this.el.addEventListener('handenter', this);
+      // this.el.addEventListener('collidestart', this)
+      // this.el.addEventListener('collideend', this)
+      this.el.addEventListener('gripdown', this);
+      this.el.addEventListener('gripup', this);
+      // this.el.addEventListener('handenter', this);
     },
 
     handleEvent(event) {
       // console.log('player-hand.handleEvent', event.type, event, this);
+      this[`on${event.type}`](event);
     },
 
     remove() {
@@ -228,22 +234,26 @@
       // console.log('player-hand collideend', event);
     },
 
-    onGripDown(event) {
+    ongripdown(event) {
+      const { system } = this;
       //Question: this feels weird since we are player-hand, but it does trigger the update()
       this.el.setAttribute('player-hand', {
         isGrip: true,
       });
-      //         ammo-constraint="target: #gripMe;"
-      // this.data.isGrip = true;
-      // console.log('player-hand gripdown', event);
+
+      const entityToGrab = system.getClosestEntity(this.handType);
+      if (entityToGrab) {
+        this.el.setAttribute('ammo-constraint', 'target: #gripMe;');
+      }
     },
-    onGripUp(event) {
+    ongripup(event) {
       //Question: this feels weird since we are player-hand, but it does trigger the update()
       this.el.setAttribute('player-hand', {
         isGrip: false,
       });
       // this.data.isGrip = false;
       // console.log('player-hand gripdown', event);
+      this.el.removeAttribute('ammo-constraint');
     },
   });
 
@@ -260,8 +270,8 @@
       // this.el.addEventListener('collideend', this)
 
       // Use Interaction system events.
-      this.el.addEventListener('handenter', this);
-      this.el.addEventListener('handleave', this);
+      // this.el.addEventListener('handenter', this)
+      // this.el.addEventListener('handleave', this)
     },
 
     handleEvent(event) {
@@ -276,7 +286,7 @@
           break;
         case 'collideend':
         case 'handleave':
-          AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
+          // AFRAME.utils.entity.setComponentProperty(this.el, 'material.opacity', 1.0);
           break;
         default:
           throw new Error(`hover-able does not have a case for event "${event.type}"`);
@@ -288,7 +298,6 @@
       console.log('isHandGripped', isHandGripped);
       if (!isHandGripped) { return; }
 
-      console.log('GRIP!', hand);
       // Bind to the hand.
       hand.setAttribute('ammo-constraint', 'target: #gripMe;');
     },

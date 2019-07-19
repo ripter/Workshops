@@ -79,6 +79,8 @@ AFRAME.registerSystem('interaction', {
   getClosestEntity(handType = 'left') {
     const hand = handType === 'left' ? this.hand.left : this.hand.right;
     //TODO: Loop over all the interactAbles and return the one closest to the hand.
+    const itr =  this.interactAbles.values();
+    return itr.next().value;
   },
 
   /**

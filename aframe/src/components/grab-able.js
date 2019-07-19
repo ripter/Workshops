@@ -12,8 +12,8 @@ AFRAME.registerComponent('grab-able', {
     // this.el.addEventListener('collideend', this)
 
     // Use Interaction system events.
-    this.el.addEventListener('handenter', this)
-    this.el.addEventListener('handleave', this)
+    // this.el.addEventListener('handenter', this)
+    // this.el.addEventListener('handleave', this)
   },
 
   handleEvent(event) {
