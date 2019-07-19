@@ -19,7 +19,7 @@ AFRAME.registerComponent('player-hand', {
   },
 
   handleEvent(event) {
-    console.log('handleEvent', event, this);
+    console.log('player-hand.handleEvent', event.type, event, this);
   },
 
   remove() {
