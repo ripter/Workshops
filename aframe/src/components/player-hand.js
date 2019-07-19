@@ -56,7 +56,7 @@ AFRAME.registerComponent('player-hand', {
 
     const entityToGrab = system.getClosestEntity(this.handType);
     if (entityToGrab) {
-      this.el.setAttribute('ammo-constraint', 'target: #gripMe;');
+      this.el.setAttribute('ammo-constraint', `target: #${entityToGrab.id};`);
     }
   },
   ongripup(event) {

@@ -7,6 +7,8 @@ AFRAME.registerComponent('interaction', {
   },
 
   init() {
+    // interactions require IDS, so make sure this entity has one.
+    this.el.id = this.el.id || 'uid' + Date.now();
     // Skip trying to figure out the radius on a manual fit.
     if (this.data.fit === 'manual') {
       this.setMinRadius(this.data.minRadius);

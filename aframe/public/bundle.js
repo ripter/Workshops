@@ -7,82 +7,81 @@
    */
   AFRAME.registerSystem('interaction', {
     init() {
-      this.interactAbles = new Set();
+      this.interactAbles = new Map();
       this.hand = { left: null, right: null };
-      this.distanceInfo = new WeakMap();
     },
 
     tick: (function() {
       const worldPositionEntity = new THREE.Vector3();
-      const worldPositionHand = new THREE.Vector3();
+      const worldPositionLeftHand = new THREE.Vector3();
+      const worldPositionRightHand = new THREE.Vector3();
 
       return function tick2() {
         const { hand } = this;
-        // Loop over each hand & interactAble entity.
-        // Updates the distanceInfo for each entity.
-        [hand.left, hand.right].forEach((hand, handIndex) => {
-          if (!hand) { return; }
-          // get the hand's world position
-          hand.object3D.getWorldPosition(worldPositionHand);
+        // Get the world position for each hand so we can calulate distance.
+        if (hand.left) { hand.left.object3D.getWorldPosition(worldPositionLeftHand); }
+        if (hand.right) { hand.right.object3D.getWorldPosition(worldPositionRightHand); }
 
-          // Loop over every entity the hand can interact with.
-          this.interactAbles.forEach((entity) => {
+        // Loop over all the interactables and update the distances
+        this.interactAbles.forEach((distanceInfo, entity) => {
             entity.object3D.getWorldPosition(worldPositionEntity);
-
-            // Get the distance to the hand and save it.
-            const distanceToHand = worldPositionHand.distanceToSquared(worldPositionEntity);
-            const distance = this.distanceInfo.get(entity);
-
-            if (handIndex === 0 /*Left Hand*/) {
-              distance.leftHand = distanceToHand;
-            } else /*Right Hand*/ {
-              distance.rightHand = distanceToHand;
+            //
+            // Update the distances
+            if (hand.left) {
+              distanceInfo.leftHand = worldPositionEntity.distanceToSquared(worldPositionLeftHand);
             }
-          });
-        });
-
-        // Loop over all the entities and emit events as needed.
-        // Emit events based on changes to distanceInfo and user input.
-        this.interactAbles.forEach((entity) => {
-          const distance = this.distanceInfo.get(entity);
-          const closestHand = distance.leftHand < distance.rightHand ? this.hand.left : this.hand.right;
-          const closestDistance = Math.min(distance.leftHand, distance.rightHand);
-          const minRadius = entity.components.interaction.getMinRadius();
-          // const isHandGripped = AFRAME.utils.entity.getComponentProperty(closestHand, 'player-hand.isGrip');
-          const eventData = {
-            hand: closestHand,
-            distance: closestDistance,
-            data: distance,
-          };
-
-          // console.log('isHandGripped', isHandGripped);
-
-          // Are we in touching distance?
-          if (closestDistance <= minRadius) {
-            // Did we move into range; after being out of range?
-            if (!distance.isTouching) {
-              distance.isTouching = true;
-              entity.emit('handenter', eventData);
+            if (hand.right) {
+              distanceInfo.rightHand = worldPositionEntity.distanceToSquared(worldPositionRightHand);
             }
-            // Is this a grip action?
-          }
-          // We are not in touching distance.
-          else {
-            // Did we move out of range? (After being in range)
-            if (distance.isTouching) {
-              distance.isTouching = false;
-              entity.emit('handleave', eventData);
+            //
+            // Check for touching/collision/intersections
+            // Emit events on change
+            const closestHand = distanceInfo.leftHand < distanceInfo.rightHand ? this.hand.left : this.hand.right;
+            const closestDistance = distanceInfo.leftHand < distanceInfo.rightHand ? distanceInfo.leftHand : distanceInfo.rightHand;
+            const minRadius = entity.components.interaction.getMinRadius();
+            const eventData = {
+              hand: closestHand,
+              distance: closestDistance,
+              data: distanceInfo,
+            };
+
+            // Are we in touching distance?
+            if (closestDistance <= minRadius) {
+              // Did we move into range; after being out of range?
+              if (!distanceInfo.isTouching) {
+                distanceInfo.isTouching = true;
+                entity.emit('handenter', eventData);
+              }
+              // Is this a grip action?
             }
-          }
+            // We are not in touching distance.
+            else {
+              // Did we move out of range? (After being in range)
+              if (distanceInfo.isTouching) {
+                distanceInfo.isTouching = false;
+                entity.emit('handleave', eventData);
+              }
+            }
         });
       }
     })(),
 
     getClosestEntity(handType = 'left') {
       const hand = handType === 'left' ? this.hand.left : this.hand.right;
-      //TODO: Loop over all the interactAbles and return the one closest to the hand.
-      const itr =  this.interactAbles.values();
-      return itr.next().value;
+      let closestDistance = Infinity;
+      let closestEntity = null;
+      //Loop over all the interactAbles and return the one closest to the hand.
+      this.interactAbles.forEach((distanceInfo, entity) => {
+        // Skip entities not touching a hand.
+        if (!distanceInfo.isTouching) { return; }
+        const distance = handType === 'left' ? distanceInfo.leftHand : distanceInfo.rightHand;
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestEntity = entity;
+        }
+      });
+      return closestEntity;
     },
 
     /**
@@ -91,8 +90,7 @@
      * @param {AEntity} entity
      */
     addEntity(entity) {
-      this.interactAbles.add(entity);
-      this.distanceInfo.set(entity, {
+      this.interactAbles.set(entity, {
         leftHand: Infinity,
         rightHand: Infinity,
         isTouching: false,
@@ -104,8 +102,7 @@
      * @param  {AEntity} entity
      */
     removeEntity(entity) {
-      this.interactAbles.remove(entity);
-      this.distanceInfo.delete(entity);
+      this.interactAbles.delete(entity);
     },
 
 
@@ -142,6 +139,8 @@
     },
 
     init() {
+      // interactions require IDS, so make sure this entity has one.
+      this.el.id = this.el.id || 'uid' + Date.now();
       // Skip trying to figure out the radius on a manual fit.
       if (this.data.fit === 'manual') {
         this.setMinRadius(this.data.minRadius);
@@ -243,7 +242,7 @@
 
       const entityToGrab = system.getClosestEntity(this.handType);
       if (entityToGrab) {
-        this.el.setAttribute('ammo-constraint', 'target: #gripMe;');
+        this.el.setAttribute('ammo-constraint', `target: #${entityToGrab.id};`);
       }
     },
     ongripup(event) {
