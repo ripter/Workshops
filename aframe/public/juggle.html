@@ -25,7 +25,7 @@
         ammo-body="type: dynamic"
         ammo-shape="type: box"
         interaction
-        hover-able
+        hover-able grab-able
         shadow></a-mixin>
       <a-mixin id="touch"
         ammo-body="type: kinematic;"
@@ -65,7 +65,7 @@
       shadow></a-plane>
 
       <a-entity class="cube" mixin="cube" position="0 2 -1" material="color: red"></a-entity>
-      <a-entity class="cube" mixin="cube" position="0 2 -0.5" material="color: red"></a-entity>
+      <a-entity id="gripMe" class="cube" mixin="cube" position="0 2 -0.5" material="color: red"></a-entity>
       <a-entity class="cube" mixin="cube" position="-0.6 2 -1" material="color: blue"></a-entity>
       <a-entity class="cube" mixin="cube" position="-0.6 2 -0.5" material="color: blue"></a-entity>
       <a-entity class="cube" mixin="cube" position="0.6 2 -1" material="color: green"></a-entity>
