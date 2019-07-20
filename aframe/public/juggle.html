@@ -18,54 +18,65 @@
   <a-scene stats physics="driver: ammo; debug: false; debugDrawMode: 1;">
     <a-assets>
       <a-asset-item id="glbTable" src="assets/vintage_table.glb">
-        https://sketchfab.com/3d-models/low-poly-old-vintage-table-desk-free-c802441e808c4ae9a0cb1448ce3b6e82
+        <!-- https://sketchfab.com/3d-models/low-poly-old-vintage-table-desk-free-c802441e808c4ae9a0cb1448ce3b6e82 -->
+      </a-asset-item>
+      <a-asset-item id="glbTerrain" src="assets/juggle_terrain.glb">
+        <!-- https://fertile-soil-productions.itch.io/modular-terrain-pack -->
       </a-asset-item>
       <a-mixin id="cube"
         geometry="primitive: box; width: 0.13; height: 0.13; depth: 0.13"
-        ammo-body="type: dynamic"
+        ammo-body="type: dynamic; mass: 90"
         ammo-shape="type: box"
         interaction
         hover-able grab-able
-        shadow></a-mixin>
+        shadow>
+      </a-mixin>
       <a-mixin id="touch"
         ammo-body="type: kinematic;"
         ammo-shape="type: sphere; sphereRadius: 0.02; fit: manual;"
         player-hand
-        ></a-mixin>
-      </a-assets>
+        >
+      </a-mixin>
+    </a-assets>
 
 
-      <a-entity class="desk" position="0 0 -0.8">
-        <a-entity position="0 0.53 0" scale="0.8 0.8 0.8">
-          <a-gltf-model
-            src="#glbTable"
-            shadow
-            >
-          </a-gltf-model>
-          <a-box
-            width="1.95"
-            height="1.34"
-            depth="0.8"
-            ammo-body="type: static;"
-            ammo-shape="type: box;"
-            opacity="0.0"
-            >
-          </a-box>
-        </a-entity>
+    <a-entity class="desk" position="0 0 -0.8">
+      <a-entity position="0 0.53 0" scale="0.8 0.8 0.8">
+        <a-gltf-model
+          src="#glbTable"
+          shadow
+          >
+        </a-gltf-model>
+        <a-box
+          width="1.95"
+          height="1.34"
+          depth="0.8"
+          ammo-body="type: static;"
+          ammo-shape="type: box;"
+          opacity="0.0"
+          >
+        </a-box>
       </a-entity>
+    </a-entity>
 
-    <a-plane
+    <a-gltf-model src="#glbTerrain"
+      ammo-body="type: static; mass: 0;"
+      ammo-shape="type: mesh;"
+      shadow>
+    </a-gltf-model>
+
+    <!-- <a-plane
       ammo-body="type: static; mass: 0;"
       ammo-shape="type: box;"
       position="0 0 0"
       rotation="-90 -1.5 0"
       width="20"
       height="20"
-      color="#7BC8A4"
-      shadow></a-plane>
+      shadow>
+    </a-plane> -->
 
       <a-entity class="cube" mixin="cube" position="0 2 -1" material="color: red"></a-entity>
-      <a-entity id="gripMe" class="cube" mixin="cube" position="0 2 -0.5" material="color: red"></a-entity>
+      <a-entity class="cube" mixin="cube" position="0 2 -0.5" material="color: red"></a-entity>
       <a-entity class="cube" mixin="cube" position="-0.6 2 -1" material="color: blue"></a-entity>
       <a-entity class="cube" mixin="cube" position="-0.6 2 -0.5" material="color: blue"></a-entity>
       <a-entity class="cube" mixin="cube" position="0.6 2 -1" material="color: green"></a-entity>
