@@ -4,11 +4,11 @@
  * [description]
  */
 class ENtity extends HTMLElement {
-   /**
+  /**
    * When one of these attributes changes value, it triggers attributeChangedCallback
    * @return {Array} attribute names.
    */
-  static get observedAttributes() {return ['id'];}
+  static get observedAttributes() { return ['id']; }
 
   // https://github.com/WebReflection/document-register-element#v1-caveat
   constructor(self) {
@@ -17,7 +17,7 @@ class ENtity extends HTMLElement {
     console.log('e-ntity created', arguments);
     return self;
   }
- /**
+  /**
    * Triggered when the component is mounted on a DOM.
    */
   connectedCallback() {

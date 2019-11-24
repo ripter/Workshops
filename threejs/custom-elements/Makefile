@@ -1,4 +1,4 @@
-.PHONY: all build dev-server server plop lint
+.PHONY: all build dev-server server plop lint clean
 
 all: build lint server
 
@@ -19,4 +19,9 @@ plop: node_modules/
 	npx plop
 
 lint: node_modules/
-	npx eslint src/ 
+	npx eslint --fix src/
+
+clean:
+	-rm -f package-lock.json
+	-rm -r ./node_modules
+	-npm cache verify
