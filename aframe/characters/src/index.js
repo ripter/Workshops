@@ -1,1 +1,3 @@
-console.log('Hello World');
+import './fbx-model.js';
+
+console.log('Everything Loaded and Ready!');
