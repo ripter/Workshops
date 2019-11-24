@@ -41,7 +41,7 @@ AFRAME.registerComponent('fbx-model', {
   schema: {type: 'asset'},
   init() {
     const url = this.data;
-    const loader = this.loader = new THREE.FBXLoader();
+    const loader = new THREE.FBXLoader();
 
     loader.load(url, (model) => {
       console.log('model', model);
@@ -55,5 +55,24 @@ AFRAME.registerComponent('fbx-model', {
 
 ### First Error
 
->>> Loading file Error: THREE.FBXLoader: Cannot find the version number for the file given.
+> Loading file Error: THREE.FBXLoader: Cannot find the version number for the file given.
     at getFbxVersion (FBXLoader.js:3876)
+
+
+Thinking that maybe this was a problem with the way the file was exported (missing version number and all) I tried loading the model into Blender and re-exporting it. I still got the same error message.
+
+That leaves me with three options.
+1. Debug the problem and see if it is something I can fix.
+2. Try other files and see if it is specific to this file.
+3. Avoid the problem by using Blender to convert the file into GLTF
+
+
+The easiest solution is number three. I am only creating this converter for fun. Anyone with real modeling skill should use Blender. But I am not ready to give up just yet.
+
+I can rule out a problem with the file since it works in the [THREE editor](https://threejs.org/editor/), so that means the problem is on my side.
+
+I found importing FBX in the [THREE editor](https://threejs.org/editor/), shows the model at a very large size. (The file is called large so this is not totally unexpected.) Trying to export it to GTLF and then re-import it shows a messed up model. While the version I exported from blender loads and looks fine.
+
+Since [Blender](https://www.blender.org/) is free and works very well. I think I'm going to abort this attempt for now. There are plenty of problems to solve like textures and animations. I do not need to solve loading FBX files.
+
+It only took me a few minutes to open each file in Blender and export it as gltf.
