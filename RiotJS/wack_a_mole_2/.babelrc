@@ -1,4 +1,0 @@
-{
-  "presets": ["es2015-riot"],
-  "plugins": ["external-helpers-2"]
-}

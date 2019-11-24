@@ -1,9 +1,0 @@
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1em);
-  grid-template-rows: repeat(5, 1em);
-}
-.grid-cell {
-  cursor: pointer;
-}
