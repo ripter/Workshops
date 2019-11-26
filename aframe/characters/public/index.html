@@ -17,22 +17,26 @@
       <a-asset-item id="modelMedium" src="./assets/medium.gltf"></a-asset-item>
       <a-asset-item id="modelSmall" src="./assets/small.gltf"></a-asset-item>
       <img id="skinCasualFemaleB" src="./assets/casualFemaleB.png"></img>
+      <img id="skinCasualFemaleA" src="./assets/casualFemaleA.png"></img>
+      <img id="skinFantasyFemaleB" src="./assets/fantasyFemaleB.png"></img>
+      <img id="skinFantasyFemaleA" src="./assets/fantasyFemaleA.png"></img>
     </a-assets>
 
     <a-entity id="elLarge"
-      gltf-model="#modelLargeFemale"
+      gltf-model-2="#modelLargeFemale"
+      material="src: #skinCasualFemaleB"
       position="0 0 -5"
       ></a-entity>
 
     <a-entity
-      gltf-model="#modelMedium"
-      material="color: #FF851B"
+      gltf-model-2="#modelMedium"
+      material="src: #skinCasualFemaleA;"
       position="5 0 -5"
       ></a-entity>
 
     <a-entity
-      gltf-model="#modelSmall"
-      material="src: #skinCasualFemaleB"
+      gltf-model-2="#modelSmall"
+      material="src: #skinFantasyFemaleB"
       position="-5 0 -5"
       ></a-entity>
 

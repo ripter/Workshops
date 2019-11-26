@@ -1,4 +1,3 @@
-
 // Make sure we have all the required libraries.
 if (!THREE.FBXLoader) { throw new Error('THREE.FBXLoader not found.\nYou can find the file at https://github.com/mrdoob/three.js/blob/dev/examples/js/loaders/FBXLoader.js')}
 

@@ -77,3 +77,34 @@ At this point I have a few options.
 The easiest to try is using blender to remove the extra wrappers. It causes the lighting on the model to appear strange. Because of this I am going to avoid options that modify the model files. I do not understand them well enough at this point, and I have other options.
 
 ![load 3](./imgs/load_3.png)
+
+
+I can verify the problem is the material being set on the wrong object by running this in the console:
+
+```
+window.elLarge.object3D.children[0].children[2].children[3].material = window.elLarge.object3DMap.mesh.material
+```
+
+![load 4](./imgs/load_4.png)
+
+
+I ended up doing option one, and forking the existing `gltf-model` as the imaginatively named `gltf-model-2`.
+
+![load_5](./imgs/load_5.png)
+
+I added a utility method to get the Mesh from the model.
+
+```
+const mesh = this.getMesh(this.model);
+el.setObject3D('mesh', mesh);
+```
+
+An a very basic to get the SkinnedMesh if it exists.
+```
+getMesh(model) {
+  const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
+  if (mesh ) { return mesh; }
+  // default to the root
+  return model;
+}
+```
