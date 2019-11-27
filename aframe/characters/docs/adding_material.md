@@ -19,6 +19,7 @@ I am gong to start by adding a [material component](https://aframe.io/docs/0.9.0
 
 ```
 
+## Problem 1 - Texture does not show
 
 I do not see any change in the appearance of the models. But if I inspect them, I see that the material is using the correct image.
 
@@ -108,3 +109,33 @@ getMesh(model) {
   return model;
 }
 ```
+
+## Problem 2 - Texture position
+
+It is great that we see the texture now, but it clearly is not positioned correctly.
+
+I can get the texture from the map property on the material.
+```
+var mesh = elLarge.object3D.getObjectByProperty('type', 'SkinnedMesh');
+var texture = mesh.material.map;
+```
+
+
+So after two days of struggling, the creator of Three.JS quickly pointed out my issue. The texture was flipped. Flipping the image file fixed the problem.
+
+![texture working](./imgs/load_6.png)
+
+I had attempted to flip the texture on the console with.
+
+```
+texture.flipY = true;
+```
+
+If you try that, it will not work, you need mark the texture as needing an update. So you need to do
+
+```
+texture.flipY = true;
+texture.needsUpdate = true;
+```
+
+for the change to apply. Or you can just flip the images, which is the solution I opted for.
