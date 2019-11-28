@@ -86,14 +86,26 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/gltf-model-2.js":
+/*!*****************************!*\
+  !*** ./src/gltf-model-2.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\n * Patched version of gltf-model\n */\nAFRAME.registerComponent('gltf-model-2', {\n  schema: { type: 'asset' },\n\n  /**\n   * Called once at the beginning of the component’s lifecycle.\n   */\n  init() {\n    const dracoLoader = this.el.sceneEl.systems['gltf-model'].getDRACOLoader();\n    this.loader = new THREE.GLTFLoader();\n    if (dracoLoader) {\n      this.loader.setDRACOLoader(dracoLoader);\n    }\n  },\n\n  /**\n   * Called whenever the component’s properties change, including at the beginning of the component’s lifecycle.\n   */\n  update(oldSrc) {\n    const src = this.data;\n\n    // remove the old version when the source changes.\n    if (src !== oldSrc) {\n      this.remove();\n    }\n\n    // abort if there is no model to load.\n    if (!src) { return; }\n\n    // Load the model.\n    this.loader.load(\n      src,\n      this.onLoad.bind(this),\n      this.onProgress.bind(this),\n      this.onError.bind(this),\n    );\n  },\n\n  /**\n   * Called whenever the component is detached from the entity.\n   */\n  remove() {\n    if (!this.model) { return; }\n    this.el.removeObject3D('mesh');\n    this.model = null;\n  },\n\n  /**\n   * Called when a model is loaded.\n   */\n  onLoad(model) {\n    const { el } = this;\n\n    this.model = model.scene || model.scenes[0];\n    this.model.animations = model.animations;\n\n    const mesh = this.getMesh(this.model);\n    el.setObject3D('mesh', mesh);\n    el.emit('model-loaded', { format: 'gltf', model: this.model });\n  },\n\n  /**\n   * Called when model fails to load.\n   */\n  onError(error) {\n    const { el, data: src } = this;\n    const message = (error && error.message) ? error.message : 'Failed to load glTF model';\n    el.emit('model-error', { format: 'gltf', src });\n    throw new Error(message);\n  },\n\n  /**\n   * Called while the model is loading.\n   */\n  onProgress() {\n    // do nothing\n  },\n\n  /**\n   * Find the Mesh in the model\n   */\n  getMesh(model) {\n    const mesh = model.getObjectByProperty('type', 'SkinnedMesh');\n    if (mesh) { return mesh; }\n    // default to the root\n    return model;\n  },\n});\n\n\n//# sourceURL=webpack:///./src/gltf-model-2.js?");
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("console.log('Hello World');\n\n\n//# sourceURL=webpack:///./src/index.js?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _gltf_model_2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gltf-model-2 */ \"./src/gltf-model-2.js\");\n/* harmony import */ var _gltf_model_2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_gltf_model_2__WEBPACK_IMPORTED_MODULE_0__);\n\n\nconsole.log('Everything Loaded and Ready!');\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 

@@ -1,12 +1,11 @@
-/**
- * Patched version of gltf-model
- */
-AFRAME.registerComponent('gltf-model-2', {
+// gltf-animations
+
+AFRAME.registerComponent('gltf-animations', {
   schema: { type: 'asset' },
 
   /**
-   * Called once at the beginning of the component’s lifecycle.
-   */
+  * Called once at the beginning of the component’s lifecycle.
+  */
   init() {
     const dracoLoader = this.el.sceneEl.systems['gltf-model'].getDRACOLoader();
     this.loader = new THREE.GLTFLoader();
@@ -16,8 +15,8 @@ AFRAME.registerComponent('gltf-model-2', {
   },
 
   /**
-   * Called whenever the component’s properties change, including at the beginning of the component’s lifecycle.
-   */
+  * Called whenever the component’s properties change, including at the beginning of the component’s lifecycle.
+  */
   update(oldSrc) {
     const src = this.data;
 
@@ -39,12 +38,12 @@ AFRAME.registerComponent('gltf-model-2', {
   },
 
   /**
-   * Called whenever the component is detached from the entity.
-   */
+  * Called whenever the component is detached from the entity.
+  */
   remove() {
-    if (!this.model) { return; }
-    this.el.removeObject3D('mesh');
-    this.model = null;
+    // if (!this.model) { return; }
+    // this.el.removeObject3D('mesh');
+    // this.model = null;
   },
 
   /**
@@ -56,9 +55,10 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model = model.scene || model.scenes[0];
     this.model.animations = model.animations;
 
-    const mesh = this.getMesh(this.model);
-    el.setObject3D('mesh', mesh);
-    el.emit('model-loaded', { format: 'gltf', model: this.model });
+    console.log('animations', model.animations);
+    // const mesh = this.getMesh(this.model);
+    // el.setObject3D('mesh', mesh);
+    // el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
   /**
@@ -76,15 +76,5 @@ AFRAME.registerComponent('gltf-model-2', {
    */
   onProgress() {
     // do nothing
-  },
-
-  /**
-   * Find the Mesh in the model
-   */
-  getMesh(model) {
-    const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
-    if (mesh) { return mesh; }
-    // default to the root
-    return model;
   },
 });

@@ -13,17 +13,19 @@
 <body>
   <a-scene>
     <a-assets>
-      <a-asset-item id="modelLargeFemale" src="./assets/largeFemale.gltf"></a-asset-item>
-      <a-asset-item id="modelMedium" src="./assets/medium.gltf"></a-asset-item>
-      <a-asset-item id="modelSmall" src="./assets/small.gltf"></a-asset-item>
-      <img id="skinCasualFemaleB" src="./assets/casualFemaleB.png"></img>
-      <img id="skinCasualFemaleA" src="./assets/casualFemaleA.png"></img>
-      <img id="skinFantasyFemaleB" src="./assets/fantasyFemaleB.png"></img>
-      <img id="skinFantasyFemaleA" src="./assets/fantasyFemaleA.png"></img>
+      <a-asset-item id="modelLargeFemale" src="./assets/models/largeFemale.gltf"></a-asset-item>
+      <a-asset-item id="modelMedium" src="./assets/models/medium.gltf"></a-asset-item>
+      <a-asset-item id="modelSmall" src="./assets/models/small.gltf"></a-asset-item>
+      <img id="skinCasualFemaleB" src="./assets/skins/casualFemaleB.png"></img>
+      <img id="skinCasualFemaleA" src="./assets/skins/casualFemaleA.png"></img>
+      <img id="skinFantasyFemaleB" src="./assets/skins/fantasyFemaleB.png"></img>
+      <img id="skinFantasyFemaleA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <a-asset-item id="animIdle" src="./assets/animations/idle.gltf"></a-asset-item>
     </a-assets>
 
     <a-entity id="elLarge"
       gltf-model-2="#modelLargeFemale"
+      gltf-animations="#animIdle"
       material="src: #skinCasualFemaleB"
       position="0 0 -5"
       ></a-entity>
