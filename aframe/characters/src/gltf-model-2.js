@@ -87,7 +87,7 @@ AFRAME.registerComponent('gltf-model-2', {
    * Find the Mesh in the model
    */
   getMesh(model) {
-    // return model;
+    return model;
     const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
     if (mesh) { return mesh; }
     // default to the root
