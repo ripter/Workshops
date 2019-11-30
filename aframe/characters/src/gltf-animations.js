@@ -74,6 +74,8 @@ AFRAME.registerComponent('gltf-animations', {
     const { el } = this;
     const animations = this.animations = model.animations;
     const mesh = el.getObject3D('mesh');
+    // const mesh = el.getObject3D('root');
+    // const mesh = el.object3D;
     const mixer = this.mixer = new THREE.AnimationMixer(mesh);
     // const clip = mixer.clipAction(animations[1]);
 
@@ -81,12 +83,12 @@ AFRAME.registerComponent('gltf-animations', {
     const clip = THREE.AnimationClip.findByName( animations, 'Idle' );
     const action = mixer.clipAction( clip );
 
-    // console.group('onLoad animation');
-    // console.log('animations', model.animations);
-    // console.log('mesh', mesh);
-    // console.log('action', action);
-    // console.log('clip', clip);
-    // console.groupEnd();
+    console.group('onLoad animation');
+    console.log('animations', model.animations);
+    console.log('mesh', mesh);
+    console.log('action', action);
+    console.log('clip', clip);
+    console.groupEnd();
     action.play();
 
     // new THREE.AnimationMixer( mesh );

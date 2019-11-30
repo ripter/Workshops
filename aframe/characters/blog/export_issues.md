@@ -68,4 +68,13 @@ Now that I decided I want to fix this on the A-FRAME side and not the model side
 
 Of those two, I like the second option better. If I can fix it on `gltf-model`, then all the components that make assumptions like the `material` component will work. If I fix it on the `material` component, then it is possible other components will make the same assumption.
 
-So I will start by trying to fix this on the `gltf-model` component with with my fork [gltf-model-2](../src/gltf-model-2.js)
+So I will start by trying to fix this on the `gltf-model` component with with my fork [gltf-model-2](../src/gltf-model-2.js).
+
+I tried everything I could think of, tryin got get the SkinnedMesh on `mesh` and giving the real root to `AnimationMixer`. But for whatever reason, if I do not set the root of the model to `mesh`, even when the root is `Object3D` or `Group`, the animation no longer works. Even if I pass in the root object to the AnimationMixer. Since this route is not yielding results, I will need to try the material version next.
+
+I tried putting a reference to the correct material in the location the `material` component expects. I hoped it could use the reference and update the real value. But that also did not work. The more I tried changing the `gltf-model` component, the less sure I am that the problem can be fixed from this side. If I alter the structure of the model file, it breaks other things like animations and loading without a `material` component.
+
+Next attempt, custom `material` component. Before I start, I decided to look over the known existing bugs for material. I found out that I am not the first person to have this issue. I found several tickets that I suspect are caused by the same issue I am facing. https://github.com/aframevr/aframe/issues/4135, https://github.com/aframevr/aframe/issues/3997, https://github.com/aframevr/aframe/issues/3133.
+
+
+So I am going to fork the `material` component as `material-2`! 

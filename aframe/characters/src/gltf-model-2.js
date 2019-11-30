@@ -57,12 +57,18 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model.animations = model.animations;
 
     const mesh = this.getMesh(this.model);
-    console.group('onLoad');
-    console.log('src', this.data);
     console.log('mesh', mesh);
-    console.log('model', model);
-    console.groupEnd();
-    el.setObject3D('mesh', mesh);
+    console.log('material', mesh.material);
+    this.model.material = mesh.material;
+    // this.model.material = mesh.material;
+    // this.model.material.needsUpdate = true;
+    // console.group('onLoad');
+    // console.log('src', this.data);
+    // console.log('mesh', mesh);
+    // console.log('model', model);
+    // console.groupEnd();
+    // el.setObject3D('mesh', mesh);
+    el.setObject3D('mesh', this.model);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
@@ -87,9 +93,17 @@ AFRAME.registerComponent('gltf-model-2', {
    * Find the Mesh in the model
    */
   getMesh(model) {
-    return model;
-    const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
-    if (mesh) { return mesh; }
+    // return model;
+    // Attempt to get a SkinnedMesh with bones
+    mesh = model.getObjectByProperty('type', 'SkinnedMesh');
+    if (mesh) {
+      console.group('SkinnedMesh');
+      console.log(this.data);
+      console.log('model', this.model);
+      console.log('mesh', mesh);
+      console.groupEnd();
+      return mesh;
+    }
     // default to the root
     return model;
   },
