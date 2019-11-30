@@ -1,5 +1,5 @@
 /**
- * Patched version of gltf-model
+ * Patched version of gltf-model that sets 'mesh' to the SkinnedMesh or root object.
  */
 AFRAME.registerComponent('gltf-model-2', {
   schema: { type: 'asset' },
@@ -57,9 +57,9 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model.animations = model.animations;
 
     const mesh = this.getMesh(this.model);
-    console.log('mesh', mesh);
-    console.log('material', mesh.material);
-    this.model.material = mesh.material;
+    // console.log('mesh', mesh);
+    // console.log('material', mesh.material);
+    // this.model.material = mesh.material;
     // this.model.material = mesh.material;
     // this.model.material.needsUpdate = true;
     // console.group('onLoad');
@@ -67,8 +67,8 @@ AFRAME.registerComponent('gltf-model-2', {
     // console.log('mesh', mesh);
     // console.log('model', model);
     // console.groupEnd();
-    // el.setObject3D('mesh', mesh);
-    el.setObject3D('mesh', this.model);
+    el.setObject3D('mesh', mesh);
+    // el.setObject3D('mesh', this.model);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
@@ -97,11 +97,11 @@ AFRAME.registerComponent('gltf-model-2', {
     // Attempt to get a SkinnedMesh with bones
     mesh = model.getObjectByProperty('type', 'SkinnedMesh');
     if (mesh) {
-      console.group('SkinnedMesh');
-      console.log(this.data);
-      console.log('model', this.model);
-      console.log('mesh', mesh);
-      console.groupEnd();
+      // console.group('SkinnedMesh');
+      // console.log(this.data);
+      // console.log('model', this.model);
+      // console.log('mesh', mesh);
+      // console.groupEnd();
       return mesh;
     }
     // default to the root
