@@ -12,6 +12,8 @@ AFRAME.registerComponent('gltf-animations', {
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
     }
+
+    this.clock = new THREE.Clock();
   },
 
   /**
@@ -37,6 +39,22 @@ AFRAME.registerComponent('gltf-animations', {
     );
   },
 
+
+  /**
+   * Called on each tick or frame of the scene’s render loop.
+   * @param  {[type]} time      [description]
+   * @param  {[type]} timeDelta [description]
+   * @return {[type]}           [description]
+   */
+  tick (time, timeDelta) {
+    if (this.mixer) {
+      const deltaInSeconds = this.clock.getDelta();
+      // const deltaInSeconds = timeDelta / 1000;
+      // console.log({deltaInSeconds});
+      this.mixer.update(deltaInSeconds);
+    }
+  },
+
   /**
   * Called whenever the component is detached from the entity.
   */
@@ -44,6 +62,9 @@ AFRAME.registerComponent('gltf-animations', {
     // if (!this.model) { return; }
     // this.el.removeObject3D('mesh');
     // this.model = null;
+
+    delete this.animations;
+    delete this.mixer;
   },
 
   /**
@@ -51,11 +72,30 @@ AFRAME.registerComponent('gltf-animations', {
    */
   onLoad(model) {
     const { el } = this;
+    const animations = this.animations = model.animations;
+    const mesh = el.getObject3D('mesh');
+    const mixer = this.mixer = new THREE.AnimationMixer(mesh);
+    // const clip = mixer.clipAction(animations[1]);
 
-    this.model = model.scene || model.scenes[0];
-    this.model.animations = model.animations;
+    // Play a specific animation
+    const clip = THREE.AnimationClip.findByName( animations, 'Idle' );
+    const action = mixer.clipAction( clip );
 
-    console.log('animations', model.animations);
+    // console.group('onLoad animation');
+    // console.log('animations', model.animations);
+    // console.log('mesh', mesh);
+    // console.log('action', action);
+    // console.log('clip', clip);
+    // console.groupEnd();
+    action.play();
+
+    // new THREE.AnimationMixer( mesh );
+
+    // const clips = THREE.AnimationClip.parseJSON(animations);
+    // console.log('clips', clips);
+    // this.model = model.scene || model.scenes[0];
+    // this.model.animations = model.animations;
+
     // const mesh = this.getMesh(this.model);
     // el.setObject3D('mesh', mesh);
     // el.emit('model-loaded', { format: 'gltf', model: this.model });

@@ -57,6 +57,11 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model.animations = model.animations;
 
     const mesh = this.getMesh(this.model);
+    console.group('onLoad');
+    console.log('src', this.data);
+    console.log('mesh', mesh);
+    console.log('model', model);
+    console.groupEnd();
     el.setObject3D('mesh', mesh);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
@@ -82,6 +87,7 @@ AFRAME.registerComponent('gltf-model-2', {
    * Find the Mesh in the model
    */
   getMesh(model) {
+    // return model;
     const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
     if (mesh) { return mesh; }
     // default to the root

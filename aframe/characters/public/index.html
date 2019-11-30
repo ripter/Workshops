@@ -21,7 +21,21 @@
       <img id="skinFantasyFemaleB" src="./assets/skins/fantasyFemaleB.png"></img>
       <img id="skinFantasyFemaleA" src="./assets/skins/fantasyFemaleA.png"></img>
       <a-asset-item id="animIdle" src="./assets/animations/idle.gltf"></a-asset-item>
+      <a-asset-item id="animPunch" src="./assets/animations/punch.glb"></a-asset-item>
+
+      <a-asset-item id="editedMedium" src="./assets/editedMedium.gltf"></a-asset-item>
     </a-assets>
+
+    <a-entity id="elMedium"
+      gltf-model-2="#editedMedium"
+      material="src: #skinFantasyFemaleA"
+      position="0 0 -3"
+      ></a-entity>
+
+    <a-entity id="elMedium2"
+      gltf-model-2="#editedMedium"
+      position="5 0 -3"
+      ></a-entity>
 
     <a-entity id="elLarge"
       gltf-model-2="#modelLargeFemale"
