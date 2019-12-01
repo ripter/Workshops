@@ -17,11 +17,36 @@
       <a-asset-item id="modelTexturedAnimatedMedium" src="./assets/models/alienMedium.gltf"></a-asset-item>
       <a-asset-item id="animIdle" src="./assets/animations/idle.gltf"></a-asset-item>
       <img id="skinFantasyFemaleA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <img id="skinFantasyFemaleB" src="./assets/skins/fantasyFemaleB.png"></img>
     </a-assets>
+
+
+    <!--
+      material-2: 'Fantasy B'
+      anim: Idle
+      baked Alien texture
+      baked animations
+    -->
+    <a-entity class="pedestal" position="0 0 -5">
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        material-2="src: #skinFantasyFemaleB"
+        animation-control="actionName: Idle;"
+        ></a-entity>
+
+      <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="anim: 'Idle'\nmaterial-2: 'Fantasy A'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity>
+
+
 
     <!--
       material: 'Fantasy A'
-      anim: Idle
+      anim: Kick
       baked Alien texture
       baked animations
     -->
@@ -29,7 +54,7 @@
       <a-entity
         gltf-model="#modelTexturedAnimatedMedium"
         material="src: #skinFantasyFemaleA"
-        animation-control="actionName: Idle;"
+        animation-control="actionName: Kick;"
         ></a-entity>
 
       <a-plane position="0 5 -0"
