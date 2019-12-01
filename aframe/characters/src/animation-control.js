@@ -28,7 +28,7 @@ AFRAME.registerComponent('animation-control', {
    * @param {object} prevData - Previous attributes of the component.
    */
   update(oldData) {
-    console.log('animation-control.update', this.data);
+    console.log('animation-control.update', this.data, oldData);
   },
 
   /**
@@ -88,6 +88,7 @@ AFRAME.registerComponent('animation-control', {
     const clip = THREE.AnimationClip.findByName( animations, actionName );
     const action = this.action = this.mixer.clipAction( clip );
     action.play();
+    console.log('animations', animations);
     console.log('action', action);
   },
 });
