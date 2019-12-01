@@ -13,50 +13,102 @@
 <body>
   <a-scene>
     <a-assets>
-      <a-asset-item id="modelLargeFemale" src="./assets/models/largeFemale.gltf"></a-asset-item>
-      <a-asset-item id="modelMedium" src="./assets/models/medium.gltf"></a-asset-item>
-      <a-asset-item id="modelSmall" src="./assets/models/small.gltf"></a-asset-item>
-      <img id="skinCasualFemaleB" src="./assets/skins/casualFemaleB.png"></img>
-      <img id="skinCasualFemaleA" src="./assets/skins/casualFemaleA.png"></img>
-      <img id="skinFantasyFemaleB" src="./assets/skins/fantasyFemaleB.png"></img>
-      <img id="skinFantasyFemaleA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
+      <a-asset-item id="modelTexturedAnimatedMedium" src="./assets/models/alienMedium.gltf"></a-asset-item>
       <a-asset-item id="animIdle" src="./assets/animations/idle.gltf"></a-asset-item>
-      <a-asset-item id="animPunch" src="./assets/animations/punch.glb"></a-asset-item>
-
-      <a-asset-item id="alienMedium" src="./assets/models/alienMedium.gltf"></a-asset-item>
+      <img id="skinFantasyFemaleA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <img id="skinFantasyFemaleB" src="./assets/skins/fantasyFemaleB.png"></img>
     </a-assets>
 
-    <a-entity id="elMedium"
-      gltf-model="#alienMedium"
-      material-2="src: #skinFantasyFemaleA"
-      position="0 0 -3"
-      ></a-entity>
 
-    <a-entity id="elMedium2"
-      gltf-model="#alienMedium"
-      position="5 0 -3"
-      ></a-entity>
+    <!--
+      material-2: 'Fantasy B'
+      anim: Idle
+      baked Alien texture
+      baked animations
+    -->
+    <a-entity class="pedestal" position="0 0 -5">
+      <a-entity id="elm"
+        gltf-model="#modelTexturedAnimatedMedium"
+        material-2="src: #skinFantasyFemaleB"
+        animation-control="actionName: Idle;"
+        ></a-entity>
 
-    <a-entity id="elLarge"
-      gltf-model="#modelLargeFemale"
-      gltf-animations="#animIdle"
-      material="src: #skinCasualFemaleB"
-      position="0 0 -5"
-      ></a-entity>
+      <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="anim: 'Idle'\nmaterial-2: 'Fantasy B'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity>
 
-    <a-entity
-      gltf-model="#modelMedium"
-      material="src: #skinCasualFemaleA;"
-      position="5 0 -5"
-      ></a-entity>
 
-    <a-entity
-      gltf-model="#modelSmall"
-      material="src: #skinFantasyFemaleB"
-      position="-5 0 -5"
-      ></a-entity>
 
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="15" height="15" color="#7BC8A4"></a-plane>
+    <!--
+      material: 'Fantasy A'
+      anim: Kick
+      baked Alien texture
+      baked animations
+    -->
+    <a-entity class="pedestal" position="-5 0 -5">
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        material-2="src: #skinFantasyFemaleA"
+        animation-control="actionName: Kick;"
+        ></a-entity>
+
+      <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="anim: 'Kick'\nmaterial-2: 'Fantasy A'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity>
+
+
+    <!--
+      anim: Punch
+      baked Alien texture
+      baked animations
+    -->
+    <a-entity class="pedestal" position="5 0 -5">
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        animation-control="actionName: Punch;"
+        >
+      </a-entity>
+
+      <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="anim: 'Punch'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity>
+
+
+    <!--
+      baked Alien texture
+      animation: #animIdle
+    -->
+    <!-- <a-entity class="pedestal" position="-5 0 -5">
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        gltf-animations="#animIdle"
+        >
+      </a-entity>
+
+      <a-plane position="0 5 -0"
+        width="3" height="1"
+        color="#001f3f"
+        >
+        <a-text value="baked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity> -->
+
+
+
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="150" height="150" color="#7BC8A4"></a-plane>
     <a-sky color="#ECECEC"></a-sky>
   </a-scene>
 </body>
