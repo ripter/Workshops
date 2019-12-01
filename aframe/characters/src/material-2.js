@@ -172,7 +172,9 @@ AFRAME.registerComponent('material-2', {
     // Get the mesh and set/replace the existing material
     getMesh(el).then((mesh) => {
       // SkinnedMesh needs skinning turned on for animations to work.
-      material.skinning = true;
+      if (mesh.type === 'SkinnedMesh') {
+        material.skinning = true;
+      }
       // Update the mesh with the new material.
       mesh.material = material;
     });

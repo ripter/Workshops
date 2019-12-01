@@ -12,11 +12,6 @@ export function getMesh(el) {
       if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
       // now that we have the mesh, remove the listener.
       el.removeEventListener('object3dset', waitForMesh);
-      // SkinnedMesh needs skinning turned on for animations to work.
-      // material.skinning = true;
-      // Find the actual mesh, not a root object that contains the mesh.
-      // Update the mesh with the new material.
-      // mesh.material = material;
 
       // Look for a Skinned Mesh
       mesh = el.getObject3D('mesh').getObjectByProperty('type', 'SkinnedMesh');
