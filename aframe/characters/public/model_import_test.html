@@ -21,6 +21,7 @@
 
     <!--
       material: 'Fantasy A'
+      anim: Idle
       baked Alien texture
       baked animations
     -->
@@ -28,29 +29,35 @@
       <a-entity
         gltf-model="#modelTexturedAnimatedMedium"
         material="src: #skinFantasyFemaleA"
+        animation-control="actionName: Idle;"
         ></a-entity>
 
       <a-plane position="0 5 -0"
-        width="3" height="1"
+        width="3" height="1.5"
         color="#001f3f"
         >
-        <a-text value="material: 'Fantasy A'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+        <a-text value="anim: 'Idle'\nmaterial: 'Fantasy A'\nbaked Alien texture\nbaked animations" align="center"></a-text>
       </a-plane>
     </a-entity>
 
 
     <!--
+      anim: Punch
       baked Alien texture
       baked animations
     -->
     <a-entity class="pedestal" position="5 0 -5">
-      <a-entity gltf-model="#modelTexturedAnimatedMedium"></a-entity>
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        animation-control="actionName: Punch;"
+        >
+      </a-entity>
 
       <a-plane position="0 5 -0"
-        width="3" height="1"
+        width="3" height="1.5"
         color="#001f3f"
         >
-        <a-text value="baked Alien texture\nbaked animations" align="center"></a-text>
+        <a-text value="anim: 'Punch'\nbaked Alien texture\nbaked animations" align="center"></a-text>
       </a-plane>
     </a-entity>
 
