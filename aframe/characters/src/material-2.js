@@ -169,16 +169,18 @@ AFRAME.registerComponent('material-2', {
 
     // Set on mesh. If mesh does not exist, wait for it.
     mesh = el.getObject3D('mesh');
-    console.log('mesh', mesh);
     if (mesh) {
+      console.log('found mesh', mesh);
       mesh.material = material;
     } else {
       el.addEventListener('object3dset', function waitForMesh (evt) {
         if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
+        // SkinnedMesh needs skinning turned on for animations to work.
+        material.skinning = true;
+        // Find the actual mesh, not a root object that contains the mesh.
         mesh = el.getObject3D('mesh').getObjectByProperty('type', 'SkinnedMesh');
-        console.log('async mesh', el.getObject3D('mesh'));
+        // Update the mesh with the new material.
         mesh.material = material;
-        // el.getObject3D('mesh').material = material;
         el.removeEventListener('object3dset', waitForMesh);
       });
     }
