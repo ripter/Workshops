@@ -27,7 +27,7 @@ AFRAME.registerComponent('animation-control', {
    *
    * @param {object} prevData - Previous attributes of the component.
    */
-  update(oldData) {
+  update() {
     // console.log('animation-control.update', this.data, oldData);
   },
 
@@ -60,7 +60,7 @@ AFRAME.registerComponent('animation-control', {
 
   /**
    * Called when a listening event is observed.
-   * @param  {Event} event An Event object describing the event that has been fired and needs to be processed.
+   * @param  {Event} event the event that has been fired and needs to be processed.
    * @return {undefined}
    */
   handleEvent(event) {
@@ -71,7 +71,7 @@ AFRAME.registerComponent('animation-control', {
         // update mixer with the new mesh
         return this.updateMixer(event.detail.object);
       default:
-        console.warn(`Unhandled event type: ${event.type}`, event);
+        console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
     }
   },
 

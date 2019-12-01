@@ -44,32 +44,25 @@ AFRAME.registerComponent('material-2', {
   },
 
   updateSchema(data) {
-    let currentShader;
-    let newShader;
-    let schema;
-    let shader;
+    const newShader = data && data.shader;
+    const currentShader = this.oldData && this.oldData.shader;
+    const shader = newShader || currentShader;
+    const schema = shaders[shader] && shaders[shader].schema;
 
-    newShader = data && data.shader;
-    currentShader = this.oldData && this.oldData.shader;
-    shader = newShader || currentShader;
-    schema = shaders[shader] && shaders[shader].schema;
-
-    if (!schema) { error(`Unknown shader schema ${shader}`); }
+    if (!schema) { throw new Error(`Unknown shader schema ${shader}`); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
     this.updateBehavior();
   },
 
   updateBehavior() {
-    let key;
     const { sceneEl } = this.el;
     const { schema } = this;
     const self = this;
     let tickProperties;
 
-    function tickTime(time, delta) {
-      let key;
-      for (key in tickProperties) {
+    function tickTime(time) {
+      for (const key in tickProperties) {
         tickProperties[key] = time;
       }
       self.shader.update(tickProperties);
@@ -78,7 +71,7 @@ AFRAME.registerComponent('material-2', {
     this.tick = undefined;
 
     tickProperties = {};
-    for (key in schema) {
+    for (const key in schema) {
       if (schema[key].type === 'time') {
         this.tick = tickTime;
         tickProperties[key] = true;
@@ -96,12 +89,10 @@ AFRAME.registerComponent('material-2', {
   updateShader(shaderName) {
     const { data } = this;
     const Shader = shaders[shaderName] && shaders[shaderName].Shader;
-    let shaderInstance;
-
     if (!Shader) { throw new Error(`Unknown shader ${shaderName}`); }
 
     // Get material from A-Frame shader.
-    shaderInstance = this.shader = new Shader();
+    const shaderInstance = this.shader = new Shader();
     shaderInstance.el = this.el;
     shaderInstance.init(data);
     this.setMaterial(shaderInstance.material);
@@ -161,7 +152,6 @@ AFRAME.registerComponent('material-2', {
   */
   setMaterial(material) {
     const { el } = this;
-    let mesh;
     const { system } = this;
 
     if (this.material) { disposeMaterial(this.material, system); }
@@ -173,7 +163,7 @@ AFRAME.registerComponent('material-2', {
     getMesh(el).then((mesh) => {
       // SkinnedMesh needs skinning turned on for animations to work.
       if (mesh.type === 'SkinnedMesh') {
-        material.skinning = true;
+        this.material.skinning = true;
       }
       // Update the mesh with the new material.
       mesh.material = material;

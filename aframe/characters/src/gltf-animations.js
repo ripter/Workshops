@@ -4,21 +4,25 @@ AFRAME.registerComponent('gltf-animations', {
   schema: { type: 'asset' },
 
   /**
-  * Called once at the beginning of the component’s lifecycle.
-  */
+   * Init handler. Similar to attachedCallback.
+   * Called during component initialization and is only run once.
+   * Components can use this to set initial state.
+   */
   init() {
     const dracoLoader = this.el.sceneEl.systems['gltf-model'].getDRACOLoader();
     this.loader = new THREE.GLTFLoader();
     if (dracoLoader) {
       this.loader.setDRACOLoader(dracoLoader);
     }
-
-    this.clock = new THREE.Clock();
   },
 
   /**
-  * Called whenever the component’s properties change, including at the beginning of the component’s lifecycle.
-  */
+   * Update handler. Similar to attributeChangedCallback.
+   * Called whenever component's data changes.
+   * Also called on component initialization when the component receives initial data.
+   *
+   * @param {object} prevData - Previous attributes of the component.
+   */
   update(oldSrc) {
     const src = this.data;
 
@@ -48,9 +52,7 @@ AFRAME.registerComponent('gltf-animations', {
    */
   tick(time, timeDelta) {
     if (this.mixer) {
-      const deltaInSeconds = this.clock.getDelta();
-      // const deltaInSeconds = timeDelta / 1000;
-      // console.log({deltaInSeconds});
+      const deltaInSeconds = timeDelta / 1000;
       this.mixer.update(deltaInSeconds);
     }
   },
@@ -74,33 +76,12 @@ AFRAME.registerComponent('gltf-animations', {
     const { el } = this;
     const animations = this.animations = model.animations;
     const mesh = el.getObject3D('mesh');
-    // const mesh = el.getObject3D('root');
-    // const mesh = el.object3D;
     const mixer = this.mixer = new THREE.AnimationMixer(mesh);
-    // const clip = mixer.clipAction(animations[1]);
 
     // Play a specific animation
     const clip = THREE.AnimationClip.findByName(animations, 'Idle');
     const action = mixer.clipAction(clip);
-
-    console.group('onLoad animation');
-    console.log('animations', model.animations);
-    console.log('mesh', mesh);
-    console.log('action', action);
-    console.log('clip', clip);
-    console.groupEnd();
     action.play();
-
-    // new THREE.AnimationMixer( mesh );
-
-    // const clips = THREE.AnimationClip.parseJSON(animations);
-    // console.log('clips', clips);
-    // this.model = model.scene || model.scenes[0];
-    // this.model.animations = model.animations;
-
-    // const mesh = this.getMesh(this.model);
-    // el.setObject3D('mesh', mesh);
-    // el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
   /**

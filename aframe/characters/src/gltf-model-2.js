@@ -5,7 +5,9 @@ AFRAME.registerComponent('gltf-model-2', {
   schema: { type: 'asset' },
 
   /**
-   * Called once at the beginning of the component’s lifecycle.
+   * Init handler. Similar to attachedCallback.
+   * Called during component initialization and is only run once.
+   * Components can use this to set initial state.
    */
   init() {
     const dracoLoader = this.el.sceneEl.systems['gltf-model'].getDRACOLoader();
@@ -16,7 +18,11 @@ AFRAME.registerComponent('gltf-model-2', {
   },
 
   /**
-   * Called whenever the component’s properties change, including at the beginning of the component’s lifecycle.
+   * Update handler. Similar to attributeChangedCallback.
+   * Called whenever component's data changes.
+   * Also called on component initialization when the component receives initial data.
+   *
+   * @param {object} prevData - Previous attributes of the component.
    */
   update(oldSrc) {
     const src = this.data;
@@ -39,7 +45,9 @@ AFRAME.registerComponent('gltf-model-2', {
   },
 
   /**
-   * Called whenever the component is detached from the entity.
+   * Remove handler. Similar to detachedCallback.
+   * Called whenever component is removed from the entity (i.e., removeAttribute).
+   * Components can use this to reset behavior on the entity.
    */
   remove() {
     if (!this.model) { return; }
@@ -52,23 +60,10 @@ AFRAME.registerComponent('gltf-model-2', {
    */
   onLoad(model) {
     const { el } = this;
-
     this.model = model.scene || model.scenes[0];
-    this.model.animations = model.animations;
 
     const mesh = this.getMesh(this.model);
-    // console.log('mesh', mesh);
-    // console.log('material', mesh.material);
-    // this.model.material = mesh.material;
-    // this.model.material = mesh.material;
-    // this.model.material.needsUpdate = true;
-    // console.group('onLoad');
-    // console.log('src', this.data);
-    // console.log('mesh', mesh);
-    // console.log('model', model);
-    // console.groupEnd();
     el.setObject3D('mesh', mesh);
-    // el.setObject3D('mesh', this.model);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
@@ -93,15 +88,9 @@ AFRAME.registerComponent('gltf-model-2', {
    * Find the Mesh in the model
    */
   getMesh(model) {
-    // return model;
     // Attempt to get a SkinnedMesh with bones
-    mesh = model.getObjectByProperty('type', 'SkinnedMesh');
+    const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
     if (mesh) {
-      // console.group('SkinnedMesh');
-      // console.log(this.data);
-      // console.log('model', this.model);
-      // console.log('mesh', mesh);
-      // console.groupEnd();
       return mesh;
     }
     // default to the root
