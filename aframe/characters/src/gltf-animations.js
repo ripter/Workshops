@@ -46,7 +46,7 @@ AFRAME.registerComponent('gltf-animations', {
    * @param  {[type]} timeDelta [description]
    * @return {[type]}           [description]
    */
-  tick (time, timeDelta) {
+  tick(time, timeDelta) {
     if (this.mixer) {
       const deltaInSeconds = this.clock.getDelta();
       // const deltaInSeconds = timeDelta / 1000;
@@ -80,8 +80,8 @@ AFRAME.registerComponent('gltf-animations', {
     // const clip = mixer.clipAction(animations[1]);
 
     // Play a specific animation
-    const clip = THREE.AnimationClip.findByName( animations, 'Idle' );
-    const action = mixer.clipAction( clip );
+    const clip = THREE.AnimationClip.findByName(animations, 'Idle');
+    const action = mixer.clipAction(clip);
 
     console.group('onLoad animation');
     console.log('animations', model.animations);

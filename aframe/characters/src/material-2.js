@@ -1,6 +1,6 @@
 import { getMesh } from './utils/getMesh';
 
-const shaders = AFRAME.shaders;
+const { shaders } = AFRAME;
 const shaderNames = Object.keys(AFRAME.shaders);
 
 /**
@@ -8,23 +8,23 @@ const shaderNames = Object.keys(AFRAME.shaders);
 */
 AFRAME.registerComponent('material-2', {
   schema: {
-    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
-    depthTest: {default: true},
-    depthWrite: {default: true},
-    flatShading: {default: false},
-    npot: {default: false},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    opacity: {default: 1.0, min: 0.0, max: 1.0},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    shader: {default: 'standard', oneOf: shaderNames, schemaChange: true},
-    side: {default: 'front', oneOf: ['front', 'back', 'double']},
-    transparent: {default: false},
-    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
-    visible: {default: true},
-    blending: {default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply']}
+    alphaTest: { default: 0.0, min: 0.0, max: 1.0 },
+    depthTest: { default: true },
+    depthWrite: { default: true },
+    flatShading: { default: false },
+    npot: { default: false },
+    offset: { type: 'vec2', default: { x: 0, y: 0 } },
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    repeat: { type: 'vec2', default: { x: 1, y: 1 } },
+    shader: { default: 'standard', oneOf: shaderNames, schemaChange: true },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    transparent: { default: false },
+    vertexColors: { type: 'string', default: 'none', oneOf: ['face', 'vertex'] },
+    visible: { default: true },
+    blending: { default: 'normal', oneOf: ['none', 'normal', 'additive', 'subtractive', 'multiply'] },
   },
 
-  init: function () {
+  init() {
     this.material = null;
     this.system = this.el.sceneEl.systems.material;
   },
@@ -34,8 +34,8 @@ AFRAME.registerComponent('material-2', {
   *
   * @param {object|null} oldData
   */
-  update: function (oldData) {
-    var data = this.data;
+  update(oldData) {
+    const { data } = this;
     if (!this.shader || data.shader !== oldData.shader) {
       this.updateShader(data.shader);
     }
@@ -43,32 +43,32 @@ AFRAME.registerComponent('material-2', {
     this.updateMaterial(oldData);
   },
 
-  updateSchema: function (data) {
-    var currentShader;
-    var newShader;
-    var schema;
-    var shader;
+  updateSchema(data) {
+    let currentShader;
+    let newShader;
+    let schema;
+    let shader;
 
     newShader = data && data.shader;
     currentShader = this.oldData && this.oldData.shader;
     shader = newShader || currentShader;
     schema = shaders[shader] && shaders[shader].schema;
 
-    if (!schema) { error('Unknown shader schema ' + shader); }
+    if (!schema) { error(`Unknown shader schema ${shader}`); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
     this.updateBehavior();
   },
 
-  updateBehavior: function () {
-    var key;
-    var sceneEl = this.el.sceneEl;
-    var schema = this.schema;
-    var self = this;
-    var tickProperties;
+  updateBehavior() {
+    let key;
+    const { sceneEl } = this.el;
+    const { schema } = this;
+    const self = this;
+    let tickProperties;
 
-    function tickTime (time, delta) {
-      var key;
+    function tickTime(time, delta) {
+      let key;
       for (key in tickProperties) {
         tickProperties[key] = time;
       }
@@ -93,12 +93,12 @@ AFRAME.registerComponent('material-2', {
     }
   },
 
-  updateShader: function (shaderName) {
-    var data = this.data;
-    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
-    var shaderInstance;
+  updateShader(shaderName) {
+    const { data } = this;
+    const Shader = shaders[shaderName] && shaders[shaderName].Shader;
+    let shaderInstance;
 
-    if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
+    if (!Shader) { throw new Error(`Unknown shader ${shaderName}`); }
 
     // Get material from A-Frame shader.
     shaderInstance = this.shader = new Shader();
@@ -112,10 +112,10 @@ AFRAME.registerComponent('material-2', {
   * Set and update base material properties.
   * Set `needsUpdate` when needed.
   */
-  updateMaterial: function (oldData) {
-    var data = this.data;
-    var material = this.material;
-    var oldDataHasKeys;
+  updateMaterial(oldData) {
+    const { data } = this;
+    const { material } = this;
+    let oldDataHasKeys;
 
     // Base material properties.
     material.alphaTest = data.alphaTest;
@@ -131,11 +131,11 @@ AFRAME.registerComponent('material-2', {
 
     // Check if material needs update.
     for (oldDataHasKeys in oldData) { break; }
-    if (oldDataHasKeys &&
-      (oldData.alphaTest !== data.alphaTest ||
-        oldData.side !== data.side ||
-        oldData.vertexColors !== data.vertexColors)) {
-          material.needsUpdate = true;
+    if (oldDataHasKeys
+      && (oldData.alphaTest !== data.alphaTest
+        || oldData.side !== data.side
+        || oldData.vertexColors !== data.vertexColors)) {
+      material.needsUpdate = true;
     }
   },
 
@@ -143,10 +143,10 @@ AFRAME.registerComponent('material-2', {
   * Remove material on remove (callback).
   * Dispose of it from memory and unsubscribe from scene updates.
   */
-  remove: function () {
-    var defaultMaterial = new THREE.MeshBasicMaterial();
-    var material = this.material;
-    var object3D = this.el.getObject3D('mesh');
+  remove() {
+    const defaultMaterial = new THREE.MeshBasicMaterial();
+    const { material } = this;
+    const object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
     disposeMaterial(material, this.system);
   },
@@ -159,10 +159,10 @@ AFRAME.registerComponent('material-2', {
   * @param {object} type - Material type to create.
   * @returns {object} Material.
   */
-  setMaterial: function (material) {
-    var el = this.el;
-    var mesh;
-    var system = this.system;
+  setMaterial(material) {
+    const { el } = this;
+    let mesh;
+    const { system } = this;
 
     if (this.material) { disposeMaterial(this.material, system); }
 
@@ -189,7 +189,7 @@ AFRAME.registerComponent('material-2', {
  * @param {string} [side=front] - `front`, `back`, or `double`.
  * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
  */
-function parseSide (side) {
+function parseSide(side) {
   switch (side) {
     case 'back': {
       return THREE.BackSide;
@@ -207,7 +207,7 @@ function parseSide (side) {
 /**
  * Return a three.js constant determining vertex coloring.
  */
-function parseVertexColors (coloring) {
+function parseVertexColors(coloring) {
   switch (coloring) {
     case 'face': {
       return THREE.FaceColors;
@@ -228,7 +228,7 @@ function parseVertexColors (coloring) {
  * - `none`, additive`, `subtractive`,`multiply` or `normal`.
  * @returns {number}
  */
-function parseBlending (blending) {
+function parseBlending(blending) {
   switch (blending) {
     case 'none': {
       return THREE.NoBlending;
@@ -251,7 +251,7 @@ function parseBlending (blending) {
 /**
  * Dispose of material from memory and unsubscribe material from scene updates like fog.
  */
-function disposeMaterial (material, system) {
+function disposeMaterial(material, system) {
   material.dispose();
   system.unregisterMaterial(material);
 }

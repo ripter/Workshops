@@ -2,7 +2,7 @@
 
 AFRAME.registerComponent('animation-control', {
   schema: {
-    actionName: {default: 'Idle'},
+    actionName: { default: 'Idle' },
   },
 
   /**
@@ -39,7 +39,7 @@ AFRAME.registerComponent('animation-control', {
    * @param {number} time - Scene tick time.
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
-  tick (time, timeDelta) {
+  tick(time, timeDelta) {
     const deltaInSeconds = timeDelta / 1000;
 
     if (this.mixer) {
@@ -85,8 +85,8 @@ AFRAME.registerComponent('animation-control', {
     this.mixer = new THREE.AnimationMixer(rootObj);
 
     // get and play the named action
-    const clip = THREE.AnimationClip.findByName( animations, actionName );
-    const action = this.action = this.mixer.clipAction( clip );
+    const clip = THREE.AnimationClip.findByName(animations, actionName);
+    const action = this.action = this.mixer.clipAction(clip);
     action.play();
   },
 });
