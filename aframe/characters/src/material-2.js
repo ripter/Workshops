@@ -1,3 +1,5 @@
+import { getMesh } from './utils/getMesh';
+
 const shaders = AFRAME.shaders;
 const shaderNames = Object.keys(AFRAME.shaders);
 
@@ -167,24 +169,14 @@ AFRAME.registerComponent('material-2', {
     this.material = material;
     system.registerMaterial(material);
 
-    // Set on mesh. If mesh does not exist, wait for it.
-    mesh = el.getObject3D('mesh');
-    if (mesh) {
-      console.log('found mesh', mesh);
+    // Get the mesh and set/replace the existing material
+    getMesh(el).then((mesh) => {
+      // SkinnedMesh needs skinning turned on for animations to work.
+      material.skinning = true;
+      // Update the mesh with the new material.
       mesh.material = material;
-    } else {
-      el.addEventListener('object3dset', function waitForMesh (evt) {
-        if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
-        // SkinnedMesh needs skinning turned on for animations to work.
-        material.skinning = true;
-        // Find the actual mesh, not a root object that contains the mesh.
-        mesh = el.getObject3D('mesh').getObjectByProperty('type', 'SkinnedMesh');
-        // Update the mesh with the new material.
-        mesh.material = material;
-        el.removeEventListener('object3dset', waitForMesh);
-      });
-    }
-  }
+    });
+  },
 });
 
 
