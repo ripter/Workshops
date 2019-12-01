@@ -20,5 +20,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-void': 'off',
     'no-param-reassign': 'off',
+    'no-multi-assign': 'off',
   },
 };

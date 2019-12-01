@@ -69,7 +69,8 @@ AFRAME.registerComponent('animation-control', {
         // only respond to 'mesh' changes
         if (event.detail.type !== 'mesh') { return; }
         // update mixer with the new mesh
-        return this.updateMixer(event.detail.object);
+        this.updateMixer(event.detail.object);
+        break;
       default:
         console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
     }
