@@ -132,28 +132,31 @@ AFRAME.registerComponent('material-2', {
   },
 
   updateBehavior() {
-    /* eslint-disable no-restricted-syntax, guard-for-in */
     const { sceneEl } = this.el;
     const { schema } = this;
     const self = this;
     let tickProperties;
 
     function tickTime(time) {
+      /* eslint-disable no-restricted-syntax, guard-for-in */
       for (const key in tickProperties) {
         tickProperties[key] = time;
       }
+      /* eslint-enable no-restricted-syntax, guard-for-in */
       self.shader.update(tickProperties);
     }
 
     this.tick = undefined;
 
     tickProperties = {};
+    /* eslint-disable no-restricted-syntax, guard-for-in */
     for (const key in schema) {
       if (schema[key].type === 'time') {
         this.tick = tickTime;
         tickProperties[key] = true;
       }
     }
+    /* eslint-enable no-restricted-syntax, guard-for-in */
 
     if (!sceneEl) { return; }
     if (this.tick) {
@@ -161,7 +164,6 @@ AFRAME.registerComponent('material-2', {
     } else {
       sceneEl.removeBehavior(this);
     }
-    /* eslint-enable no-restricted-syntax, guard-for-in */
   },
 
   updateShader(shaderName) {
