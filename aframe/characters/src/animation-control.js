@@ -1,4 +1,3 @@
-// gltf-animations
 
 AFRAME.registerComponent('animation-control', {
   schema: {
@@ -11,13 +10,11 @@ AFRAME.registerComponent('animation-control', {
    * Components can use this to set initial state.
    */
   init() {
-    const { el } = this;
-
     this.mixer = null; // https://threejs.org/docs/index.html#api/en/animation/AnimationMixer
     this.action = null; // https://threejs.org/docs/index.html#api/en/animation/AnimationAction
 
     // listen to changes on the refrence objects like 'mesh'
-    el.addEventListener('object3dset', this);
+    this.el.addEventListener('object3dset', this);
   },
 
   /**
@@ -87,7 +84,7 @@ AFRAME.registerComponent('animation-control', {
 
     // get and play the named action
     const clip = THREE.AnimationClip.findByName(animations, actionName);
-    const action = this.action = this.mixer.clipAction(clip);
-    action.play();
+    this.action = this.mixer.clipAction(clip);
+    this.action.play();
   },
 });

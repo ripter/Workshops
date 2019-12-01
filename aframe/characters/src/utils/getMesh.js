@@ -7,6 +7,7 @@ export const KEY_MESH = 'mesh';
  * @return {Promise} resolves with mesh object.
  */
 export function getMesh(el) {
+  // BUG: cached is the orignial mesh object, while non-cached finds the type Mesh object.
   let mesh = el.getObject3D(KEY_MESH);
   // return the cached mesh if we have it.
   if (mesh) { return Promise.resolve(mesh); }

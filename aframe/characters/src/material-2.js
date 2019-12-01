@@ -249,7 +249,7 @@ AFRAME.registerComponent('material-2', {
         this.material.skinning = true;
       }
       // Update the mesh with the new material.
-      mesh.material = material;
+      mesh.material = this.material;
     });
   },
 });
