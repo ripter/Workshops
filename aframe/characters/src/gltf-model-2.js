@@ -63,7 +63,6 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model = model.scene || model.scenes[0];
 
     const mesh = this.getMesh(this.model);
-    console.log('mesh found', mesh);
     el.setObject3D('mesh', mesh);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },

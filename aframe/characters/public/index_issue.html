@@ -26,19 +26,19 @@
       material: 'Fantasy B'
       anim: Idle
       baked animations
+      animation-control="actionName: Idle;"
     -->
     <a-entity class="pedestal" position="0 0 -5">
       <a-entity id="elm"
         gltf-model-2="#modelAnimated"
         material="src: #skinFantasyFemaleB"
-        animation-control="actionName: Idle;"
         ></a-entity>
 
       <a-plane position="0 5 -0"
-        width="3" height="1.5"
+        width="4" height="1.5"
         color="#001f3f"
         >
-        <a-text value="anim: 'Idle'\nmaterial: 'Fantasy B'\nbaked animations" align="center"></a-text>
+        <a-text value="anim: 'Idle'\nmaterial: 'Fantasy B'\ngltf-model-2: Animated" align="center"></a-text>
       </a-plane>
     </a-entity>
 
@@ -54,10 +54,10 @@
         ></a-entity>
 
       <a-plane position="0 5 -0"
-        width="3" height="1.5"
+        width="4" height="1.5"
         color="#001f3f"
         >
-        <a-text value="material: 'Fantasy A'\nmodel: Just Scene/Mesh" align="center"></a-text>
+        <a-text value="material: 'Fantasy A'\ngltf-model-2: Mesh Only" align="center"></a-text>
       </a-plane>
     </a-entity>
 
@@ -66,19 +66,20 @@
       anim: Punch
       baked Alien texture
       baked animations
+      animation-control="actionName: Punch;"
     -->
     <a-entity class="pedestal" position="5 0 -5">
       <a-entity
         gltf-model-2="#modelTexturedAnimated"
-        animation-control="actionName: Punch;"
+
         >
       </a-entity>
 
       <a-plane position="0 5 -0"
-        width="3" height="1.5"
+        width="4" height="1.5"
         color="#001f3f"
         >
-        <a-text value="anim: 'Punch'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+        <a-text value="anim: 'Punch'\nbaked Alien texture\ngltf-model-2: Animated, Textured" align="center"></a-text>
       </a-plane>
     </a-entity>
 
