@@ -63,6 +63,7 @@ AFRAME.registerComponent('gltf-model-2', {
     this.model = model.scene || model.scenes[0];
 
     const mesh = this.getMesh(this.model);
+    console.log('mesh found', mesh);
     el.setObject3D('mesh', mesh);
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
@@ -88,11 +89,19 @@ AFRAME.registerComponent('gltf-model-2', {
    * Find the Mesh in the model
    */
   getMesh(model) {
-    // Attempt to get a SkinnedMesh with bones
-    const mesh = model.getObjectByProperty('type', 'SkinnedMesh');
+    let mesh;
+    // Look for a Skinned Mesh
+    mesh = model.getObjectByProperty('type', 'SkinnedMesh');
     if (mesh) {
       return mesh;
     }
+
+    // Look for a base Mesh
+    mesh = model.getObjectByProperty('type', 'Mesh');
+    if (mesh) {
+      return mesh;
+    }
+
     // default to the root
     return model;
   },
