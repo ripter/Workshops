@@ -63,10 +63,11 @@ AFRAME.registerComponent('animation-control', {
   handleEvent(event) {
     switch (event.type) {
       case 'object3dset':
-        // only respond to 'mesh' changes
-        if (event.detail.type !== 'mesh') { return; }
+        // // only respond to 'mesh' changes
+        // if (event.detail.type !== 'mesh') { return; }
         // update mixer with the new mesh
-        this.updateMixer(event.detail.object);
+        // this.updateMixer(event.detail.object);
+        this.updateMixer();
         break;
       default:
         console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
@@ -75,12 +76,15 @@ AFRAME.registerComponent('animation-control', {
 
 
   // Update the Mixer with a new Root Object
-  updateMixer(rootObj) {
-    const { animations } = rootObj;
+  updateMixer() {
     const { actionName } = this.data;
+    const animRoot = this.el.getObject3D('animRoot');
+    // Bail if we are missing anything.
+    if (!animRoot || !actionName || actionName === '') { return; }
+    const { animations } = animRoot;
 
     // Update the mixer to use the new root object.
-    this.mixer = new THREE.AnimationMixer(rootObj);
+    this.mixer = new THREE.AnimationMixer(animRoot);
 
     // get and play the named action
     const clip = THREE.AnimationClip.findByName(animations, actionName);

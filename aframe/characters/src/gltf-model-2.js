@@ -58,12 +58,22 @@ AFRAME.registerComponent('gltf-model-2', {
   /**
    * Called when a model is loaded.
    */
-  onLoad(model) {
+  onLoad(modelFile) {
     const { el } = this;
-    this.model = model.scene || model.scenes[0];
+    const animations = modelFile.animations;
 
+    // Get the root model aka scene from the file
+    // Save it with the animations array.
+    this.model = modelFile.scene || modelFile.scenes[0];
+    this.model.animations = animations;
+
+    // Find the mesh object
     const mesh = this.getMesh(this.model);
+
+    // Set the object refrences
     el.setObject3D('mesh', mesh);
+    el.setObject3D('animRoot', this.model);
+    // Emit load finished
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
