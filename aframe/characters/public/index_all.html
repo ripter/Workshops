@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./index.css"></link>
+  <script src="./libs/aframe-v0.9.2.js"></script>
+  <!-- <script src="./libs/FBXLoader.js"></script> -->
+  <script src="./bundle.js"></script>
+  <title>Animated GLTF models. A-FRAME v0.9.2</title>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
+      <a-asset-item id="model" src="./assets/models/alienMedium.gltf"></a-asset-item>
+      <img id="skinA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <img id="skinB" src="./assets/skins/fantasyFemaleB.png"></img>
+      <img id="skinC" src="./assets/skins/casualFemaleA.png"></img>
+      <img id="skinD" src="./assets/skins/casualFemaleB.png"></img>
+    </a-assets>
+
+
+    <a-entity class="pedestal" position="0 0 -5">
+      <a-entity
+        gltf-model-2="#model"
+        material="src: #skinB"
+        anim-mixer="clipName: Idle;"
+        ></a-entity>
+
+      <!-- <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="anim: 'Idle'\nmaterial-2: 'Fantasy B'\nbaked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane> -->
+    </a-entity>
+
+
+
+    <a-entity class="pedestal" position="-2.5 0 -5">
+      <a-entity
+        gltf-model-2="#model"
+        material="src: #skinA"
+        anim-mixer="clipName: Punch;"
+        ></a-entity>
+
+      <!-- <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="
+        anim: 'Kick'
+        material-2: 'Fantasy A'" align="center"></a-text>
+      </a-plane> -->
+    </a-entity>
+
+
+    <a-entity class="pedestal" position="2.5 0 -5">
+      <a-entity
+        gltf-model-2="#model"
+        anim-mixer="clipName: Punch;"
+        >
+      </a-entity>
+
+      <!-- <a-plane position="0 5 -0"
+        width="3" height="1.5"
+        color="#001f3f"
+        >
+        <a-text value="
+        anim: 'Punch'
+        baked Alien texture
+        baked animations" align="center"></a-text>
+      </a-plane> -->
+    </a-entity>
+
+
+    <!--
+      baked Alien texture
+      animation: #animIdle
+    -->
+    <!-- <a-entity class="pedestal" position="-5 0 -5">
+      <a-entity
+        gltf-model="#modelTexturedAnimatedMedium"
+        gltf-animations="#animIdle"
+        >
+      </a-entity>
+
+      <a-plane position="0 5 -0"
+        width="3" height="1"
+        color="#001f3f"
+        >
+        <a-text value="baked Alien texture\nbaked animations" align="center"></a-text>
+      </a-plane>
+    </a-entity> -->
+
+      <a-entity
+        position="2.5 0 -10"
+        gltf-model-2="#model"
+        material="src: #skinC"
+        anim-mixer="clipName: Kick;"
+        ></a-entity>
+
+
+      <a-entity
+        position="-2.5 0 -10"
+        gltf-model-2="#model"
+        material="src: #skinD"
+        anim-mixer="clipName: Kick;"
+        ></a-entity>
+
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="150" height="150" color="#7BC8A4"></a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+</body>
+</html>
