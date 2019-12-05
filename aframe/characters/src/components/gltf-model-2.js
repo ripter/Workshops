@@ -1,5 +1,8 @@
 /**
  * Patched version of gltf-model that sets 'mesh' to the SkinnedMesh or root object.
+ * sets `mesh` and `armature` references
+ * `setObject3D('mesh', SkinnedMesh || Mesh)`
+ * `setObject3D('armature', {Object3D animations=[]})`
  */
 AFRAME.registerComponent('gltf-model-2', {
   schema: { type: 'asset' },
@@ -10,6 +13,7 @@ AFRAME.registerComponent('gltf-model-2', {
    * Components can use this to set initial state.
    */
   init() {
+    // QUESTION: Should the loader be on the system, and shared with the components?
     const dracoLoader = this.el.sceneEl.systems['gltf-model'].getDRACOLoader();
     this.loader = new THREE.GLTFLoader();
     if (dracoLoader) {
@@ -52,7 +56,10 @@ AFRAME.registerComponent('gltf-model-2', {
   remove() {
     if (!this.model) { return; }
     this.el.removeObject3D('mesh');
+    this.el.removeObject3D('armature');
+    this.model.dispose();
     this.model = null;
+    this.loader = null;
   },
 
   /**
@@ -95,7 +102,7 @@ AFRAME.registerComponent('gltf-model-2', {
   },
 
   /**
-   * Find the Mesh in the model
+   * Returns the first SkinnedMesh or Mesh found.
    */
   getMesh(model) {
     let mesh;
