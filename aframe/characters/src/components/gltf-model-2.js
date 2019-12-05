@@ -1,6 +1,7 @@
-// gltf-animations
-
-AFRAME.registerComponent('gltf-animations', {
+/**
+ * Patched version of gltf-model that sets 'mesh' to the SkinnedMesh or root object.
+ */
+AFRAME.registerComponent('gltf-model-2', {
   schema: { type: 'asset' },
 
   /**
@@ -43,45 +44,37 @@ AFRAME.registerComponent('gltf-animations', {
     );
   },
 
-
   /**
-   * Called on each tick or frame of the scene’s render loop.
-   * @param  {[type]} time      [description]
-   * @param  {[type]} timeDelta [description]
-   * @return {[type]}           [description]
+   * Remove handler. Similar to detachedCallback.
+   * Called whenever component is removed from the entity (i.e., removeAttribute).
+   * Components can use this to reset behavior on the entity.
    */
-  tick(time, timeDelta) {
-    if (this.mixer) {
-      const deltaInSeconds = timeDelta / 1000;
-      this.mixer.update(deltaInSeconds);
-    }
-  },
-
-  /**
-  * Called whenever the component is detached from the entity.
-  */
   remove() {
-    // if (!this.model) { return; }
-    // this.el.removeObject3D('mesh');
-    // this.model = null;
-
-    delete this.animations;
-    delete this.mixer;
+    if (!this.model) { return; }
+    this.el.removeObject3D('mesh');
+    this.model = null;
   },
 
   /**
    * Called when a model is loaded.
    */
-  onLoad(model) {
+  onLoad(gltfData) {
     const { el } = this;
-    const animations = this.animations = model.animations;
-    const mesh = el.getObject3D('mesh');
-    const mixer = this.mixer = new THREE.AnimationMixer(mesh);
+    const { animations } = gltfData;
 
-    // Play a specific animation
-    const clip = THREE.AnimationClip.findByName(animations, 'Idle');
-    const action = mixer.clipAction(clip);
-    action.play();
+    // Get the root model aka scene from the file
+    // Save it with the animations array.
+    this.model = gltfData.scene || gltfData.scenes[0];
+    this.model.animations = animations;
+
+    // Find the mesh object
+    const mesh = this.getMesh(this.model);
+
+    // Set the object refrences
+    el.setObject3D('mesh', mesh);
+    el.setObject3D('animRoot', this.model);
+    // Emit load finished
+    el.emit('model-loaded', { format: 'gltf', model: this.model });
   },
 
   /**
@@ -99,5 +92,26 @@ AFRAME.registerComponent('gltf-animations', {
    */
   onProgress() {
     // do nothing
+  },
+
+  /**
+   * Find the Mesh in the model
+   */
+  getMesh(model) {
+    let mesh;
+    // Look for a Skinned Mesh
+    mesh = model.getObjectByProperty('type', 'SkinnedMesh');
+    if (mesh) {
+      return mesh;
+    }
+
+    // Look for a base Mesh
+    mesh = model.getObjectByProperty('type', 'Mesh');
+    if (mesh) {
+      return mesh;
+    }
+
+    // default to the root
+    return model;
   },
 });

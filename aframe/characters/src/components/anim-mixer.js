@@ -1,11 +1,10 @@
-
 /**
- * component that can play gltf animations.
+ * Plays animations on the model.
  * Refrences 'mesh' and 'animRoot' objects.
  */
-AFRAME.registerComponent('animation-control', {
+AFRAME.registerComponent('anim-mixer', {
   schema: {
-    actionName: { default: 'Idle' },
+    clipName: { default: 'Idle' },
   },
 
   /**
@@ -77,11 +76,11 @@ AFRAME.registerComponent('animation-control', {
 
   // Update the Mixer with a new Root Object
   updateMixer() {
-    const { actionName } = this.data;
+    const { clipName } = this.data;
     const animRoot = this.el.getObject3D('animRoot');
     const mesh = this.el.getObject3D('mesh');
     // Bail if we are missing anything.
-    if (!animRoot || !actionName || actionName === '') { return; }
+    if (!animRoot || !clipName || clipName === '') { return; }
     const { animations } = animRoot;
 
     // Update the mixer to use the new root object.
@@ -92,7 +91,7 @@ AFRAME.registerComponent('animation-control', {
     mesh.material.needsUpdate = true;
 
     // get and play the named action
-    const clip = THREE.AnimationClip.findByName(animations, actionName);
+    const clip = THREE.AnimationClip.findByName(animations, clipName);
     this.action = this.mixer.clipAction(clip);
     this.action.play();
   },
