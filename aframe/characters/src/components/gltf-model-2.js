@@ -70,9 +70,9 @@ AFRAME.registerComponent('gltf-model-2', {
     // Find the mesh object
     const mesh = this.getMesh(this.model);
 
-    // Set the object refrences
+    // Set the object references
     el.setObject3D('mesh', mesh);
-    el.setObject3D('animRoot', this.model);
+    el.setObject3D('armature', this.model);
     // Emit load finished
     el.emit('model-loaded', { format: 'gltf', model: this.model });
   },

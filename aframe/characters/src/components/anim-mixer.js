@@ -77,14 +77,14 @@ AFRAME.registerComponent('anim-mixer', {
   // Update the Mixer with a new Root Object
   updateMixer() {
     const { clipName } = this.data;
-    const animRoot = this.el.getObject3D('animRoot');
+    const armature = this.el.getObject3D('armature');
     const mesh = this.el.getObject3D('mesh');
     // Bail if we are missing anything.
-    if (!animRoot || !clipName || clipName === '') { return; }
-    const { animations } = animRoot;
+    if (!armature || !clipName || clipName === '') { return; }
+    const { animations } = armature;
 
-    // Update the mixer to use the new root object.
-    this.mixer = new THREE.AnimationMixer(animRoot);
+    // Create the mixer to use the new armature.
+    this.mixer = new THREE.AnimationMixer(armature);
 
     // Tell the mesh to allow animations.
     mesh.material.skinning = true;
