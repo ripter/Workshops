@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./index.css"></link>
+  <script src="./libs/aframe-v0.9.2.min.js"></script>
+  <!-- <script src="./libs/FBXLoader.js"></script> -->
+  <script src="./bundle.js"></script>
+  <title>PepsiCo Vending Machine Demo A-FRAME v0.9.2</title>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <!-- <a-asset-item id="model" src="./assets/models/test.glb"></a-asset-item>
+      <img id="skinA" src="./assets/skins/fantasyFemaleA.png"></img>
+      <img id="skinB" src="./assets/skins/fantasyFemaleB.png"></img>
+      <img id="skinC" src="./assets/skins/casualFemaleA.png"></img>
+      <img id="skinD" src="./assets/skins/casualFemaleB.png"></img> -->
+      <img id="textureGrass" src="./assets/skins/Fabric_10.jpg"></img>
+    </a-assets>
+
+
+    <!-- <a-entity id="elm"
+      position="0 0 -5"
+      gltf-model-2="#model"
+      material="src: #skinA"
+      shadow
+      ></a-entity> -->
+
+
+
+
+
+    <a-plane rotation="-90 0 0" width="150" height="150"
+      color="#7BC8A4" src="#textureGrass" normalMap="#textureGrass"
+      shadow></a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+</body>
+</html>
