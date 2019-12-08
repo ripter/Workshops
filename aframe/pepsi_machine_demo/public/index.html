@@ -15,6 +15,7 @@
     <a-assets>
       <a-asset-item id="model" src="./assets/models/machine.glb"></a-asset-item>
       <a-asset-item id="modelButton" src="./assets/models/machine_button.glb"></a-asset-item>
+      <img id="skinMax" src="./assets/skins/pepsi_max.png"></img>
       <img id="textureGrass" src="./assets/skins/Fabric_10.jpg"></img>
     </a-assets>
 
@@ -25,10 +26,50 @@
         gltf-model-2="#model"
         ></a-entity>
 
+        <!--
+          Create the pressable buttons that will dispense a refreshing Pepsi
+        -->
         <a-entity id="elmButton"
-        position="-0.70407 2.67485 -4.578"
+        position="-0.70407 2.67485 -4.0848"
         gltf-model-2="#modelButton"
         ></a-entity>
+        <a-entity
+        position="-0.36952 2.67485 -4.0848"
+        gltf-model-2="#modelButton"
+        ></a-entity>
+
+        <a-entity
+        position="0.400 2.67485 -4.0848"
+        gltf-model-2="#modelButton"
+        ></a-entity>
+        <a-entity
+        position="0.735 2.67485 -4.0848"
+        gltf-model-2="#modelButton"
+        ></a-entity>
+
+
+        <a-entity id="elmButton"
+        position="-0.70407 2.22 -4.0848"
+        gltf-model-2="#modelButton"
+        material="src: #skinMax;"
+        ></a-entity>
+        <a-entity
+        position="-0.36952 2.22 -4.0848"
+        gltf-model-2="#modelButton"
+        material="src: #skinMax;"
+        ></a-entity>
+
+        <a-entity
+        position="0.400 2.22 -4.0848"
+        gltf-model-2="#modelButton"
+        material="src: #skinMax;"
+        ></a-entity>
+        <a-entity
+        position="0.735 2.22 -4.0848"
+        gltf-model-2="#modelButton"
+        material="src: #skinMax;"
+        ></a-entity>
+
       <!--
       material="src: #skinA"
       anim-mixer="clipName: Push.001"
@@ -37,6 +78,8 @@
       </a-entity>
 
 
+
+    <a-entity camera look-controls wasd-controls="fly: true;" position="0 1.6 0"></a-entity>
 
     <a-plane rotation="-90 0 0" width="150" height="150"
       color="#7BC8A4" src="#textureGrass" normalMap="#textureGrass"
