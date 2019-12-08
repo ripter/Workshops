@@ -13,23 +13,28 @@
 <body>
   <a-scene>
     <a-assets>
-      <!-- <a-asset-item id="model" src="./assets/models/test.glb"></a-asset-item>
-      <img id="skinA" src="./assets/skins/fantasyFemaleA.png"></img>
-      <img id="skinB" src="./assets/skins/fantasyFemaleB.png"></img>
-      <img id="skinC" src="./assets/skins/casualFemaleA.png"></img>
-      <img id="skinD" src="./assets/skins/casualFemaleB.png"></img> -->
+      <a-asset-item id="model" src="./assets/models/machine.glb"></a-asset-item>
+      <a-asset-item id="modelButton" src="./assets/models/machine_button.glb"></a-asset-item>
       <img id="textureGrass" src="./assets/skins/Fabric_10.jpg"></img>
     </a-assets>
 
 
-    <!-- <a-entity id="elm"
-      position="0 0 -5"
-      gltf-model-2="#model"
+    <a-entity class="vending-mahcine">
+      <a-entity id="elm"
+        position="0 0 -5"
+        gltf-model-2="#model"
+        ></a-entity>
+
+        <a-entity id="elmButton"
+        position="-0.70407 2.67485 -4.578"
+        gltf-model-2="#modelButton"
+        ></a-entity>
+      <!--
       material="src: #skinA"
+      anim-mixer="clipName: Push.001"
       shadow
-      ></a-entity> -->
-
-
+      -->
+      </a-entity>
 
 
 
