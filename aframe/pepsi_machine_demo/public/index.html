@@ -31,79 +31,102 @@
           Create the pressable buttons that will dispense a refreshing Pepsi
         -->
         <a-entity id="elmButton"
+        class="clickable"
         position="-0.70407 2.67485 -4.0848"
         gltf-model-2="#modelButton"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="-0.36952 2.67485 -4.0848"
         gltf-model-2="#modelButton"
+        anim-button-click
         ></a-entity>
 
         <a-entity
+        class="clickable"
         position="0.400 2.67485 -4.0848"
         gltf-model-2="#modelButton"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="0.735 2.67485 -4.0848"
         gltf-model-2="#modelButton"
+        anim-button-click
         ></a-entity>
 
 
-        <a-entity id="elmButton"
+        <a-entity
+        class="clickable"
         position="-0.70407 2.22 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinMax;"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="-0.36952 2.22 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinMax;"
+        anim-button-click
         ></a-entity>
 
         <a-entity
+        class="clickable"
         position="0.400 2.22 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinMax;"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="0.735 2.22 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinMax;"
+        anim-button-click
         ></a-entity>
 
         <a-entity
+        class="clickable"
         position="-0.70407 1.765 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinDiet;"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="-0.36952 1.765 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinDiet;"
+        anim-button-click
         ></a-entity>
 
         <a-entity
+        class="clickable"
         position="0.400 1.765 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinDiet;"
+        anim-button-click
         ></a-entity>
         <a-entity
+        class="clickable"
         position="0.735 1.765 -4.0848"
         gltf-model-2="#modelButton"
         material="src: #skinDiet;"
+        anim-button-click
         ></a-entity>
-
-
-      <!--
-      material="src: #skinA"
-      anim-mixer="clipName: Push.001"
-      shadow
-      -->
       </a-entity>
 
 
 
-    <a-entity camera look-controls wasd-controls="fly: true;" position="0 1.6 0"></a-entity>
+    <a-entity camera look-controls wasd-controls="fly: true;" position="0 1.6 0">
+      <a-entity cursor="rayOrigin: mouse;"
+            raycaster="objects: .clickable"
+            position="0 0 -1"
+            >
+      </a-entity>
+    </a-entity>
 
     <a-plane rotation="-90 0 0" width="150" height="150"
       color="#7BC8A4" src="#textureGrass" normalMap="#textureGrass"

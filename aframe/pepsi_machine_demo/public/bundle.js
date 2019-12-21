@@ -86,6 +86,17 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/components/anim-button-click.js":
+/*!*********************************************!*\
+  !*** ./src/components/anim-button-click.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("const { THREE } = AFRAME;\n\nAFRAME.registerComponent('anim-button-click', {\n  // schema: {\n  // },\n\n  init() {\n    const source = new THREE.Vector3();\n    this.el.object3D.getWorldPosition(source);\n    const dest = new THREE.Vector3(source.x, source.y, source.z - 0.10);\n    // set the animation component to move the button back a little when clicked.\n    this.el.setAttribute('animation',\n      `property: position; from: ${source.x} ${source.y} ${source.z};  to: ${dest.x} ${dest.y} ${dest.z}; dur: 500; dir: alternate; easing: linear; startEvents: click; loop: 1;`);\n  },\n\n});\n\n\n//# sourceURL=webpack:///./src/components/anim-button-click.js?");
+
+/***/ }),
+
 /***/ "./src/components/anim-mixer.js":
 /*!**************************************!*\
   !*** ./src/components/anim-mixer.js ***!
@@ -116,7 +127,7 @@ eval("/**\n * Patched version of gltf-model that sets 'mesh' to the SkinnedMesh 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/gltf-model-2 */ \"./src/components/gltf-model-2.js\");\n/* harmony import */ var _components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _components_anim_mixer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/anim-mixer */ \"./src/components/anim-mixer.js\");\n/* harmony import */ var _components_anim_mixer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_anim_mixer__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\nconsole.log('Loaded and Ready');\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/gltf-model-2 */ \"./src/components/gltf-model-2.js\");\n/* harmony import */ var _components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_components_gltf_model_2__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _components_anim_mixer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/anim-mixer */ \"./src/components/anim-mixer.js\");\n/* harmony import */ var _components_anim_mixer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_components_anim_mixer__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _components_anim_button_click__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/anim-button-click */ \"./src/components/anim-button-click.js\");\n/* harmony import */ var _components_anim_button_click__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_components_anim_button_click__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\n\nconsole.log('Loaded and Ready');\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 
