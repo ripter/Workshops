@@ -10,15 +10,15 @@
   "author": "Chris Richards",
   "license": "ISC",
   "dependencies": {
-    "lighterhtml": "^2.0.7",
-    "webpack": "^4.41.2"
+    "lighterhtml": "^2.0.8",
+    "webpack": "^4.41.4"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.10.1"
   }
 }
