@@ -27,8 +27,13 @@ AFRAME.registerComponent('anim-mixer', {
    *
    * @param {object} prevData - Previous attributes of the component.
    */
-  update() {
-    // console.log('animation-control.update', this.data, oldData);
+  update(prevData) {
+    const { clipName } = this.data;
+
+    if (clipName && clipName !== '' && clipName !== prevData.clipName) {
+      console.log('animation-control.update', this.data, prevData);
+      this.playClip();
+    }
   },
 
   /**
@@ -91,8 +96,29 @@ AFRAME.registerComponent('anim-mixer', {
     mesh.material.needsUpdate = true;
 
     // get and play the named action
-    const clip = THREE.AnimationClip.findByName(animations, clipName);
+    this.playClip();
+  },
+
+  playClip() {
+    const { clipName } = this.data;
+    const armature = this.el.getObject3D('armature');
+    // Bail if we are missing anything.
+    if (!armature || !clipName || clipName === '') { return; }
+    const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
+    const prevAction = this.action;
+
+    // Set the new action
     this.action = this.mixer.clipAction(clip);
+
+    console.group('playClip');
+    console.log('clipName', clipName);
+    console.log('action', this.action);
+    console.groupEnd();
+
+    if (prevAction) {
+      prevAction.stop();
+    }
+
     this.action.play();
   },
 });
