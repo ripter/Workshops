@@ -14,8 +14,7 @@
   <a-scene>
     <a-assets>
       <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
-      <a-asset-item id="model2" src="./assets/farmerFemale.glb"></a-asset-item>
-      <a-asset-item id="model" src="./assets/test.glb"></a-asset-item>
+      <a-asset-item id="model" src="./assets/farmerFemale.glb"></a-asset-item>
       <img id="textureGrass" src="./assets/skins/Fabric_10.jpg"></img>
     </a-assets>
 
@@ -23,6 +22,7 @@
     <a-entity id="elm"
       position="0 0 -5"
       gltf-model-2="#model"
+      anim-mixer="clipName: Holding.Idle"
       ></a-entity>
 
 
