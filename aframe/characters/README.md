@@ -5,6 +5,19 @@ Models from [Kenney](https://kenney.itch.io/kenney-character-assets).
 
 ![Final Gif](./blog/imgs/anim_text_working.gif)
 
+# How it works
+
+Use `gltf-model-2` instead of the default `gltf-model`. The updated version sets the `mesh` and `armature` Object3Ds.
+
+Use `anim-mixer` to play animations loaded into the `armature.animations` array.
+
+```
+<a-entity id="elmModel"
+  gltf-model-2="#model"
+  anim-mixer="clipName: Punch"
+  >
+</a-entity>
+```
 
 
 ## TL;DR How to Start
@@ -33,19 +46,6 @@ $ make lint
 * [NodeJS](https://nodejs.org/en/)
 
 
-# How it works
-
-Use `gltf-model-2` instead of the default `gltf-model`. The updated version sets the `mesh` and `armature` Object3Ds.
-
-Use `anim-mixer` to play animations loaded into the `armature.animations` array.
-
-```
-<a-entity id="elmModel"
-  gltf-model-2="#model"
-  anim-mixer="clipName: Punch"
-  >
-</a-entity>
-```
 
 # Progress
 
