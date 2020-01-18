@@ -31,7 +31,6 @@ AFRAME.registerComponent('anim-mixer', {
     const { clipName } = this.data;
 
     if (clipName && clipName !== '' && clipName !== prevData.clipName) {
-      console.log('animation-control.update', this.data, prevData);
       this.playClip();
     }
   },
@@ -86,7 +85,6 @@ AFRAME.registerComponent('anim-mixer', {
     const mesh = this.el.getObject3D('mesh');
     // Bail if we are missing anything.
     if (!armature || !clipName || clipName === '') { return; }
-    const { animations } = armature;
 
     // Create the mixer to use the new armature.
     this.mixer = new THREE.AnimationMixer(armature);
@@ -110,15 +108,9 @@ AFRAME.registerComponent('anim-mixer', {
     // Set the new action
     this.action = this.mixer.clipAction(clip);
 
-    console.group('playClip');
-    console.log('clipName', clipName);
-    console.log('action', this.action);
-    console.groupEnd();
-
     if (prevAction) {
       prevAction.stop();
     }
-
     this.action.play();
   },
 });
