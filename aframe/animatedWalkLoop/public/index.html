@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./index.css"></link>
+  <script src="./libs/aframe-v1.0.3.min.js"></script>
+  <script src="./bundle.js"></script>
+  <title>Animated GLTF models. [A-FRAME 1.0.3]</title>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
+      <!-- <a-asset-item id="model" src="./assets/models/alienMedium.gltf"></a-asset-item> -->
+      <img id="textureGrass" src="./assets/Fabric_10.jpg"></img>
+    </a-assets>
+
+
+    <!-- <a-entity class="pedestal" position="0 0 -5">
+      <a-entity
+        gltf-model-2="#model"
+        material="src: #skinB"
+        anim-mixer="clipName: Idle;"
+        >
+      </a-entity>
+    </a-entity> -->
+
+    <a-plane rotation="-90 0 0" width="150" height="150"
+      color="#7BC8A4" src="#textureGrass"
+      >
+    </a-plane>
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+</body>
+</html>
