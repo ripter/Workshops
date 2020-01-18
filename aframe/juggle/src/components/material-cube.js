@@ -4,12 +4,12 @@
  */
 AFRAME.registerComponent('material-cube', {
   schema: {
-    top: {type: 'map'},
-    bottom: {type: 'map'},
-    front: {type: 'map'},
-    back: {type: 'map'},
-    left: {type: 'map'},
-    right: {type: 'map'},
+    top: { type: 'map' },
+    bottom: { type: 'map' },
+    front: { type: 'map' },
+    back: { type: 'map' },
+    left: { type: 'map' },
+    right: { type: 'map' },
   },
 
   init() {
@@ -20,7 +20,9 @@ AFRAME.registerComponent('material-cube', {
 
   loadMaterial() {
     const { el, system } = this;
-    const { top, bottom, front, back, left, right } = this.data;
+    const {
+      top, bottom, front, back, left, right,
+    } = this.data;
     const mesh = el.getObject3D('mesh');
     if (!mesh) { throw new Error('No Mesh!'); }
 
@@ -33,7 +35,7 @@ AFRAME.registerComponent('material-cube', {
       loadTexture(system, front),
       loadTexture(system, back),
     ]).then((textures) => {
-      for (let i=0; i < textures.length; i++) {
+      for (let i = 0; i < textures.length; i++) {
         mesh.material[i].map = textures[i];
       }
     }).catch((err) => {

@@ -1,4 +1,4 @@
 
 export function fmtNumber(number) {
-  return '' + ((0|number*100)/100);
+  return `${(0 | number * 100) / 100}`;
 }

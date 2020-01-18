@@ -1,12 +1,12 @@
 const KEYCODE_TO_CODE = {
-  '38': 'ArrowUp',
-  '37': 'ArrowLeft',
-  '40': 'ArrowDown',
-  '39': 'ArrowRight',
-  '87': 'KeyW',
-  '65': 'KeyA',
-  '83': 'KeyS',
-  '68': 'KeyD',
+  38: 'ArrowUp',
+  37: 'ArrowLeft',
+  40: 'ArrowDown',
+  39: 'ArrowRight',
+  87: 'KeyW',
+  65: 'KeyA',
+  83: 'KeyS',
+  68: 'KeyD',
 };
 const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;
@@ -17,15 +17,15 @@ const KEYS = [
 
 AFRAME.registerComponent('desktop-movement', {
   schema: {
-    acceleration: {default: 65},
-    adAxis: {default: 'x', oneOf: ['x', 'y', 'z']},
-    adEnabled: {default: true},
-    adInverted: {default: false},
-    enabled: {default: true},
-    fly: {default: false},
-    wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
-    wsEnabled: {default: true},
-    wsInverted: {default: false},
+    acceleration: { default: 65 },
+    adAxis: { default: 'x', oneOf: ['x', 'y', 'z'] },
+    adEnabled: { default: true },
+    adInverted: { default: false },
+    enabled: { default: true },
+    fly: { default: false },
+    wsAxis: { default: 'z', oneOf: ['x', 'y', 'z'] },
+    wsEnabled: { default: true },
+    wsInverted: { default: false },
   },
 
   init() {
@@ -50,14 +50,14 @@ AFRAME.registerComponent('desktop-movement', {
 
   tick(time, delta) {
     // console.log('component.tick');
-    var data = this.data;
-    var velocity = this.velocity;
+    const { data } = this;
+    const { velocity } = this;
 
-    if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
-      isEmptyObject(this.keys)) { return; }
+    if (!velocity[data.adAxis] && !velocity[data.wsAxis]
+      && isEmptyObject(this.keys)) { return; }
 
     // Update velocity.
-    delta = delta / 1000;
+    delta /= 1000;
     this.updateVelocity(delta);
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis]) { return; }
@@ -81,14 +81,14 @@ AFRAME.registerComponent('desktop-movement', {
   },
 
   updateVelocity(delta) {
-    var acceleration;
-    var adAxis;
-    var adSign;
-    var data = this.data;
-    var keys = this.keys;
-    var velocity = this.velocity;
-    var wsAxis;
-    var wsSign;
+    let acceleration;
+    let adAxis;
+    let adSign;
+    const { data } = this;
+    const { keys } = this;
+    const { velocity } = this;
+    let wsAxis;
+    let wsSign;
 
     adAxis = data.adAxis;
     wsAxis = data.wsAxis;
@@ -101,7 +101,7 @@ AFRAME.registerComponent('desktop-movement', {
     }
 
     // https://gamedev.stackexchange.com/questions/151383/frame-rate-independant-movement-with-acceleration
-    var scaledEasing = Math.pow(1 / this.easing, delta * 60);
+    const scaledEasing = Math.pow(1 / this.easing, delta * 60);
     // Velocity Easing.
     if (velocity[adAxis] !== 0) {
       velocity[adAxis] -= velocity[adAxis] * scaledEasing;
@@ -131,13 +131,13 @@ AFRAME.registerComponent('desktop-movement', {
   },
 
   getMovementVector: (function () {
-    var directionVector = new THREE.Vector3(0, 0, 0);
-    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    const directionVector = new THREE.Vector3(0, 0, 0);
+    const rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
     return function (delta) {
-      var rotation = this.el.getAttribute('rotation');
-      var velocity = this.velocity;
-      var xRotation;
+      const rotation = this.el.getAttribute('rotation');
+      const { velocity } = this;
+      let xRotation;
 
       directionVector.copy(velocity);
       directionVector.multiplyScalar(delta);
@@ -152,7 +152,7 @@ AFRAME.registerComponent('desktop-movement', {
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
-  })(),
+  }()),
 
   attachVisibilityEventListeners() {
     window.addEventListener('blur', this.onBlur);
@@ -187,27 +187,26 @@ AFRAME.registerComponent('desktop-movement', {
   onVisibilityChange() {
     if (document.hidden) {
       this.onBlur();
-    }
-    else {
+    } else {
       this.onFocus();
     }
   },
 
   onKeyDown(event) {
-    var code;
+    let code;
     code = event.code || KEYCODE_TO_CODE[event.keyCode];
     if (KEYS.indexOf(code) !== -1) { this.keys[code] = true; }
   },
 
   onKeyUp(event) {
-    var code;
+    let code;
     code = event.code || KEYCODE_TO_CODE[event.keyCode];
     delete this.keys[code];
   },
 });
 
-function isEmptyObject (obj) {
+function isEmptyObject(obj) {
   // eslint-disable-next-line guard-for-in
-  for (let key in obj) { return false; }
+  for (const key in obj) { return false; }
   return true;
 }

@@ -9,7 +9,7 @@ AFRAME.registerSystem('interaction', {
     this.hand = { left: null, right: null };
   },
 
-  tick: (function() {
+  tick: (function () {
     const worldPositionEntity = new THREE.Vector3();
     const worldPositionLeftHand = new THREE.Vector3();
     const worldPositionRightHand = new THREE.Vector3();
@@ -62,13 +62,13 @@ AFRAME.registerSystem('interaction', {
         }
       });
     };
-  })(),
+  }()),
 
   getClosestEntity(handType = 'left') {
     const hand = handType === 'left' ? this.hand.left : this.hand.right;
     let closestDistance = Infinity;
     let closestEntity = null;
-    //Loop over all the interactAbles and return the one closest to the hand.
+    // Loop over all the interactAbles and return the one closest to the hand.
     this.interactAbles.forEach((distanceInfo, entity) => {
       // Skip entities not touching a hand.
       if (!distanceInfo.isTouching) { return; }
@@ -112,8 +112,7 @@ AFRAME.registerSystem('interaction', {
   addHand(entity, hand = 'left') {
     if (hand === 'left') {
       this.hand.left = entity;
-    }
-    else if (hand === 'right') {
+    } else if (hand === 'right') {
       this.hand.right = entity;
     }
   },
@@ -125,8 +124,7 @@ AFRAME.registerSystem('interaction', {
   removeHand(entity, hand = 'left') {
     if (hand === 'left') {
       this.hand.left = null;
-    }
-    else if (hand === 'right') {
+    } else if (hand === 'right') {
       this.hand.right = null;
     }
   },

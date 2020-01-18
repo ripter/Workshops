@@ -1,22 +1,22 @@
-import { fmtNumber } from '../util/fmtNumber.js';
+import { fmtNumber } from '../util/fmtNumber';
 
 const CLAMP_VELOCITY = 0.00001;
 const MAX_DELTA = 0.2;
 
 AFRAME.registerComponent('axis-controls', {
   schema: {
-    acceleration: {default: 65},
-    enabled: {default: true},
+    acceleration: { default: 65 },
+    enabled: { default: true },
   },
 
   init() {
-    const { el/*, sceneEl*/ } = this;
+    const { el/* , sceneEl */ } = this;
 
     this.player = document.querySelector('#player').object3D;
     this.camera = document.querySelector('#player [camera]').object3D;
     this.velocity = new THREE.Vector3();
     this.easing = 1.1;
-    this.axis = [0,0];
+    this.axis = [0, 0];
     // this.systemMovement = sceneEl.systems.movement;
     //
     // console.log('this.systemMovement', this.systemMovement);
@@ -27,9 +27,8 @@ AFRAME.registerComponent('axis-controls', {
 
       if (pressed) {
         this.axis = axis;
-      }
-      else {
-        this.axis = [0,0];
+      } else {
+        this.axis = [0, 0];
       }
     });
   },
@@ -39,7 +38,7 @@ AFRAME.registerComponent('axis-controls', {
     const { player } = this;
 
     // Update velocity.
-    delta = delta / 1000;
+    delta /= 1000;
     this.updateVelocity(delta);
 
     if (!this.velocity.x && !this.velocity.z) { return; }
@@ -51,7 +50,9 @@ AFRAME.registerComponent('axis-controls', {
    * Updates this.velocity based on axis state.
    */
   updateVelocity(delta) {
-    const { axis, data, easing, velocity } = this;
+    const {
+      axis, data, easing, velocity,
+    } = this;
     const { acceleration } = data;
 
     // If FPS too low, reset velocity.
@@ -79,13 +80,8 @@ AFRAME.registerComponent('axis-controls', {
 
     // Find the strongest direction, and only accelerate in that direction.
     if (Math.abs(axis[1]) >= Math.abs(axis[0])) {
-      if (axis[1] < 0) { velocity.z -= acceleration * delta; }
-      else if (axis[1] > 0) { velocity.z += acceleration * delta; }
-    }
-    else {
-      if (axis[0] < 0) { velocity.x -= acceleration * delta; }
-      else if (axis[0] > 0) { velocity.x += acceleration * delta; }
-    }
+      if (axis[1] < 0) { velocity.z -= acceleration * delta; } else if (axis[1] > 0) { velocity.z += acceleration * delta; }
+    } else if (axis[0] < 0) { velocity.x -= acceleration * delta; } else if (axis[0] > 0) { velocity.x += acceleration * delta; }
   },
 
   /**
@@ -110,5 +106,5 @@ AFRAME.registerComponent('axis-controls', {
       directionVector.applyQuaternion(quaternion);
       return directionVector;
     };
-  })(),
+  }()),
 });

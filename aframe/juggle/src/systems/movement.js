@@ -17,11 +17,11 @@ AFRAME.registerSystem('movement', {
 
   refreshSolidObjects() {
     this.needsRefresh = false;
-    this.solidObjects = Array.from(document.querySelectorAll('.solid')).map(el => el.object3D);
+    this.solidObjects = Array.from(document.querySelectorAll('.solid')).map((el) => el.object3D);
   },
 
 
-  tick(/*time, delta*/) {
+  tick(/* time, delta */) {
     const { agents, direction, needsRefresh } = this;
 
     if (needsRefresh) {
@@ -35,13 +35,8 @@ AFRAME.registerSystem('movement', {
       direction.copy(movementVector).normalize();
 
       if (this.checkCollision(el.object3D.position, direction)) {
-        console.log('intersections', this.intersections);
+        // console.log('intersections', this.intersections);
       }
-
-      // direction.multiplyScalar(10);
-      // console.log('direction', direction);
-      // el.setAttribute('line', `color:red;start:${el.object3D.position.x},${el.object3D.position.y},${el.object3D.position.y}; end:${direction.x},${direction.y},${direction.z}`);
-      // el.setAttribute('line', `color:red;start:${el.object3D.position.x},${el.object3D.position.y},${el.object3D.position.z}; end:${el.object3D.position.x},${el.object3D.position.y},${el.object3D.position.z -3}`);
 
       // console.log('movementVector', movementVector, movementVector.clone().normalize());
       // Add the movementVector each tick if it exists.

@@ -10,11 +10,11 @@ export function getRandomCubeMaterials(assetType = 'birch') {
   const imgSides = Array.from(document.querySelectorAll(`.img-${assetType}-side`)).sort(() => 0.5 - Math.random());
 
   return {
-    top: '#' + imgTop.id,
-    bottom: '#' + imgBottom.id,
-    front: '#' + imgSides[0].id,
-    back: '#' + imgSides[1].id,
-    left: '#' + imgSides[2].id,
-    right: '#' + imgSides[3].id,
+    top: `#${imgTop.id}`,
+    bottom: `#${imgBottom.id}`,
+    front: `#${imgSides[0].id}`,
+    back: `#${imgSides[1].id}`,
+    left: `#${imgSides[2].id}`,
+    right: `#${imgSides[3].id}`,
   };
 }

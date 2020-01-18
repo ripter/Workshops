@@ -6,19 +6,19 @@ const MAX_DELTA = 0.2;
 AFRAME.registerComponent('axis-movement', {
   // dependencies: ['tracked-controls'],
   schema: {
-    acceleration: {default: 65},
-    enabled: {default: true},
+    acceleration: { default: 65 },
+    enabled: { default: true },
   },
 
   init() {
-    const { el/*, sceneEl*/ } = this;
+    const { el/* , sceneEl */ } = this;
 
     console.log('axis-movement init', el);
     this.player = document.querySelector('#player').object3D;
     this.camera = document.querySelector('#player [camera]').object3D;
     this.velocity = new THREE.Vector3();
     this.easing = 1.1;
-    this.axis = [0,0];
+    this.axis = [0, 0];
     // this.systemMovement = sceneEl.systems.movement;
     //
     // console.log('this.systemMovement', this.systemMovement);
@@ -65,7 +65,7 @@ AFRAME.registerComponent('axis-movement', {
     // console.log('axis', gamepadMovement);
 
     // Update velocity.
-    delta = delta / 1000;
+    delta /= 1000;
     this.updateVelocity(delta, gamepadMovement.axes);
 
     if (!this.velocity.x && !this.velocity.z) { return; }
@@ -105,13 +105,8 @@ AFRAME.registerComponent('axis-movement', {
 
     // Find the strongest direction, and only accelerate in that direction.
     if (Math.abs(axis[1]) >= Math.abs(axis[0])) {
-      if (axis[1] < 0) { velocity.z -= acceleration * delta; }
-      else if (axis[1] > 0) { velocity.z += acceleration * delta; }
-    }
-    else {
-      if (axis[0] < 0) { velocity.x -= acceleration * delta; }
-      else if (axis[0] > 0) { velocity.x += acceleration * delta; }
-    }
+      if (axis[1] < 0) { velocity.z -= acceleration * delta; } else if (axis[1] > 0) { velocity.z += acceleration * delta; }
+    } else if (axis[0] < 0) { velocity.x -= acceleration * delta; } else if (axis[0] > 0) { velocity.x += acceleration * delta; }
   },
 
   /**
@@ -136,5 +131,5 @@ AFRAME.registerComponent('axis-movement', {
       directionVector.applyQuaternion(quaternion);
       return directionVector;
     };
-  })(),
+  }()),
 });

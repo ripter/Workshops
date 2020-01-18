@@ -6,7 +6,7 @@ AFRAME.registerElement('c-cube', {
   prototype: Object.create(AFRAME.AEntity.prototype, {
     // Called when created.
     createdCallback: {
-      value: function () {
+      value() {
         this.setAttribute('geometry', 'primitive: box; width: 1; height: 1; depth: 1');
         this.setAttribute('material-cube', getRandomCubeMaterials());
         this.classList.add('clickable');

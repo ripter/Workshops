@@ -2,7 +2,7 @@
 AFRAME.registerComponent('player-hand', {
   dependencies: ['hand-controls'],
   schema: {
-    isGrip: {type: 'bool', default: false},
+    isGrip: { type: 'bool', default: false },
   },
 
   init() {
@@ -49,7 +49,7 @@ AFRAME.registerComponent('player-hand', {
 
   ongripdown(event) {
     const { system } = this;
-    //Question: this feels weird since we are player-hand, but it does trigger the update()
+    // Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
       isGrip: true,
     });
@@ -60,7 +60,7 @@ AFRAME.registerComponent('player-hand', {
     }
   },
   ongripup(event) {
-    //Question: this feels weird since we are player-hand, but it does trigger the update()
+    // Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
       isGrip: false,
     });
