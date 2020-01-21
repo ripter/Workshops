@@ -105,6 +105,8 @@ AFRAME.registerComponent('anim-mixer', {
     const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
     const prevAction = this.action;
 
+    if (!clip) { throw new Error(`Clip "${clipName}" was not found in the animations array.\nCheck for misspellings in the clipName, or missing animations in the model file.`);}
+
     // Set the new action
     this.action = this.mixer.clipAction(clip);
 
