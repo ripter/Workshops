@@ -14,20 +14,22 @@
     <a-assets>
       <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
       <a-asset-item id="model" src="./assets/characterMedium.glb"></a-asset-item>
+      <img id="skin" src="./assets/athleteFemaleBlue.png"></img>
       <img id="textureGrass" src="./assets/Fabric_10.jpg"></img>
     </a-assets>
 
 
     <a-entity class="pedestal" position="0 0 -5">
       <a-entity
-        wasd-controls=""
-        gltf-model-2="#model"
+        user-controls=""
         anim-mixer="clipName: Walk;"
+        gltf-model-2="#model"
+        material="src: #skin"
+        wasd-controls=""
         >
       </a-entity>
     </a-entity>
 
-    <!-- material="src: #skinB" -->
 
     <a-entity id="rig-camera" position="0 1.8 0">
       <a-camera id="camera" wasd-controls-enabled="false"></a-camera>
