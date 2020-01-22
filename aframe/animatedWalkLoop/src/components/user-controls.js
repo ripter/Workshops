@@ -2,9 +2,9 @@
  * User Controls for the demo
  */
 AFRAME.registerComponent('user-controls', {
-  // schema: {
-    // clipName: { default: 'Idle' },
-  // },
+  schema: {
+    speed: { default: 0.05 },
+  },
 
   /**
    * Init handler. Similar to attachedCallback.
@@ -12,6 +12,8 @@ AFRAME.registerComponent('user-controls', {
    * Components can use this to set initial state.
    */
   init() {
+    this.velocity = {x: 0, z: 0};
+    this.rotate  = {y: 0};
   },
 
   /**
@@ -22,7 +24,7 @@ AFRAME.registerComponent('user-controls', {
    * @param {object} prevData - Previous attributes of the component.
    */
   update(prevData) {
-    console.log('user-controls', {...this.data});
+    console.log('user-controls.update', {...this.data});
   },
 
   /**
@@ -34,6 +36,23 @@ AFRAME.registerComponent('user-controls', {
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick(time, timeDelta) {
+    // Move the model based on velocity.
+    const { el, velocity, rotate } = this;
+
+    // Match rotation
+    el.object3D.rotateY(rotate.y);
+
+    // use translate to move the object along it's local axis
+    el.object3D.translateX(velocity.x);
+    el.object3D.translateZ(velocity.z);
+
+    // if we have velocity, play the walking animation, else use the Idle
+    if (velocity.x === 0 && velocity.z === 0) {
+      el.setAttribute('anim-mixer', 'clipName: Idle;');
+    }
+    else {
+      el.setAttribute('anim-mixer', 'clipName: Walk;');
+    }
   },
 
   /**
@@ -41,6 +60,7 @@ AFRAME.registerComponent('user-controls', {
    */
   play() {
     window.addEventListener('keyup', this);
+    window.addEventListener('keydown', this);
   },
 
   /**
@@ -48,6 +68,7 @@ AFRAME.registerComponent('user-controls', {
    */
    pause() {
     window.removeEventListener('keyup', this);
+    window.removeEventListener('keydown', this);
    },
 
 
@@ -69,7 +90,10 @@ AFRAME.registerComponent('user-controls', {
   handleEvent(event) {
     switch (event.type) {
       case 'keyup':
-        this.handleKey(event.code);
+        this.handleKey(event.code, true);
+        break;
+      case 'keydown':
+        this.handleKey(event.code, false);
         break;
       default:
         console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
@@ -78,46 +102,39 @@ AFRAME.registerComponent('user-controls', {
 
 
   /**
+   * Converts Keys into state velocity/rotate values to use during tick.
    * @param {string} keyCode - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
+   * @param {bool} isKeyUp - true if called by keyup event.
   */
-  handleKey(keyCode) {
+  handleKey(keyCode, isKeyUp) {
+    const { speed } = this.data;
+
     switch (keyCode) {
+      case 'ArrowUp':
       case 'KeyW':
-        this.moveBackward();
+        this.velocity.z = isKeyUp ? 0 : speed;
         break;
+      case 'ArrowDown':
       case 'KeyS':
-        this.moveForward();
+        this.velocity.z = isKeyUp ? 0 : -speed;
         break;
+      case 'ArrowLeft':
       case 'KeyA':
-        this.moveLeft();
+        this.velocity.x = isKeyUp ? 0 : -speed;
         break;
+      case 'ArrowRight':
       case 'KeyD':
-        this.moveRight();
+        this.velocity.x = isKeyUp ? 0 : speed;
+        break;
+      case 'KeyQ':
+        this.rotate.y = isKeyUp ? 0 : speed;
+        break;
+      case 'KeyE':
+        this.rotate.y = isKeyUp ? 0 : -speed;
         break;
       default:
         // ignore other keys.
     }
   },
 
-  moveLeft() {
-    const { el } = this;
-    el.object3D.translateX(-5);
-    el.setAttribute('anim-mixer', 'clipName: Walk;');
-  },
-
-  moveRight() {
-    const { el } = this;
-    el.object3D.translateX(5);
-    el.setAttribute('anim-mixer', 'clipName: Idle;');
-  },
-
-  moveForward() {
-    const { el } = this;
-    el.setAttribute('anim-mixer', 'clipName: Walk;');
-  },
-
-  moveBackward() {
-    const { el } = this;
-    el.setAttribute('anim-mixer', 'clipName: Idle;');
-  },
 });
