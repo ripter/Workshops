@@ -12,19 +12,8 @@ AFRAME.registerComponent('user-controls', {
    * Components can use this to set initial state.
    */
   init() {
-    this.velocity = {x: 0, z: 0};
-    this.rotate  = {y: 0};
-  },
-
-  /**
-   * Update handler. Similar to attributeChangedCallback.
-   * Called whenever component's data changes.
-   * Also called on component initialization when the component receives initial data.
-   *
-   * @param {object} prevData - Previous attributes of the component.
-   */
-  update(prevData) {
-    console.log('user-controls.update', {...this.data});
+    this.velocity = { x: 0, z: 0 };
+    this.rotate = { y: 0 };
   },
 
   /**
@@ -35,7 +24,7 @@ AFRAME.registerComponent('user-controls', {
    * @param {number} time - Scene tick time.
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
-  tick(time, timeDelta) {
+  tick() {
     // Move the model based on velocity.
     const { el, velocity, rotate } = this;
 
@@ -49,8 +38,7 @@ AFRAME.registerComponent('user-controls', {
     // if we have velocity, play the walking animation, else use the Idle
     if (velocity.x === 0 && velocity.z === 0) {
       el.setAttribute('anim-mixer', 'clipName: Idle;');
-    }
-    else {
+    } else {
       el.setAttribute('anim-mixer', 'clipName: Walk;');
     }
   },
@@ -66,20 +54,10 @@ AFRAME.registerComponent('user-controls', {
   /**
    * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
    */
-   pause() {
+  pause() {
     window.removeEventListener('keyup', this);
     window.removeEventListener('keydown', this);
-   },
-
-
-  /**
-   * Remove handler. Similar to detachedCallback.
-   * Called whenever component is removed from the entity (i.e., removeAttribute).
-   * Components can use this to reset behavior on the entity.
-   */
-  remove() {
   },
-
 
   /**
    * DOM Event handler.
@@ -118,17 +96,17 @@ AFRAME.registerComponent('user-controls', {
       case 'KeyS':
         this.velocity.z = isKeyUp ? 0 : -speed;
         break;
-      case 'ArrowLeft':
       case 'KeyA':
         this.velocity.x = isKeyUp ? 0 : -speed;
         break;
-      case 'ArrowRight':
       case 'KeyD':
         this.velocity.x = isKeyUp ? 0 : speed;
         break;
+      case 'ArrowLeft':
       case 'KeyQ':
         this.rotate.y = isKeyUp ? 0 : speed;
         break;
+      case 'ArrowRight':
       case 'KeyE':
         this.rotate.y = isKeyUp ? 0 : -speed;
         break;
