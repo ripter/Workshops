@@ -12,6 +12,13 @@ The Character Controller allows the player to control an Animated Mesh. It does 
 
 Or at least I hope it will do all those things once it is finished.
 
+
+
+## Active Goal:
+[ ] User can control two different animated models, walking forward and turning with animations.
+✅ Add new animated model
+[ ]
+
 ## ToDo:
 * [ ] Everything.
 * [ ] Transition between animations using velocity.

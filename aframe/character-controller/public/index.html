@@ -14,6 +14,7 @@
     <a-assets>
       <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
       <a-asset-item id="model" src="./assets/characterMedium.glb"></a-asset-item>
+      <a-asset-item id="ankylosaurus" src="./assets/ankylosaurus.glb"></a-asset-item>
       <img id="skin" src="./assets/athleteFemaleBlue.png"></img>
       <img id="textureGrass" src="./assets/Fabric_10.jpg"></img>
     </a-assets>
@@ -21,7 +22,6 @@
 
     <a-entity class="pedestal" position="0 0 -5">
       <a-entity id="elm"
-        user-controls=""
         anim-mixer="clipName: Idle;"
         gltf-model-2="#model"
         material="src: #skin"
@@ -29,10 +29,20 @@
       </a-entity>
     </a-entity>
 
+    <a-entity id="elmDino"
+      user-controls=""
+      gltf-model-2="#ankylosaurus"
+      anim-mixer="clipName: Idle;"
+      position="-5 0 -5"
+      >
+
+    </a-entity>
+
 
     <a-entity id="rig-camera" position="0 1.8 1">
       <a-camera id="camera" wasd-controls-enabled="false"></a-camera>
     </a-entity>
+
 
     <a-plane rotation="-90 0 0" width="150" height="150"
       color="#7BC8A4" src="#textureGrass">
