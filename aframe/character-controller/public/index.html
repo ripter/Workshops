@@ -20,19 +20,21 @@
     </a-assets>
 
 
-    <a-entity class="pedestal" position="0 0 -5">
-      <a-entity id="elm"
-        anim-mixer="clipName: Idle;"
-        gltf-model-2="#model"
-        material="src: #skin"
-        >
-      </a-entity>
+    <a-entity id="elm"
+      anim-mixer="clipName: Idle;"
+      class="clickable"
+      click-to-select
+      gltf-model-2="#model"
+      material="src: #skin"
+      position="0 0 -5"
+      >
     </a-entity>
 
     <a-entity id="elmDino"
-      user-controls=""
-      gltf-model-2="#ankylosaurus"
       anim-mixer="clipName: Idle;"
+      class="clickable"
+      click-to-select
+      gltf-model-2="#ankylosaurus"
       position="-5 0 -5"
       >
 
@@ -40,7 +42,14 @@
 
 
     <a-entity id="rig-camera" position="0 1.8 1">
-      <a-camera id="camera" wasd-controls-enabled="false"></a-camera>
+      <a-camera id="camera" wasd-controls-enabled="false">
+        <a-entity
+          cursor="rayOrigin: mouse;"
+          position="0 0 -1"
+          raycaster="objects: .clickable"
+          >
+        </a-entity>
+      </a-camera>
     </a-entity>
 
 

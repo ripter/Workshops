@@ -15,9 +15,11 @@ Or at least I hope it will do all those things once it is finished.
 
 
 ## Active Goal:
-[ ] User can control two different animated models, walking forward and turning with animations.
-✅ Add new animated model
-[ ]
+* [ ] User can control two different animated models, walking forward and turning with animations.
+* ✅ Add new animated model
+* ✅ Add Click handlers on the models.
+* ✅ On click, toggle the character-controller component.
+* [ ] Use Run animation instead of the Walk. This model uses animations with different names and speeds. The Controller should support both.
 
 ## ToDo:
 * [ ] Everything.
