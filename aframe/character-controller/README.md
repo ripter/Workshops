@@ -19,6 +19,8 @@ Or at least I hope it will do all those things once it is finished.
 * ✅ Add new animated model
 * ✅ Add Click handlers on the models.
 * ✅ On click, toggle the character-controller component.
+* ✅ Refactor `user-controls` to use `key_map`.
+* ✅ Refactor `click-to-select` to place an active indicator over the selected model.
 * [ ] Use Run animation instead of the Walk. This model uses animations with different names and speeds. The Controller should support both.
 
 ## ToDo:
@@ -38,5 +40,26 @@ Or at least I hope it will do all those things once it is finished.
 
 
 ## Input System
+The `input` system listens to keyboard input and translates it into
+custom keys. [KEY_MAP](./src/consts/key_map.js) provides a mapping from
+[KeyboardEvent.code](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code)
+to a custom named key.
 
-This system listens to input from keyboard and controller. It's main job is to translate key presses from those devices into an `InputAction`. This abstracts away the actual key input and enables multiple key layouts. Components can query the input system to find active `InputAction`s.
+*Example usage:*
+```
+import { Key } from './consts/key_map';
+
+// Inside a component
+const { input } = this.el.sceneEl.systems;
+if (input.isKeyDown(Key.Forward)) {
+  // Forward key is down.
+}
+```
+
+
+## Click To Select
+The `click-to-select` component/system combo
+
+Entities with the `click-to-select` component respond to the `click` event, setting the last entity as `selected`.
+
+The selected entity will have the indicator floating above it.

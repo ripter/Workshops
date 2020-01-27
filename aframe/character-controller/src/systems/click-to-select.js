@@ -1,7 +1,12 @@
+import { getBoundingBox } from '../utils/getBoundingBox';
 /**
  * Click-to-Select allows toggling of the 'selected' entity.
  */
 AFRAME.registerSystem('click-to-select', {
+  schema: {
+    elmIndicator: { type: 'selector' },
+    offsetY: { default: 0.5 },
+  },
   /**
    * Init handler. Called during scene initialization and is only run once.
    * Systems can use this to set initial state.
@@ -15,12 +20,22 @@ AFRAME.registerSystem('click-to-select', {
    */
   select(entity) {
     const { selected } = this;
+    const { elmIndicator, offsetY } = this.data;
 
+    // Toggle the user-controls on only the selected entity
     if (selected) {
       selected.removeAttribute('user-controls');
     }
+    entity.setAttribute('user-controls', '');
 
-    this.selected = entity;
-    this.selected.setAttribute('user-controls', '');
+    // Move the indicator as a child of entity.
+    entity.object3D.add(elmIndicator.object3D);
+
+    // Position it above the new entity
+    const box = getBoundingBox(entity);
+    elmIndicator.object3D.position.y = box.y + offsetY;
+
+    // Set the entity as the new selected and return it
+    return this.selected = entity;
   },
 });
