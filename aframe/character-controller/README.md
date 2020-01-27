@@ -35,3 +35,8 @@ Or at least I hope it will do all those things once it is finished.
 * [ ] Add nav-mesh for y axis control.
 * ✅ Move based on WASD keys while playing animation.
 * ✅ Play Idle animation when not moving, and Walking when moving.
+
+
+## Input System
+
+This system listens to input from keyboard and controller. It's main job is to translate key presses from those devices into an `InputAction`. This abstracts away the actual key input and enables multiple key layouts. Components can query the input system to find active `InputAction`s.

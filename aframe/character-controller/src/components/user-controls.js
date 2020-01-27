@@ -1,3 +1,5 @@
+import { Key } from '../consts/key_map';
+
 /**
  * User Controls for the demo
  */
@@ -12,7 +14,8 @@ AFRAME.registerComponent('user-controls', {
    * Components can use this to set initial state.
    */
   init() {
-    this.velocity = { x: 0, z: 0 };
+    this.rotation = new THREE.Euler();
+    this.velocity = new THREE.Vector3();
     this.rotate = { y: 0 };
   },
 
@@ -25,12 +28,11 @@ AFRAME.registerComponent('user-controls', {
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick() {
-    // Move the model based on velocity.
-    const { el, velocity, rotate } = this;
+    const { el } = this;
+    const { velocity, rotation } = this.updateVelocityAndRotation();
 
     // Match rotation
-    el.object3D.rotateY(rotate.y);
-
+    el.object3D.rotateY(rotation.y);
     // use translate to move the object along it's local axis
     el.object3D.translateX(velocity.x);
     el.object3D.translateZ(velocity.z);
@@ -44,75 +46,28 @@ AFRAME.registerComponent('user-controls', {
   },
 
   /**
-   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  play() {
-    window.addEventListener('keyup', this);
-    window.addEventListener('keydown', this);
-  },
-
-  /**
-   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  pause() {
-    window.removeEventListener('keyup', this);
-    window.removeEventListener('keydown', this);
-  },
-
-  /**
-   * DOM Event handler.
-   * Called when a listening event is observed.
-   * @param  {Event} event the event that has been fired and needs to be processed.
-   * @return {undefined}
-   */
-  handleEvent(event) {
-    switch (event.type) {
-      case 'keyup':
-        this.handleKey(event.code, true);
-        break;
-      case 'keydown':
-        this.handleKey(event.code, false);
-        break;
-      default:
-        console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
-    }
-  },
-
-
-  /**
-   * Converts Keys into state velocity/rotate values to use during tick.
-   * @param {string} keyCode - https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
-   * @param {bool} isKeyUp - true if called by keyup event.
+   * Updates this.velocity and this.rotation based on user input.
+   * returns { velocity, rotation } for convenience
   */
-  handleKey(keyCode, isKeyUp) {
+  updateVelocityAndRotation() {
+    const { rotation, velocity } = this;
     const { speed } = this.data;
+    const { input } = this.el.sceneEl.systems;
+    const isKeyDown = input.isKeyDown.bind(input);
 
-    switch (keyCode) {
-      case 'ArrowUp':
-      case 'KeyW':
-        this.velocity.z = isKeyUp ? 0 : speed;
-        break;
-      case 'ArrowDown':
-      case 'KeyS':
-        this.velocity.z = isKeyUp ? 0 : -speed;
-        break;
-      case 'KeyA':
-        this.velocity.x = isKeyUp ? 0 : -speed;
-        break;
-      case 'KeyD':
-        this.velocity.x = isKeyUp ? 0 : speed;
-        break;
-      case 'ArrowLeft':
-      case 'KeyQ':
-        this.rotate.y = isKeyUp ? 0 : speed;
-        break;
-      case 'ArrowRight':
-      case 'KeyE':
-        this.rotate.y = isKeyUp ? 0 : -speed;
-        break;
-      default:
-        // ignore other keys.
-    }
+    // Forward, Backward is like a rocker switch or a one axis joystick.
+    if (isKeyDown(Key.Forward)) { velocity.z = speed; }
+    else if (isKeyDown(Key.Backward)) { velocity.z = -speed; }
+    else { velocity.z = 0; }
+
+    // Rocker switch style input
+    if (isKeyDown(Key.TurnLeft)) { rotation.y = speed; }
+    else if (isKeyDown(Key.TurnRight)) { rotation.y = -speed; }
+    else { rotation.y = 0; }
+
+    return {
+      velocity,
+      rotation,
+    };
   },
-
 });
