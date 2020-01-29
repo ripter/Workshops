@@ -1,10 +1,12 @@
 /**
  * Plays animations on the model.
  * Refrences 'mesh' and 'animRoot' objects.
+ * [Three.js AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer)
  */
 AFRAME.registerComponent('anim-mixer', {
   schema: {
-    clipName: { default: 'Idle' },
+    idleName: { default: 'Idle' },
+    walkName: { default: 'Walk' },
   },
 
   /**
@@ -16,7 +18,7 @@ AFRAME.registerComponent('anim-mixer', {
     this.mixer = null; // https://threejs.org/docs/index.html#api/en/animation/AnimationMixer
     this.action = null; // https://threejs.org/docs/index.html#api/en/animation/AnimationAction
 
-    // listen to changes on the refrence objects like 'mesh'
+    // Listen for add/remove of key objects mesh and armature
     this.el.addEventListener('object3dset', this);
   },
 
@@ -29,6 +31,7 @@ AFRAME.registerComponent('anim-mixer', {
    */
   update(prevData) {
     const { clipName } = this.data;
+    console.log('anim-mixer.data', this.data, 'oldData', prevData);
 
     if (clipName && clipName !== '' && clipName !== prevData.clipName) {
       this.playClip();
@@ -70,7 +73,7 @@ AFRAME.registerComponent('anim-mixer', {
   handleEvent(event) {
     switch (event.type) {
       case 'object3dset':
-        this.updateMixer();
+        this.setupMixer();
         break;
       default:
         console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
@@ -78,41 +81,72 @@ AFRAME.registerComponent('anim-mixer', {
   },
 
 
-  // Update the Mixer with a new Root Object
-  updateMixer() {
-    const { clipName } = this.data;
+  /**
+   * Attempts to setup the AnimationMixer.
+   * Bails if Mesh or Armature are missing.
+   * See more: https://threejs.org/docs/index.html#api/en/animation/AnimationMixer
+  */
+  setupMixer() {
     const armature = this.el.getObject3D('armature');
     const mesh = this.el.getObject3D('mesh');
     // Bail if we are missing anything.
-    if (!armature || !clipName || clipName === '') { return; }
+    if (!armature || !mesh) { return; }
 
     // Create the mixer to use the new armature.
     this.mixer = new THREE.AnimationMixer(armature);
-
     // Tell the mesh to allow animations.
     mesh.material.skinning = true;
     mesh.material.needsUpdate = true;
-
-    // get and play the named action
-    this.playClip();
   },
 
-  playClip() {
-    const { clipName } = this.data;
-    const armature = this.el.getObject3D('armature');
-    // Bail if we are missing anything.
-    if (!armature || !clipName || clipName === '') { return; }
-    const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
-    const prevAction = this.action;
 
+  playAction(clipName) {
+    // bail if we are already playing this clip
+    if (this.currentClipName === clipName) { return; }
+    const prevAction = this.action;
+    const armature = this.el.getObject3D('armature');
+    if (!armature) { return; }
+    const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
     if (!clip) { throw new Error(`Clip "${clipName}" was not found in the animations array.\nCheck for misspellings in the clipName, or missing animations in the model file.`); }
 
     // Set the new action
     this.action = this.mixer.clipAction(clip);
 
-    if (prevAction) {
-      prevAction.stop();
+    console.group('playAction');
+    console.log('clipName', clipName);
+    console.log('this.currentClipName', this.currentClipName);
+    console.log('clip', clip);
+    console.log('action', this.action);
+    console.groupEnd();
+
+    this.currentClipName = clipName;
+    // console.log('playAction', clipName, this.action);
+    if (prevAction && (prevAction !== this.action)) {
+      console.log('switching action to', clipName);
+      prevAction.crossFadeTo(this.action);
     }
-    this.action.play();
-  },
+    else {
+      console.log('starting to play', clipName);
+      this.action.play();
+    }
+  }
+
+  // playClip() {
+  //   const { clipName } = this.data;
+  //   const armature = this.el.getObject3D('armature');
+  //   // Bail if we are missing anything.
+  //   if (!armature || !clipName || clipName === '') { return; }
+  //   const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
+  //   const prevAction = this.action;
+  //
+  //   if (!clip) { throw new Error(`Clip "${clipName}" was not found in the animations array.\nCheck for misspellings in the clipName, or missing animations in the model file.`); }
+  //
+  //   // Set the new action
+  //   this.action = this.mixer.clipAction(clip);
+  //
+  //   if (prevAction) {
+  //     prevAction.stop();
+  //   }
+  //   this.action.play();
+  // },
 });
