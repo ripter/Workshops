@@ -1,4 +1,5 @@
 import { Key } from '../consts/key_map';
+import { readKeysAsRocker } from '../utils/readKeysAsRocker';
 
 /**
  * User Controls for the demo
@@ -62,22 +63,8 @@ AFRAME.registerComponent('user-controls', {
       const { speed } = this.data;
 
       // Create a rocker style switch with two Keys.
-      if (isKeyDown(Key.Forward)) {
-        velocity.z = speed;
-      } else if (isKeyDown(Key.Backward)) {
-        velocity.z = -speed;
-      } else {
-        velocity.z = 0;
-      }
-
-      // Create a rocker style switch with two Keys.
-      if (isKeyDown(Key.TurnLeft)) {
-        rotation.y = speed;
-      } else if (isKeyDown(Key.TurnRight)) {
-        rotation.y = -speed;
-      } else {
-        rotation.y = 0;
-      }
+      velocity.z = readKeysAsRocker(isKeyDown, Key.Forward, Key.Backward) * speed;
+      rotation.y = readKeysAsRocker(isKeyDown, Key.TurnLeft, Key.TurnRight) * speed;
 
       return {
         velocity,
