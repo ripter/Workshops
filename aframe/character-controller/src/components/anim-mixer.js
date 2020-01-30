@@ -30,12 +30,12 @@ AFRAME.registerComponent('anim-mixer', {
    * @param {object} prevData - Previous attributes of the component.
    */
   update(prevData) {
-    const { clipName } = this.data;
-    console.log('anim-mixer.data', this.data, 'oldData', prevData);
-
-    if (clipName && clipName !== '' && clipName !== prevData.clipName) {
-      this.playClip();
-    }
+    // const { clipName } = this.data;
+    // console.log('anim-mixer.data', this.data, 'oldData', prevData);
+    //
+    // if (clipName && clipName !== '' && clipName !== prevData.clipName) {
+    //   this.playClip();
+    // }
   },
 
   /**
@@ -94,6 +94,9 @@ AFRAME.registerComponent('anim-mixer', {
 
     // Create the mixer to use the new armature.
     this.mixer = new THREE.AnimationMixer(armature);
+    // Listen to events.
+    this.mixer.addEventListener('loop', this.handleEvent);
+    this.mixer.addEventListener('finished', this.handleEvent);
     // Tell the mesh to allow animations.
     mesh.material.skinning = true;
     mesh.material.needsUpdate = true;
@@ -120,14 +123,31 @@ AFRAME.registerComponent('anim-mixer', {
     console.groupEnd();
 
     this.currentClipName = clipName;
+    // this.action.play();
+    if (prevAction) {
+      prevAction.fadeOut(0.5);
+      // prevAction.reset();
+      // prevAction.clampWhenFinished = true;
+      // prevAction.stop();
+      // this.action.play();
+      // this.action.crossFadeFrom(prevAction, 0.5);
+
+      // this.action.syncWith(prevAction);
+    }
+    else {
+      // this.action.reset().play();
+      // this.action.play();
+    }
+    this.action.play();
+
     // console.log('playAction', clipName, this.action);
     if (prevAction && (prevAction !== this.action)) {
       console.log('switching action to', clipName);
-      prevAction.crossFadeTo(this.action);
+      // prevAction.crossFadeTo(this.action);
     }
     else {
       console.log('starting to play', clipName);
-      this.action.play();
+      // this.action.play();
     }
   }
 
