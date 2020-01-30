@@ -4,10 +4,10 @@
  * [Three.js AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer)
  */
 AFRAME.registerComponent('anim-mixer', {
-  schema: {
-    idleName: { default: 'Idle' },
-    walkName: { default: 'Walk' },
-  },
+  // schema: {
+  //   idleName: { default: 'Idle' },
+  //   walkName: { default: 'Walk' },
+  // },
 
   /**
    * Init handler. Similar to attachedCallback.

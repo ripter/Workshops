@@ -21,21 +21,23 @@
 
 
     <a-entity id="elm"
-      anim-mixer="idleName: Idle; walkName: Walk;"
+      anim-mixer=""
       class="clickable"
       click-to-select
       gltf-model-2="#model"
       material="src: #skin"
       position="0 0 -5"
+      user-controls="enabled: false;"
       >
     </a-entity>
 
     <a-entity id="elmDino"
-      anim-mixer="idleName: Idle; walkName: Run;"
+      anim-mixer=""
       class="clickable"
       click-to-select
       gltf-model-2="#ankylosaurus"
       position="-5 0 -5"
+      user-controls="enabled: false; clipWalk: Run;"
       >
 
     </a-entity>

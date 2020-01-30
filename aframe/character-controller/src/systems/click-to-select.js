@@ -24,9 +24,9 @@ AFRAME.registerSystem('click-to-select', {
 
     // Toggle the user-controls on only the selected entity
     if (selected) {
-      selected.removeAttribute('user-controls');
+      selected.setAttribute('user-controls', 'enabled', false);
     }
-    entity.setAttribute('user-controls', '');
+    entity.setAttribute('user-controls', 'enabled', true);
 
     // Move the indicator as a child of entity.
     entity.object3D.add(elmIndicator.object3D);

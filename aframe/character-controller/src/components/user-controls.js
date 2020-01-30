@@ -5,7 +5,10 @@ import { Key } from '../consts/key_map';
  */
 AFRAME.registerComponent('user-controls', {
   schema: {
+    enabled: { default: true },
     speed: { default: 0.05 },
+    clipWalk: { default: 'Walk' },
+    clipIdle: { default: 'Idle' },
   },
 
   /**
@@ -36,10 +39,12 @@ AFRAME.registerComponent('user-controls', {
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick() {
+    if (!this.data.enabled) { return; } // bail if not enabled
     const { el, playAnimation } = this;
+    const { clipWalk, clipIdle } = this.data;
     const { velocity, rotation } = this.updateVelocityAndRotation();
-    //TODO: Check dynamic collisions
     //TODO: Check static collisions
+    //TODO: Check dynamic collisions
 
     // Match rotation
     el.object3D.rotateY(rotation.y);
@@ -50,10 +55,10 @@ AFRAME.registerComponent('user-controls', {
     //TODO: avoid setAttribute in tick(), it is slow.
     // use velocity to pick the current movement animation.
     if (velocity.x === 0 && velocity.z === 0) {
-      playAnimation('Idle');
+      playAnimation(clipIdle);
       // el.setAttribute('anim-mixer', 'activeClip: Idle;');
     } else {
-      playAnimation('Walk');
+      playAnimation(clipWalk);
       // el.setAttribute('anim-mixer', 'activeClip: Walk;');
     }
   },
