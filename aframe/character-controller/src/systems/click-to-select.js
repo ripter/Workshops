@@ -6,6 +6,8 @@ AFRAME.registerSystem('click-to-select', {
   schema: {
     elmIndicator: { type: 'selector' },
     offsetY: { default: 0.5 },
+    componentName: { type: 'string' },
+    propertyName: { default: 'enabled' },
   },
   /**
    * Init handler. Called during scene initialization and is only run once.
@@ -20,13 +22,13 @@ AFRAME.registerSystem('click-to-select', {
    */
   select(entity) {
     const { selected } = this;
-    const { elmIndicator, offsetY } = this.data;
+    const { elmIndicator, offsetY, componentName, propertyName } = this.data;
 
     // Toggle the user-controls on only the selected entity
     if (selected) {
-      selected.setAttribute('user-controls', 'enabled', false);
+      selected.setAttribute(componentName, propertyName, false);
     }
-    entity.setAttribute('user-controls', 'enabled', true);
+    entity.setAttribute(componentName, propertyName, true);
 
     // Move the indicator as a child of entity.
     entity.object3D.add(elmIndicator.object3D);
