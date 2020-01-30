@@ -37,7 +37,7 @@ AFRAME.registerComponent('user-controls', {
   tick() {
     if (!this.data.enabled) { return; } // bail if not enabled
     const { el } = this;
-    let { velocity, rotation } = this.readUserInput();
+    const { velocity, rotation } = this.readUserInput();
 
     // use velocity to pick the animation.
     this.updateAnimation(velocity);
@@ -62,14 +62,22 @@ AFRAME.registerComponent('user-controls', {
       const { speed } = this.data;
 
       // Create a rocker style switch with two Keys.
-      if (isKeyDown(Key.Forward)) { velocity.z = speed; }
-      else if (isKeyDown(Key.Backward)) { velocity.z = -speed; }
-      else { velocity.z = 0; }
+      if (isKeyDown(Key.Forward)) {
+        velocity.z = speed;
+      } else if (isKeyDown(Key.Backward)) {
+        velocity.z = -speed;
+      } else {
+        velocity.z = 0;
+      }
 
       // Create a rocker style switch with two Keys.
-      if (isKeyDown(Key.TurnLeft)) { rotation.y = speed; }
-      else if (isKeyDown(Key.TurnRight)) { rotation.y = -speed; }
-      else { rotation.y = 0; }
+      if (isKeyDown(Key.TurnLeft)) {
+        rotation.y = speed;
+      } else if (isKeyDown(Key.TurnRight)) {
+        rotation.y = -speed;
+      } else {
+        rotation.y = 0;
+      }
 
       return {
         velocity,

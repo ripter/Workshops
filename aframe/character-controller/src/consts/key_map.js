@@ -4,7 +4,7 @@ export const Key = {
   Backward: 'key_backward',
   TurnLeft: 'key_turn_left',
   TurnRight: 'key_turn_right',
-}
+};
 
 /**
  * Map key codes to our custom keys
@@ -18,4 +18,4 @@ export const KEY_MAP = {
   KeyA: Key.TurnLeft,
   ArrowRight: Key.TurnRight,
   KeyD: Key.TurnRight,
-}
+};

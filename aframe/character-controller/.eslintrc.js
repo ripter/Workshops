@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
+    es2020: true,
   },
   extends: [
     'airbnb-base',
@@ -12,10 +13,10 @@ module.exports = {
     THREE: 'readonly',
     AFRAME: 'readonly',
   },
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-  },
+  // parserOptions: {
+  //   ecmaVersion: 2018,
+  //   sourceType: 'module',
+  // },
   rules: {
     'import/prefer-default-export': 'off',
     'no-void': 'off',

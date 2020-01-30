@@ -4,11 +4,6 @@
  * [Three.js AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer)
  */
 AFRAME.registerComponent('anim-mixer', {
-  // schema: {
-  //   idleName: { default: 'Idle' },
-  //   walkName: { default: 'Walk' },
-  // },
-
   /**
    * Init handler. Similar to attachedCallback.
    * Called during component initialization and is only run once.
@@ -20,22 +15,6 @@ AFRAME.registerComponent('anim-mixer', {
 
     // Listen for add/remove of key objects mesh and armature
     this.el.addEventListener('object3dset', this);
-  },
-
-  /**
-   * Update handler. Similar to attributeChangedCallback.
-   * Called whenever component's data changes.
-   * Also called on component initialization when the component receives initial data.
-   *
-   * @param {object} prevData - Previous attributes of the component.
-   */
-  update(prevData) {
-    // const { clipName } = this.data;
-    // console.log('anim-mixer.data', this.data, 'oldData', prevData);
-    //
-    // if (clipName && clipName !== '' && clipName !== prevData.clipName) {
-    //   this.playClip();
-    // }
   },
 
   /**
@@ -60,8 +39,7 @@ AFRAME.registerComponent('anim-mixer', {
    * Components can use this to reset behavior on the entity.
    */
   remove() {
-    delete this.mixer;
-    delete this.action;
+    this.el.removeEventListener('object3dset', this);
   },
 
 
@@ -106,7 +84,7 @@ AFRAME.registerComponent('anim-mixer', {
   playAction(clipName) {
     // bail if we are already playing this clip
     if (this.currentClipName === clipName) { return; }
-    else { this.currentClipName = clipName; }
+    this.currentClipName = clipName;
 
     const prevAction = this.action;
     const armature = this.el.getObject3D('armature');
