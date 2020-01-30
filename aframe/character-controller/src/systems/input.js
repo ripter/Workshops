@@ -21,10 +21,6 @@ AFRAME.registerSystem('input', {
     return this.keysDown[key] || false;
   },
 
-  // isKeyUp(key) {
-  //   return this.keysDown[key] === true || false;
-  // },
-
   /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
