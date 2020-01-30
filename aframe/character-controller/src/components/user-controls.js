@@ -20,10 +20,6 @@ AFRAME.registerComponent('user-controls', {
     const { input } = this.el.sceneEl.systems;
     const animMixer = this.el.components['anim-mixer'];
 
-    this.rotation = new THREE.Euler();
-    this.velocity = new THREE.Vector3();
-    this.rotate = { y: 0 };
-
     // Get isKeyDown from the input system. This reads player input
     this.isKeyDown = input.isKeyDown.bind(input);
     // Get PlayAnimation from the anim-mixer component.
@@ -40,51 +36,59 @@ AFRAME.registerComponent('user-controls', {
    */
   tick() {
     if (!this.data.enabled) { return; } // bail if not enabled
-    const { el, playAnimation } = this;
-    const { clipWalk, clipIdle } = this.data;
-    const { velocity, rotation } = this.updateVelocityAndRotation();
-    //TODO: Check static collisions
-    //TODO: Check dynamic collisions
+    const { el } = this;
+    let { velocity, rotation } = this.readUserInput();
+
+    // use velocity to pick the animation.
+    this.updateAnimation(velocity);
 
     // Match rotation
     el.object3D.rotateY(rotation.y);
     // use translate to move the object along it's local axis
     el.object3D.translateX(velocity.x);
     el.object3D.translateZ(velocity.z);
-
-    //TODO: avoid setAttribute in tick(), it is slow.
-    // use velocity to pick the current movement animation.
-    if (velocity.x === 0 && velocity.z === 0) {
-      playAnimation(clipIdle);
-      // el.setAttribute('anim-mixer', 'activeClip: Idle;');
-    } else {
-      playAnimation(clipWalk);
-      // el.setAttribute('anim-mixer', 'activeClip: Walk;');
-    }
   },
 
+
   /**
-   * Updates this.velocity and this.rotation based on isKeyDown.
-   * returns { velocity, rotation } for convenience
+   * Reads isKeyDown to create velocity and rotation values.
   */
-  updateVelocityAndRotation() {
-    const { rotation, velocity, isKeyDown } = this;
-    const { speed } = this.data;
+  readUserInput: (() => {
+    const rotation = new THREE.Euler();
+    const velocity = new THREE.Vector3();
 
-    // Create a rocker style switch with two Keys.
-    if (isKeyDown(Key.Forward)) { velocity.z = speed; }
-    else if (isKeyDown(Key.Backward)) { velocity.z = -speed; }
-    else { velocity.z = 0; }
+    return function readUserInput() {
+      const { isKeyDown } = this;
+      const { speed } = this.data;
 
-    // Create a rocker style switch with two Keys.
-    if (isKeyDown(Key.TurnLeft)) { rotation.y = speed; }
-    else if (isKeyDown(Key.TurnRight)) { rotation.y = -speed; }
-    else { rotation.y = 0; }
+      // Create a rocker style switch with two Keys.
+      if (isKeyDown(Key.Forward)) { velocity.z = speed; }
+      else if (isKeyDown(Key.Backward)) { velocity.z = -speed; }
+      else { velocity.z = 0; }
 
-    // Return the updated values for a nicer API.
-    return {
-      velocity,
-      rotation,
+      // Create a rocker style switch with two Keys.
+      if (isKeyDown(Key.TurnLeft)) { rotation.y = speed; }
+      else if (isKeyDown(Key.TurnRight)) { rotation.y = -speed; }
+      else { rotation.y = 0; }
+
+      return {
+        velocity,
+        rotation,
+      };
     };
+  })(),
+
+  /**
+   * Update the animation based on velocity.
+  */
+  updateAnimation(velocity) {
+    const { playAnimation } = this;
+    const { clipWalk, clipIdle } = this.data;
+
+    if (velocity.x === 0 && velocity.z === 0) {
+      playAnimation(clipIdle);
+    } else {
+      playAnimation(clipWalk);
+    }
   },
 });
