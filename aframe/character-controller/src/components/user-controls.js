@@ -38,7 +38,10 @@ AFRAME.registerComponent('user-controls', {
   tick() {
     if (!this.data.enabled) { return; } // bail if not enabled
     const { el } = this;
-    const { velocity, rotation } = this.readUserInput();
+    let { velocity, rotation } = this.readUserInput();
+
+    //Check collisins with other moving mobs
+    velocity = this.updateFromCollisions(velocity);
 
     // use velocity to pick the animation.
     this.updateAnimation(velocity);
@@ -86,4 +89,9 @@ AFRAME.registerComponent('user-controls', {
       playAnimation(clipWalk);
     }
   },
+
+  updateFromCollisions(velocity) {
+    // console.log('updateFromCollisions', velocity);
+    return velocity;
+  }
 });
