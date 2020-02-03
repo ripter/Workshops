@@ -8,10 +8,20 @@ AFRAME.registerComponent('collision', {
    * Init handler. Similar to attachedCallback.
    * Called during component initialization and is only run once.
    * Components can use this to set initial state.
-   */
+  */
   init() {
     // Listen for add/remove of key objects mesh
     this.el.addEventListener('object3dset', this);
+  },
+
+  update() {
+    console.log('component update', this.el.getObject3D('mesh'))
+  },
+
+  tick() {
+    const mesh = this.el.getObject3D('mesh');
+    if (!mesh) { return; }
+    this.system.updateCollisionBox(this.el);
   },
 
   /**
@@ -20,9 +30,9 @@ AFRAME.registerComponent('collision', {
    * Components can use this to reset behavior on the entity.
    */
   remove() {
-    const { el, systemCollision } = this;
+    const { el, system } = this;
     // remove from collisions
-    systemCollision.removeEntity(el);
+    system.removeEntity(el);
   },
 
   /**
@@ -38,7 +48,6 @@ AFRAME.registerComponent('collision', {
       case 'object3dset':
         if (event.detail.type === 'mesh') {
           const box = getBoundingBox(el);
-          // Add ourself to collision detection.
           system.add(el, box);
         }
         break;

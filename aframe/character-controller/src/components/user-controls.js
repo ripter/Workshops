@@ -53,8 +53,6 @@ AFRAME.registerComponent('user-controls', {
     // use translate to move the object along it's local axis
     el.object3D.translateX(velocity.x);
     el.object3D.translateZ(velocity.z);
-    // Update collision to match the new position.
-    updateCollision(el);
   },
 
 

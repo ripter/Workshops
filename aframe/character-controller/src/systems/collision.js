@@ -4,6 +4,10 @@ import { ERROR_NO_MESH } from '../consts/error';
  * Basic AABB collision detection.
 */
 AFRAME.registerSystem('collision', {
+  schema: {
+    renderBox: { default: false },
+  },
+
   /**
    * Init handler. Called during scene initialization and is only run once.
    * Systems can use this to set initial state.
@@ -16,10 +20,14 @@ AFRAME.registerSystem('collision', {
    * Adds the entity to collision checks.
   */
   add(entity, box) {
+    const { renderBox } = this.data;
+
     this.entityBoxes.set(entity, box);
 
-    const helper = new THREE.Box3Helper( box, 0xffff00 );
-    entity.sceneEl.object3D.add(helper);
+    if (renderBox) {
+      const helper = new THREE.Box3Helper( box, 0xffff00 );
+      entity.sceneEl.object3D.add(helper);
+    }
   },
 
   /**

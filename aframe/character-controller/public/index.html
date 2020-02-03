@@ -12,7 +12,9 @@
 <body>
   <a-scene
     background="color: #ECECEC;"
-    click-to-select="elmIndicator: #elmSelectIndicator; componentName: user-controls;">
+    click-to-select="elmIndicator: #elmSelectIndicator; componentName: user-controls;"
+    collision="renderBox: true;"
+    >
     <a-assets>
       <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
       <a-asset-item id="model" src="./assets/characterMedium.glb"></a-asset-item>

@@ -4,7 +4,7 @@ import './components/anim-mixer';
 import './components/user-controls';
 
 import './systems/collision';
-import './components/dynamic-collider';
+import './components/collision';
 
 
 import './systems/click-to-select';
