@@ -16,7 +16,6 @@ AFRAME.registerSystem('input', {
   /**
    * Returns true if the Key is currenly pressed.
   */
-
   isKeyDown(key) {
     return this.keysDown[key] || false;
   },

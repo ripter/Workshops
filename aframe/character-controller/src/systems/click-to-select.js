@@ -32,11 +32,10 @@ AFRAME.registerSystem('click-to-select', {
     }
     entity.setAttribute(componentName, propertyName, true);
 
-
     // Move the indicator as a child of entity.
     entity.object3D.add(elmIndicator.object3D);
     // Position it above the new entity
-    const box = getBoundingBox(entity);
+    const box = getBoundingBox(entity).max;
     elmIndicator.object3D.position.y = box.y + offsetY;
 
     // Set the entity as the new selected and return it

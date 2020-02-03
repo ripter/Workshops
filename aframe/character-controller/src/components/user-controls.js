@@ -18,13 +18,15 @@ AFRAME.registerComponent('user-controls', {
    * Components can use this to set initial state.
    */
   init() {
-    const { input } = this.el.sceneEl.systems;
+    const { collision, input } = this.el.sceneEl.systems;
     const animMixer = this.el.components['anim-mixer'];
 
     // Get isKeyDown from the input system. This reads player input
     this.isKeyDown = input.isKeyDown.bind(input);
     // Get PlayAnimation from the anim-mixer component.
     this.playAnimation = animMixer.playAction.bind(animMixer);
+    this.doesCollide = collision.doesCollide.bind(collision);
+    this.updateCollision = collision.updateCollisionBox.bind(collision)
   },
 
   /**
@@ -37,7 +39,7 @@ AFRAME.registerComponent('user-controls', {
    */
   tick() {
     if (!this.data.enabled) { return; } // bail if not enabled
-    const { el } = this;
+    const { el, updateCollision } = this;
     let { velocity, rotation } = this.readUserInput();
 
     //Check collisins with other moving mobs
@@ -51,6 +53,8 @@ AFRAME.registerComponent('user-controls', {
     // use translate to move the object along it's local axis
     el.object3D.translateX(velocity.x);
     el.object3D.translateZ(velocity.z);
+    // Update collision to match the new position.
+    updateCollision(el);
   },
 
 
@@ -91,7 +95,15 @@ AFRAME.registerComponent('user-controls', {
   },
 
   updateFromCollisions(velocity) {
-    // console.log('updateFromCollisions', velocity);
+    const {el, doesCollide } = this;
+
+    if (doesCollide(el)) {
+      console.log('Collided!');
+    }
+    else {
+      // console.log('Did not collide');
+    }
+
     return velocity;
   }
 });

@@ -29,20 +29,18 @@
       material="src: #skin"
       position="0 0 -5"
       user-controls="enabled: false;"
-      collider-check
+      collision
       >
-      <a-entity raycaster="objects: .collidable; showLine: true;" position="0 0.9 0" rotation="0 180 0"></a-entity>
     </a-entity>
 
     <a-entity id="elmDino" class="clickable collidable"
       anim-mixer=""
       click-to-select
       gltf-model-2="#ankylosaurus"
-      position="-5 0 -5"
+      position="-2 0 -5"
       user-controls="enabled: false; clipWalk: Run; speed: 0.15;"
-      collider-check
+      collision
       >
-      <a-entity raycaster="objects: .collidable; showLine: true;" position="0 0.9 0" rotation="0 180 0"></a-entity>
     </a-entity>
 
     <a-entity id="elmSelectIndicator" geometry="primitive: octahedron; radius: 0.25" material="color: #FFDC00;" position="0 -900 0"></a-entity>
