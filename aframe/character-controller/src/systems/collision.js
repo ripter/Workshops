@@ -25,7 +25,7 @@ AFRAME.registerSystem('collision', {
     this.entityBoxes.set(entity, box);
 
     if (renderBox) {
-      const helper = new THREE.Box3Helper( box, 0xffff00 );
+      const helper = new THREE.Box3Helper(box, 0xffff00);
       entity.sceneEl.object3D.add(helper);
     }
   },
@@ -45,7 +45,7 @@ AFRAME.registerSystem('collision', {
     const mesh = entity.getObject3D('mesh');
     if (!mesh) { throw ERROR_NO_MESH(mesh); }
     // Update the box to match the Mesh's world position
-    box.copy( mesh.geometry.boundingBox ).applyMatrix4( mesh.matrixWorld );
+    box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
   },
 
   /**
@@ -54,9 +54,8 @@ AFRAME.registerSystem('collision', {
   */
   doesCollide(entity) {
     const box = this.entityBoxes.get(entity);
-    const mesh = entity.getObject3D('mesh');
 
-    for (let [el, elBox] of this.entityBoxes) {
+    for (const [el, elBox] of this.entityBoxes) {
       if (el === entity) { continue; }
       if (box.intersectsBox(elBox)) {
         return el;
@@ -64,5 +63,15 @@ AFRAME.registerSystem('collision', {
     }
     // No Collisions found.
     return null;
+  },
+
+  /**
+   * returns the [intersect](https://threejs.org/docs/index.html#api/en/math/Box3.intersect) of the two entity's colliding boxes.
+  */
+  intersection(entityA, entityB) {
+    const { entityBoxes } = this;
+    const boxA = entityBoxes.get(entityA);
+    const boxB = entityBoxes.get(entityB);
+    return boxA.intersect(boxB);
   },
 });

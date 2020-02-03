@@ -9,6 +9,6 @@ export function getBoundingBox(entity) {
   const mesh = entity.getObject3D('mesh');
   if (!mesh) { throw ERROR_NO_MESH(mesh); }
   const box = new THREE.Box3();
-  box.copy( mesh.geometry.boundingBox ).applyMatrix4( mesh.matrixWorld );
+  box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
   return box;
 }

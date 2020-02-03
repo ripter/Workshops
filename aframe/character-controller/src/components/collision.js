@@ -14,10 +14,14 @@ AFRAME.registerComponent('collision', {
     this.el.addEventListener('object3dset', this);
   },
 
-  update() {
-    console.log('component update', this.el.getObject3D('mesh'))
-  },
-
+  /**
+   * Tick handler.
+   * Called on each tick of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
   tick() {
     const mesh = this.el.getObject3D('mesh');
     if (!mesh) { return; }
