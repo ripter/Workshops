@@ -52,8 +52,11 @@ AFRAME.registerSystem('collision', {
    * Return the colliding entity if there is a collision.
    * else returns null if there is no collision.
   */
-  doesCollide(entity) {
+  willCollide(entity, velocity) {
     const box = this.entityBoxes.get(entity);
+    // move the box as if the entity did move
+    // This lets us test where the box will be, not were it is.
+    box.translate(velocity);
 
     for (const [el, elBox] of this.entityBoxes) {
       if (el === entity) { continue; }

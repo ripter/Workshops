@@ -1,7 +1,7 @@
 # Character Controller
 #### Inspired by [Unity Character Controller](https://docs.unity3d.com/Manual/class-CharacterController.html)
 
-The Character Controller is the glue the ties together several components into a controllable character or mob. It can be controlled by the player, but it can also be controlled from AI or even Network requests.
+The Character Controller is the glue the ties together several components into a controllable character or mob. It can be controlled by the player or programmatically.
 
 This component is more of an architecture than a specific library or piece of code. The idea is to make the glue code easy to write, fork, and modify to the specific game and specific need.
 

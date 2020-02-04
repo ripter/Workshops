@@ -25,8 +25,8 @@ AFRAME.registerComponent('user-controls', {
     this.isKeyDown = input.isKeyDown.bind(input);
     // Get PlayAnimation from the anim-mixer component.
     this.playAnimation = animMixer.playAction.bind(animMixer);
-    this.doesCollide = collision.doesCollide.bind(collision);
-    this.collisionIntersection = collision.intersection.bind(collision);
+    this.willCollide = collision.willCollide.bind(collision);
+    // this.collisionIntersection = collision.intersection.bind(collision);
   },
 
   /**
@@ -96,16 +96,18 @@ AFRAME.registerComponent('user-controls', {
   },
 
   updateFromCollisions(velocity) {
-    const { el, doesCollide, collisionIntersection } = this;
-    const collidedEl = doesCollide(el);
+    const { el, willCollide } = this;
+    const { speed } = this.data;
+    const collidedEl = willCollide(el, velocity);
 
     if (collidedEl !== null) {
-      const result = collisionIntersection(el, collidedEl);
-      console.log('Collided!', result.max.x);
-      velocity.x = result.min.x * 0.25;
-      velocity.z = result.min.z * 0.25;
-    } else {
-      console.log('Did not collide', velocity.x);
+      // velocity.z = 0; // Problem: Causes model to freeze, unable to move once they collide with another.
+      // Problem with negative speed, is that if the player backs into someting, they will slowly backwards walk out of it.
+      // velocity.z = -speed; // Problem: Causes model to  jitter as it bounces back and forth.
+      // velocity.z = -speed * 0.25; // Problem: causes jitter, but smoother jitter
+      if (velocity.z > 0) {
+        velocity.z = 0;
+      }
     }
 
     return velocity;
