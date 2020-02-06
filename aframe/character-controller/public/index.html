@@ -25,18 +25,18 @@
 
 
     <a-entity id="elm" class="clickable collidable"
-      anim-mixer=""
+      anim-mixer
       click-to-select
       gltf-model-2="#model"
       material="src: #skin"
       position="0 0 -5"
       user-controls="enabled: false;"
-      collision
+      collision="size: 1.5, 1.5, 1.5; center: 0, 0, 0; useMesh: true;"
       >
     </a-entity>
 
     <a-entity id="elmDino" class="clickable collidable"
-      anim-mixer=""
+      anim-mixer
       click-to-select
       gltf-model-2="#ankylosaurus"
       position="-5 0 -5"

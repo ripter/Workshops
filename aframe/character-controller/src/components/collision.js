@@ -1,9 +1,15 @@
-import { getBoundingBox } from '../utils/getBoundingBox';
+import { getBoundingBoxFromMesh } from '../utils/getBoundingBoxFromMesh';
 
 /**
  * Adds the Mesh to collision detection on object3dset event.
 */
 AFRAME.registerComponent('collision', {
+  schema: {
+    size: { type: 'vec3' },
+    center: { type: 'vec3' },
+    useMesh: { default: false },
+  },
+
   /**
    * Init handler. Similar to attachedCallback.
    * Called during component initialization and is only run once.
@@ -48,15 +54,24 @@ AFRAME.registerComponent('collision', {
   handleEvent(event) {
     const { el, system } = this;
 
-    switch (event.type) {
-      case 'object3dset':
-        if (event.detail.type === 'mesh') {
-          const box = getBoundingBox(el);
-          system.add(el, box);
-        }
-        break;
-      default:
-        console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
+    // Bail if it's not the right event
+    if (event.type !== 'object3dset') { return; }
+    if (event.detail.type !== 'mesh') { return; }
+
+    // Add the collision box to the system.
+    system.add(el, this.createBoundingBox());
+  },
+
+  createBoundingBox() {
+    const { el } = this;
+    const { useMesh, size, center } = this.data;
+
+    if (useMesh) {
+      return getBoundingBoxFromMesh(el);
     }
+
+    const box = new THREE.Box3();
+    box.setFromCenterAndSize(center, size);
+    return box;
   },
 });

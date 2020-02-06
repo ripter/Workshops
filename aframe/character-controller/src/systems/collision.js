@@ -14,6 +14,7 @@ AFRAME.registerSystem('collision', {
    */
   init() {
     this.entityBoxes = new Map();
+    this.tmpBox = new THREE.Box3;
   },
 
   /**
@@ -44,6 +45,8 @@ AFRAME.registerSystem('collision', {
     const box = this.entityBoxes.get(entity);
     const mesh = entity.getObject3D('mesh');
     if (!mesh) { throw ERROR_NO_MESH(mesh); }
+
+    // box.applyMatrix4(mesh.matrixWorld);
     // Update the box to match the Mesh's world position
     box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
   },
@@ -53,10 +56,13 @@ AFRAME.registerSystem('collision', {
    * else returns null if there is no collision.
   */
   willCollide(entity, velocity) {
+    const { tmpBox } = this;
     const box = this.entityBoxes.get(entity);
+
     // move the box as if the entity did move
     // This lets us test where the box will be, not were it is.
-    box.translate(velocity);
+    //QUESTION: is this needed?
+    // box.translate(velocity);
 
     for (const [el, elBox] of this.entityBoxes) {
       if (el === entity) { continue; }
