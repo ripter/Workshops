@@ -42,13 +42,19 @@ AFRAME.registerSystem('collision', {
    * Updates the entities collision box
   */
   updateCollisionBox(entity) {
+    const { matrixWorld } = entity.object3D;
     const box = this.entityBoxes.get(entity);
-    const mesh = entity.getObject3D('mesh');
-    if (!mesh) { throw ERROR_NO_MESH(mesh); }
+    // const mesh = entity.getObject3D('mesh');
+    // if (!mesh) { throw ERROR_NO_MESH(mesh); }
+
+    // const matrix = new THREE.Matrix4();
+    // matrix.copyPosition(matrixWorld);
+    // matrix.extractRotation(matrixWorld);
+    // box.applyMatrix4(matrix);
 
     // box.applyMatrix4(mesh.matrixWorld);
     // Update the box to match the Mesh's world position
-    box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+    // box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
   },
 
   /**

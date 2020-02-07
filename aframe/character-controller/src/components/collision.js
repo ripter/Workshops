@@ -5,10 +5,7 @@ import { getBoundingBoxFromMesh } from '../utils/getBoundingBoxFromMesh';
 */
 AFRAME.registerComponent('collision', {
   schema: {
-    size: { type: 'vec3' },
-    center: { type: 'vec3' },
-    // offset: { type: 'vec3' },
-    useMesh: { default: false },
+    offset: { type: 'vec3' },
   },
 
   /**
@@ -63,23 +60,20 @@ AFRAME.registerComponent('collision', {
     system.add(el, this.createBoundingBox());
   },
 
+  /**
+   * Creates a Collision Bounding Box for the entity
+  */
   createBoundingBox() {
     const { el } = this;
-    const { useMesh, size, center } = this.data;
-
-    if (useMesh) {
-      return getBoundingBoxFromMesh(el);
-    }
-
-    const boxCenter = new THREE.Vector3();
-    boxCenter.copy(el.object3D.position);
-    // boxCenter.add(center);
-    // console.log('boxCenter', boxCenter);
-
+    const { offset } = this.data;
     const box = new THREE.Box3();
+
+    // Set it around the object
     box.setFromObject(el.object3D);
-    // box.setFromCenterAndSize(boxCenter, size);
-    console.log('box', box.min, box.max);
+    // Apply offset to the box
+    box.min.add(offset);
+    box.max.sub(offset);
+
     return box;
   },
 });
