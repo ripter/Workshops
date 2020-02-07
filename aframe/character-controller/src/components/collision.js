@@ -7,6 +7,7 @@ AFRAME.registerComponent('collision', {
   schema: {
     size: { type: 'vec3' },
     center: { type: 'vec3' },
+    // offset: { type: 'vec3' },
     useMesh: { default: false },
   },
 
@@ -70,8 +71,15 @@ AFRAME.registerComponent('collision', {
       return getBoundingBoxFromMesh(el);
     }
 
+    const boxCenter = new THREE.Vector3();
+    boxCenter.copy(el.object3D.position);
+    // boxCenter.add(center);
+    // console.log('boxCenter', boxCenter);
+
     const box = new THREE.Box3();
-    box.setFromCenterAndSize(center, size);
+    box.setFromObject(el.object3D);
+    // box.setFromCenterAndSize(boxCenter, size);
+    console.log('box', box.min, box.max);
     return box;
   },
 });
