@@ -22,5 +22,7 @@ module.exports = {
     'no-void': 'off',
     'no-param-reassign': 'off',
     'no-multi-assign': 'off',
+    'no-restricted-syntax': ['error', 'WithStatement'],
+    'no-continue': 'off',
   },
 };

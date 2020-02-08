@@ -4,6 +4,10 @@
  * [Three.js AnimationMixer](https://threejs.org/docs/index.html#api/en/animation/AnimationMixer)
  */
 AFRAME.registerComponent('anim-mixer', {
+  schema: {
+    enableEvents: { default: false },
+    defaultClip: { default: 'Idle' },
+  },
   /**
    * Init handler. Similar to attachedCallback.
    * Called during component initialization and is only run once.
@@ -49,13 +53,16 @@ AFRAME.registerComponent('anim-mixer', {
    * @return {undefined}
    */
   handleEvent(event) {
-    switch (event.type) {
-      case 'object3dset':
-        this.setupMixer();
-        break;
-      default:
-        console.warn(`Unhandled event type: ${event.type}`, event); // eslint-disable-line
-    }
+    if (event.type !== 'object3dset') { return; }
+
+    // Animations require a mesh and an armature. wait until we have both.
+    const armature = this.el.getObject3D('armature');
+    const mesh = this.el.getObject3D('mesh');
+    if (!armature || !mesh) { return; }
+
+    const { defaultClip } = this.data;
+    this.setupMixer();
+    this.playAction(defaultClip);
   },
 
 
@@ -70,17 +77,24 @@ AFRAME.registerComponent('anim-mixer', {
     // Bail if we are missing anything.
     if (!armature || !mesh) { return; }
 
+    const { enableEvents } = this.data;
+
     // Create the mixer to use the new armature.
     this.mixer = new THREE.AnimationMixer(armature);
     // Listen to events.
-    // this.mixer.addEventListener('loop', this.handleEvent);
-    // this.mixer.addEventListener('finished', this.handleEvent);
+    if (enableEvents) {
+      this.mixer.addEventListener('loop', this);
+      this.mixer.addEventListener('finished', this);
+    }
     // Tell the mesh to allow animations.
     mesh.material.skinning = true;
     mesh.material.needsUpdate = true;
   },
 
 
+  /**
+   * Plays the Clip as a looping Action
+  */
   playAction(clipName) {
     // bail if we are already playing this clip
     if (this.currentClipName === clipName) { return; }
@@ -88,7 +102,7 @@ AFRAME.registerComponent('anim-mixer', {
 
     const prevAction = this.action;
     const armature = this.el.getObject3D('armature');
-    if (!armature) { return; }
+    if (!armature) { throw new Error(`Could not play clip "${clipName}". No armature found on entity.`); }
     const clip = THREE.AnimationClip.findByName(armature.animations, clipName);
     if (!clip) { throw new Error(`Clip "${clipName}" was not found in the animations array.\nCheck for misspellings in the clipName, or missing animations in the model file.`); }
 
