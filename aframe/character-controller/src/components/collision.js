@@ -29,7 +29,7 @@ AFRAME.registerComponent('collision', {
   tick() {
     const mesh = this.el.getObject3D('mesh');
     if (!mesh) { return; }
-    this.system.updateCollisionBox(this.el);
+    this.system.updateCollisionBox(this.el, this.data.offset);
   },
 
   /**

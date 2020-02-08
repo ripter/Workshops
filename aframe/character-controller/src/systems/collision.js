@@ -1,4 +1,5 @@
 import { ERROR_NO_MESH } from '../consts/error';
+import { createBoundingBox } from '../utils/createBoundingBox';
 
 /*
  * Basic AABB collision detection.
@@ -41,20 +42,25 @@ AFRAME.registerSystem('collision', {
   /**
    * Updates the entities collision box
   */
-  updateCollisionBox(entity) {
-    const { matrixWorld } = entity.object3D;
+  updateCollisionBox(entity, offset) {
+    const { matrixWorld, position } = entity.object3D;
     const box = this.entityBoxes.get(entity);
-    // const mesh = entity.getObject3D('mesh');
-    // if (!mesh) { throw ERROR_NO_MESH(mesh); }
 
+    // Translate won't work. It moves the box in local space from it's current position.
+    // It does not set it's position to a new one.
+    // box.translate(position);
+
+    // Just applying the matrixWorld has the same issue as Translate.
+    // box.applyMatrix4(matrixWorld);
+
+    // Same issue, Box runs off
     // const matrix = new THREE.Matrix4();
-    // matrix.copyPosition(matrixWorld);
-    // matrix.extractRotation(matrixWorld);
+    // matrix.setPosition(position);
     // box.applyMatrix4(matrix);
 
-    // box.applyMatrix4(mesh.matrixWorld);
-    // Update the box to match the Mesh's world position
-    // box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+    // Works, has some issues. The Collision box changes sizes when selected.
+    const newBox = createBoundingBox(entity, offset);
+    box.copy(newBox);
   },
 
   /**
