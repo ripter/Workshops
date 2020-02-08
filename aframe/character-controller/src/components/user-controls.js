@@ -21,12 +21,10 @@ AFRAME.registerComponent('user-controls', {
     const { collision, input } = this.el.sceneEl.systems;
     const animMixer = this.el.components['anim-mixer'];
 
-    // Get isKeyDown from the input system. This reads player input
+    // Bind methods from systems to make it easy to call them.
     this.isKeyDown = input.isKeyDown.bind(input);
-    // Get PlayAnimation from the anim-mixer component.
     this.playAnimation = animMixer.playAction.bind(animMixer);
     this.willCollide = collision.willCollide.bind(collision);
-    // this.collisionIntersection = collision.intersection.bind(collision);
   },
 
   /**
@@ -40,11 +38,10 @@ AFRAME.registerComponent('user-controls', {
   tick() {
     if (!this.data.enabled) { return; } // bail if not enabled
     const { el } = this;
-    let { velocity, rotation } = this.readUserInput();
+    const { velocity, rotation } = this.readUserInput();
 
     // Check collisins with other moving mobs
-    velocity = this.updateFromCollisions(velocity);
-
+    this.updateVelocityFromCollisions(velocity);
     // use velocity to pick the animation.
     this.updateAnimation(velocity);
 
@@ -95,16 +92,14 @@ AFRAME.registerComponent('user-controls', {
     }
   },
 
-  updateFromCollisions(velocity) {
+  /**
+   * Updates the velocity refrence if there are collisins.
+  */
+  updateVelocityFromCollisions(velocity) {
     const { el, willCollide } = this;
-    // const { speed } = this.data;
     const collidedEl = willCollide(el, velocity);
 
     if (collidedEl !== null) {
-      // velocity.z = 0; // Problem: Causes model to freeze, unable to move once they collide with another.
-      // Problem with negative speed, is that if the player backs into someting, they will slowly backwards walk out of it.
-      // velocity.z = -speed; // Problem: Causes model to  jitter as it bounces back and forth.
-      // velocity.z = -speed * 0.25; // Problem: causes jitter, but smoother jitter
       if (velocity.z > 0) {
         velocity.z = 0;
       }

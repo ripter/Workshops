@@ -1,5 +1,3 @@
-// import { ERROR_NO_MESH } from '../consts/error';
-import { createBoundingBox } from '../utils/createBoundingBox';
 
 /*
  * Basic AABB collision detection.
