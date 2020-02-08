@@ -40,45 +40,21 @@ AFRAME.registerSystem('collision', {
   },
 
   /**
-   * Updates the entities collision box
-  */
-  updateCollisionBox(entity, offset) {
-    // const { matrixWorld, position } = entity.object3D;
-    const box = this.entityBoxes.get(entity);
-
-    // Translate won't work. It moves the box in local space from it's current position.
-    // It does not set it's position to a new one.
-    // box.translate(position);
-
-    // Just applying the matrixWorld has the same issue as Translate.
-    // box.applyMatrix4(matrixWorld);
-
-    // Same issue, Box runs off
-    // const matrix = new THREE.Matrix4();
-    // matrix.setPosition(position);
-    // box.applyMatrix4(matrix);
-
-    // Works, has some issues. The Collision box changes sizes when selected.
-    const newBox = createBoundingBox(entity, offset);
-    box.copy(newBox);
-  },
-
-  /**
    * Return the colliding entity if there is a collision.
    * else returns null if there is no collision.
   */
-  willCollide(entity/* , velocity */) {
-    // const { tmpBox } = this;
-    const box = this.entityBoxes.get(entity);
+  willCollide(entity, velocity) {
+    const { tmpBox } = this;
+    const entityBox = this.entityBoxes.get(entity);
 
-    // move the box as if the entity did move
-    // This lets us test where the box will be, not were it is.
-    // QUESTION: is this needed?
-    // box.translate(velocity);
+    // Re-use the temp Box variable so we don't move the real one.
+    tmpBox.copy(entityBox);
+    tmpBox.translate(velocity);
 
+    // Check if our tempBox collides with anything.
     for (const [el, elBox] of this.entityBoxes) {
       if (el === entity) { continue; }
-      if (box.intersectsBox(elBox)) {
+      if (tmpBox.intersectsBox(elBox)) {
         return el;
       }
     }

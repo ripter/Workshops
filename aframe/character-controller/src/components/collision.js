@@ -1,11 +1,9 @@
-// import { getBoundingBoxFromMesh } from '../utils/getBoundingBoxFromMesh';
-
 /**
  * Adds the Mesh to collision detection on object3dset event.
 */
 AFRAME.registerComponent('collision', {
   schema: {
-    offset: { type: 'vec3' },
+    size: { type: 'vec3', default: { x: 1, y: 1.8, z: 1 } },
   },
 
   /**
@@ -14,8 +12,11 @@ AFRAME.registerComponent('collision', {
    * Components can use this to set initial state.
   */
   init() {
-    // Listen for add/remove of key objects mesh
-    this.el.addEventListener('object3dset', this);
+    this.box = new THREE.Box3();
+    this.center = new THREE.Vector3();
+
+    // Register our box in the collision system.
+    this.system.add(this.el, this.box);
   },
 
   /**
@@ -29,7 +30,14 @@ AFRAME.registerComponent('collision', {
   tick() {
     const mesh = this.el.getObject3D('mesh');
     if (!mesh) { return; }
-    this.system.updateCollisionBox(this.el, this.data.offset);
+    const { size } = this.data;
+    const { box, center } = this;
+
+    // Update the Box to match position/size/rotation
+    box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+    // Update the size to match the schema, keeping the center.
+    box.getCenter(center);
+    box.setFromCenterAndSize(center, size);
   },
 
   /**
@@ -41,39 +49,5 @@ AFRAME.registerComponent('collision', {
     const { el, system } = this;
     // remove from collisions
     system.removeEntity(el);
-  },
-
-  /**
-   * DOM Event handler.
-   * Called when a listening event is observed.
-   * @param  {Event} event the event that has been fired and needs to be processed.
-   * @return {undefined}
-   */
-  handleEvent(event) {
-    const { el, system } = this;
-
-    // Bail if it's not the right event
-    if (event.type !== 'object3dset') { return; }
-    if (event.detail.type !== 'mesh') { return; }
-
-    // Add the collision box to the system.
-    system.add(el, this.createBoundingBox());
-  },
-
-  /**
-   * Creates a Collision Bounding Box for the entity
-  */
-  createBoundingBox() {
-    const { el } = this;
-    const { offset } = this.data;
-    const box = new THREE.Box3();
-
-    // Set it around the object
-    box.setFromObject(el.object3D);
-    // Apply offset to the box
-    box.min.add(offset);
-    box.max.sub(offset);
-
-    return box;
   },
 });
