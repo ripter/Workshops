@@ -1,4 +1,4 @@
-import { getBoundingBoxFromMesh } from '../utils/getBoundingBoxFromMesh';
+// import { getBoundingBoxFromMesh } from '../utils/getBoundingBoxFromMesh';
 
 /**
  * Adds the Mesh to collision detection on object3dset event.

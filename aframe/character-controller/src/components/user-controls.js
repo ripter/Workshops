@@ -97,7 +97,7 @@ AFRAME.registerComponent('user-controls', {
 
   updateFromCollisions(velocity) {
     const { el, willCollide } = this;
-    const { speed } = this.data;
+    // const { speed } = this.data;
     const collidedEl = willCollide(el, velocity);
 
     if (collidedEl !== null) {

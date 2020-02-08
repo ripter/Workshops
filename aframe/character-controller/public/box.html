@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./index.css"></link>
+  <script src="./libs/aframe-v1.0.3.min.js"></script>
+  <script src="./bundle.js"></script>
+  <title>Box3 Test [A-FRAME 1.0.3]</title>
+</head>
+<body>
+  <a-scene
+    background="color: #ECECEC;"
+    click-to-select="elmIndicator: #elmSelectIndicator; componentName: user-controls;"
+    collision="renderBox: true;"
+    >
+    <a-assets>
+      <!-- Model includes alien skin texture and two animations, Idle, and Punch. -->
+      <a-asset-item id="model" src="./assets/characterMedium.glb"></a-asset-item>
+      <a-asset-item id="ankylosaurus" src="./assets/ankylosaurus.glb"></a-asset-item>
+      <img id="skin" src="./assets/athleteFemaleBlue.png"></img>
+      <img id="textureGrass" src="./assets/Fabric_10.jpg"></img>
+    </a-assets>
+
+
+    <a-entity id="elm" class="clickable"
+      anim-mixer
+      gltf-model-2="#model"
+      material="src: #skin"
+      position="0 0 -5"
+      box-test
+      >
+    </a-entity>
+
+
+
+    <a-entity id="rig-camera" position="0 1.8 1">
+      <a-camera id="camera" wasd-controls-enabled="enabled">
+        <a-entity
+          cursor="rayOrigin: mouse;"
+          position="0 0 -1"
+          raycaster="objects: .clickable"
+          >
+        </a-entity>
+      </a-camera>
+    </a-entity>
+
+
+    <a-plane rotation="-90 0 0" width="150" height="150"
+      color="#7BC8A4" src="#textureGrass">
+    </a-plane>
+  </a-scene>
+</body>
+</html>

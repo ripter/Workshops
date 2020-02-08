@@ -1,4 +1,4 @@
-import { ERROR_NO_MESH } from '../consts/error';
+// import { ERROR_NO_MESH } from '../consts/error';
 import { createBoundingBox } from '../utils/createBoundingBox';
 
 /*
@@ -15,7 +15,7 @@ AFRAME.registerSystem('collision', {
    */
   init() {
     this.entityBoxes = new Map();
-    this.tmpBox = new THREE.Box3;
+    this.tmpBox = new THREE.Box3();
   },
 
   /**
@@ -43,7 +43,7 @@ AFRAME.registerSystem('collision', {
    * Updates the entities collision box
   */
   updateCollisionBox(entity, offset) {
-    const { matrixWorld, position } = entity.object3D;
+    // const { matrixWorld, position } = entity.object3D;
     const box = this.entityBoxes.get(entity);
 
     // Translate won't work. It moves the box in local space from it's current position.
@@ -67,13 +67,13 @@ AFRAME.registerSystem('collision', {
    * Return the colliding entity if there is a collision.
    * else returns null if there is no collision.
   */
-  willCollide(entity, velocity) {
-    const { tmpBox } = this;
+  willCollide(entity/* , velocity */) {
+    // const { tmpBox } = this;
     const box = this.entityBoxes.get(entity);
 
     // move the box as if the entity did move
     // This lets us test where the box will be, not were it is.
-    //QUESTION: is this needed?
+    // QUESTION: is this needed?
     // box.translate(velocity);
 
     for (const [el, elBox] of this.entityBoxes) {

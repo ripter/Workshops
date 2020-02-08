@@ -11,4 +11,4 @@ export function createBoundingBox(entity, offset) {
   box.max.sub(offset);
 
   return box;
-};
+}
