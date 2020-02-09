@@ -3,7 +3,8 @@
 */
 AFRAME.registerComponent('collision', {
   schema: {
-    size: { type: 'vec3', default: { x: 1, y: 1.8, z: 1 } },
+    size: { type: 'vec3', default: { x: 1, y: 1.8, z: 1 }},
+    offset: { type: 'vec3', default: { x: 0, y: 1, z: 0 }},
   },
 
   /**
@@ -14,6 +15,11 @@ AFRAME.registerComponent('collision', {
   init() {
     this.box = new THREE.Box3();
     this.center = new THREE.Vector3();
+
+    this.matrix = new THREE.Matrix4();
+    this.position = new THREE.Vector3();
+    this.quaternion = new THREE.Quaternion();
+    this.scale = new THREE.Vector3();
 
     // Register our box in the collision system.
     this.system.add(this.el, this.box);
@@ -30,14 +36,51 @@ AFRAME.registerComponent('collision', {
   tick() {
     const mesh = this.el.getObject3D('mesh');
     if (!mesh) { return; }
-    const { size } = this.data;
-    const { box, center } = this;
+    const { size, offset } = this.data;
+    const { box, center, position, quaternion, scale, matrix } = this;
+
+    // box.copy(mesh.geometry.boundingBox);
+
+
+    // break the matrix into seprate parts.
+    mesh.matrixWorld.decompose(position, quaternion, scale);
+    matrix.makeRotationFromQuaternion(quaternion);
+    matrix.setPosition(position);
+
+    // box.setFromCenterAndSize(position, size);
+    // box.translate(offset);
+
+    // matrix.makeRotationFromQuaternion(quaternion);
+    // box.applyMatrix4(matrix);
+
+
+
+
+    // box.copy(mesh.geometry.boundingBox);
+
+    // matrix.copy(mesh.matrixWorld);
+    // matrix.setPosition(position);
+    // matrix.extractRotation(mesh.matrixWorld);
+    // matrix.copyPosition(mesh.matrixWorld);
+    // box.applyMatrix4(matrix);
+
+
+    // console.log('position', position);
+    // console.log('quaternion', quaternion);
+    // console.log('scale', scale);
+
+    // const matrixRotation = new THREE.Box3();
+    // mesh.matrixWorld.extractRotation(matrixRotation);
 
     // Update the Box to match position/size/rotation
-    box.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+    box.copy(mesh.geometry.boundingBox);
     // Update the size to match the schema, keeping the center.
+    // box.applyMatrix4(mesh.matrixWorld);
+    // Find the center and resize the box around it.
     box.getCenter(center);
     box.setFromCenterAndSize(center, size);
+
+    box.applyMatrix4(matrix);
   },
 
   /**
