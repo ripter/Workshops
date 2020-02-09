@@ -3,8 +3,8 @@
 */
 AFRAME.registerComponent('collision', {
   schema: {
-    size: { type: 'vec3', default: { x: 1, y: 1.8, z: 1 }},
-    offset: { type: 'vec3', default: { x: 0, y: 1, z: 0 }},
+    size: { type: 'vec3', default: { x: 1, y: 1.8, z: 1 } },
+    offset: { type: 'vec3', default: { x: 0, y: 1, z: 0 } },
   },
 
   /**
@@ -15,11 +15,7 @@ AFRAME.registerComponent('collision', {
   init() {
     this.box = new THREE.Box3();
     this.center = new THREE.Vector3();
-
     this.matrix = new THREE.Matrix4();
-    this.position = new THREE.Vector3();
-    this.quaternion = new THREE.Quaternion();
-    this.scale = new THREE.Vector3();
 
     // Register our box in the collision system.
     this.system.add(this.el, this.box);
@@ -37,21 +33,18 @@ AFRAME.registerComponent('collision', {
     const mesh = this.el.getObject3D('mesh');
     if (!mesh) { return; }
     const { size, offset } = this.data;
-    const { box, center, position, quaternion, scale, matrix } = this;
-
-    // We need the Box to move/rotate along with the Mesh.
-    // We create a Matrix4 that only contains Position/Rotation.
-    mesh.matrixWorld.decompose(position, quaternion, scale);
-    matrix.makeRotationFromQuaternion(quaternion);
-    matrix.setPosition(position);
+    const { box, center, matrix } = this;
 
     // Copy the geometry's boundingBox so we can find the entity's center in world space.
     box.copy(mesh.geometry.boundingBox);
     // Our custom size/position for the collision box.
     box.getCenter(center);
     box.setFromCenterAndSize(center, size);
+    box.translate(offset);
 
     // Lastly, Apply the position/rotation to match the Mesh.
+    matrix.extractRotation(mesh.matrixWorld);
+    matrix.copyPosition(mesh.matrixWorld);
     box.applyMatrix4(matrix);
   },
 
