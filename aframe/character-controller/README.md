@@ -1,11 +1,15 @@
-# Character Controller
+# user-controls component
 #### Inspired by [Unity Character Controller](https://docs.unity3d.com/Manual/class-CharacterController.html)
 
-The Character Controller is the glue the ties together several components into a controllable character or mob. It can be controlled by the player or programmatically.
-
-This component is more of an architecture than a specific library or piece of code. The idea is to make the glue code easy to write, fork, and modify to the specific game and specific need.
+This component allows the user to control a model with WASD keys. The model will animate with AABB collision detection.
 
 
+### How it works:
+
+1. `velocity` and `rotation` are created based on user input.
+2. Collisions are checked, updating the `velocity`.
+3. Animation is updated based on `velocity`.
+4. Entity is moved in world space. based on `velocity` and `rotation`.
 
 
 ## Input System
@@ -13,6 +17,8 @@ The `input` system listens to keyboard input and translates it into
 custom keys. [KEY_MAP](./src/consts/key_map.js) provides a mapping from
 [KeyboardEvent.code](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code)
 to a custom named key.
+
+Components should reference the system and read Key status from the `isKeyDown` method.
 
 *Example usage:*
 ```
@@ -27,13 +33,15 @@ if (input.isKeyDown(Key.Forward)) {
 
 
 ## Click To Select
-The `click-to-select` component/system combo
+A Component/System combo to allow the user to select a single model as active. The active entity will have an Indicator above it.
 
-Entities with the `click-to-select` component respond to the `click` event, setting the last entity as `selected`.
+Active entity will have a component property set to true, while the de-activated entities will have the property set to false.
 
-The selected entity will have the indicator floating above it.
+In the demo, this component is used to toggle `user-controls` `enabled` property.
 
 
 
 ## Collision system
-The `collision` system and `collision` components create a simple AABB collision system. Components can use this system to react to the collision, like preventing characters from moving through each other. Or preventing the player from moving through blocks and other obstacles.
+The `collision` component creates a simple Bounding Box to use for collision. It keeps the box updated based on the entity mesh position and rotation.
+
+The `collision` system keeps track of all the AABB bounding boxes and provides methods to check for collisions.
