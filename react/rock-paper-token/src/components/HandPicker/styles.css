@@ -1,0 +1,12 @@
+
+.handPicker {
+  display: flex;
+  justify-content: space-around;
+}
+
+.handPicker > div {
+  width: 124px;
+  height: 124px;
+  cursor: pointer;
+  /* filter: blur(2px) sepia(1); */
+}
