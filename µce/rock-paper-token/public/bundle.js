@@ -1,233 +1,55 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.js");
-/******/ })
-/************************************************************************/
-/******/ ({
+'use strict';
 
-/***/ "./node_modules/@ungap/create-content/esm/index.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/@ungap/create-content/esm/index.js ***!
-  \*********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+var esm = require('uce/esm');
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/*! (c) Andrea Giammarchi - ISC */\nvar createContent = (function (document) {'use strict';\n  var FRAGMENT = 'fragment';\n  var TEMPLATE = 'template';\n  var HAS_CONTENT = 'content' in create(TEMPLATE);\n\n  var createHTML = HAS_CONTENT ?\n    function (html) {\n      var template = create(TEMPLATE);\n      template.innerHTML = html;\n      return template.content;\n    } :\n    function (html) {\n      var content = create(FRAGMENT);\n      var template = create(TEMPLATE);\n      var childNodes = null;\n      if (/^[^\\S]*?<(col(?:group)?|t(?:head|body|foot|r|d|h))/i.test(html)) {\n        var selector = RegExp.$1;\n        template.innerHTML = '<table>' + html + '</table>';\n        childNodes = template.querySelectorAll(selector);\n      } else {\n        template.innerHTML = html;\n        childNodes = template.childNodes;\n      }\n      append(content, childNodes);\n      return content;\n    };\n\n  return function createContent(markup, type) {\n    return (type === 'svg' ? createSVG : createHTML)(markup);\n  };\n\n  function append(root, childNodes) {\n    var length = childNodes.length;\n    while (length--)\n      root.appendChild(childNodes[0]);\n  }\n\n  function create(element) {\n    return element === FRAGMENT ?\n      document.createDocumentFragment() :\n      document.createElementNS('http://www.w3.org/1999/xhtml', element);\n  }\n\n  // it could use createElementNS when hasNode is there\n  // but this fallback is equally fast and easier to maintain\n  // it is also battle tested already in all IE\n  function createSVG(svg) {\n    var content = create(FRAGMENT);\n    var template = create('div');\n    template.innerHTML = '<svg xmlns=\"http://www.w3.org/2000/svg\">' + svg + '</svg>';\n    append(content, template.firstChild.childNodes);\n    return content;\n  }\n\n}(document));\n/* harmony default export */ __webpack_exports__[\"default\"] = (createContent);\n\n\n//# sourceURL=webpack:///./node_modules/@ungap/create-content/esm/index.js?");
+// import { define } from 'https://unpkg.com/uce?module';
+console.log('define', esm.define);
 
-/***/ }),
+esm.define('my-component', {
+  // if specified, it's like the constructor
+  // it's granted to be invoked *only once* on bootstrap
+  // and *always* before connected/attributeChanged
+  init() {
+    // µhtml is provided automatically via this.html
+    // it will populate the shadow root, even if closed
+    // or simply the node, if no attachShadow is defined
+    this.html`<h1>Hello 👋 µce</h1>`;
+  },
 
-/***/ "./node_modules/uarray/esm/index.js":
-/*!******************************************!*\
-  !*** ./node_modules/uarray/esm/index.js ***!
-  \******************************************/
-/*! exports provided: isArray, indexOf, slice */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  // if specified, observe the list of attributes
+  observedAttributes: ['test'],
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isArray\", function() { return isArray; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"indexOf\", function() { return indexOf; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"slice\", function() { return slice; });\nconst {isArray} = Array;\nconst {indexOf, slice} = [];\n\n\n\n\n//# sourceURL=webpack:///./node_modules/uarray/esm/index.js?");
+  // if specified, will be notified per each
+  // observed attribute change
+  attributeChanged(name, oldValue, newValue){},
 
-/***/ }),
+  // if specified, will be invoked when the node
+  // is either appended live, or removed
+  connected() {},
+  disconnected() {},
 
-/***/ "./node_modules/uce/esm/index.js":
-/*!***************************************!*\
-  !*** ./node_modules/uce/esm/index.js ***!
-  \***************************************/
-/*! exports provided: render, html, svg, define */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  // events are automatically attached, as long
+  // as they start with the `on` prefix
+  // the context is *always* the component,
+  // you'll never need to bind a method here
+  onClick(event) {
+    console.log(this); // always the current Custom Element
+  },
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"define\", function() { return define; });\n/* harmony import */ var uhtml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uhtml */ \"./node_modules/uhtml/esm/index.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"render\", function() { return uhtml__WEBPACK_IMPORTED_MODULE_0__[\"render\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"html\", function() { return uhtml__WEBPACK_IMPORTED_MODULE_0__[\"html\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"svg\", function() { return uhtml__WEBPACK_IMPORTED_MODULE_0__[\"svg\"]; });\n\n\n\nconst {define: defineCustomElement} = customElements;\nconst {create, defineProperties, getOwnPropertyDescriptor, keys} = Object;\n\nconst initialized = new WeakMap;\nconst element = 'element';\n\nconst Class = kind => kind === element ?\n  HTMLElement :\n  document.createElement(kind).constructor\n;\n\n\n\nconst define = (tagName, definition) => {\n  const {\n    attachShadow,\n    attributeChanged,\n    connected,\n    disconnected,\n    handleEvent,\n    init,\n    observedAttributes\n  } = definition;\n  const statics = {};\n  const proto = {};\n  const listeners = [];\n  const retype = create(null);\n  for (let k = keys(definition), i = 0, {length} = k; i < length; i++) {\n    const key = k[i];\n    if (/^on/.test(key) && !/Options$/.test(key)) {\n      const options = definition[key + 'Options'] || false;\n      const lower = key.toLowerCase();\n      let type = lower.slice(2);\n      listeners.push({type, options});\n      retype[type] = key;\n      if (lower !== key) {\n        type = lower.slice(2, 3) + key.slice(3);\n        retype[type] = key;\n        listeners.push({type, options});\n      }\n    }\n    switch (key) {\n      case 'attachShadow':\n      case 'observedAttributes':\n        break;\n      default:\n        proto[key] = getOwnPropertyDescriptor(definition, key);\n    }\n  }\n  const {length} = listeners;\n  if (length && !handleEvent)\n    proto.handleEvent = {value(event) {\n      this[retype[event.type]](event);\n    }};\n\n  if (observedAttributes)\n    statics.observedAttributes = {value: observedAttributes};\n  proto.attributeChangedCallback =  {value() {\n    bootstrap(this);\n    if (attributeChanged)\n      attributeChanged.apply(this, arguments);\n  }};\n\n  proto.connectedCallback = {value() {\n    bootstrap(this);\n    if (connected)\n      connected.apply(this, arguments);\n  }};\n\n  if (disconnected)\n    proto.disconnectedCallback = {value: disconnected};\n\n  const kind = definition.extends || element;\n  class MicroElement extends Class(kind) {};\n  defineProperties(MicroElement, statics);\n  defineProperties(MicroElement.prototype, proto);\n  const args = [tagName, MicroElement];\n  if (kind !== element)\n    args.push({extends: kind});\n  defineCustomElement.apply(customElements, args);\n  function bootstrap(element) {\n    if (!initialized.has(element)) {\n      initialized.set(element, 0);\n      defineProperties(element, {html: {\n        value: content.bind(\n          attachShadow ? element.attachShadow(attachShadow) : element\n        )\n      }});\n      for (let i = 0; i < length; i++) {\n        const {type, options} = listeners[i];\n        element.addEventListener(type, element, options);\n      }\n      if (init)\n        init.call(element);\n    }\n  }\n};\n\nfunction content() {\n  return Object(uhtml__WEBPACK_IMPORTED_MODULE_0__[\"render\"])(this, uhtml__WEBPACK_IMPORTED_MODULE_0__[\"html\"].apply(null, arguments));\n}\n\n\n//# sourceURL=webpack:///./node_modules/uce/esm/index.js?");
+  // if specified with `on` prefix and `Options` suffix,
+  // allows adding the listener with a proper third argument
+  onClickOptions: {once: true}, // or true, or default false
 
-/***/ }),
+  // any other method, property, or getter/setter will be
+  // properly configured in the defined class prototype
+  get test() { return Math.random(); },
 
-/***/ "./node_modules/udomdiff/esm/index.js":
-/*!********************************************!*\
-  !*** ./node_modules/udomdiff/esm/index.js ***!
-  \********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+  set test(value) { console.log(value); },
 
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/**\n * ISC License\n *\n * Copyright (c) 2020, Andrea Giammarchi, @WebReflection\n *\n * Permission to use, copy, modify, and/or distribute this software for any\n * purpose with or without fee is hereby granted, provided that the above\n *copyright notice and this permission notice appear in all copies.\n *\n * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\n * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY\n * AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\n * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM\n * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE\n * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR\n * PERFORMANCE OF THIS SOFTWARE.\n */\n\n/**\n * @param {Node} parentNode The container where children live\n * @param {Node[]} a The list of current/live children\n * @param {Node[]} b The list of future children\n * @param {(entry: Node, action: number) => Node} get\n * The callback invoked per each entry related DOM operation.\n * @param {Node} [before] The optional node used as anchor to insert before.\n * @returns {Node[]} The same list of future children.\n */\n/* harmony default export */ __webpack_exports__[\"default\"] = ((parentNode, a, b, get, before) => {\n  const bLength = b.length;\n  let aEnd = a.length;\n  let bEnd = bLength;\n  let aStart = 0;\n  let bStart = 0;\n  let map = null;\n  while (aStart < aEnd || bStart < bEnd) {\n    // append head, tail, or nodes in between: fast path\n    if (aEnd === aStart) {\n      // we could be in a situation where the rest of nodes that\n      // need to be added are not at the end, and in such case\n      // the node to `insertBefore`, if the index is more than 0\n      // must be retrieved, otherwise it's gonna be the first item.\n      const node = bEnd < bLength ?\n        (bStart ?\n          (get(b[bStart - 1], -0).nextSibling) :\n          get(b[bEnd - bStart], 0)) :\n        before;\n      while (bStart < bEnd)\n        parentNode.insertBefore(get(b[bStart++], 1), node);\n    }\n    // remove head or tail: fast path\n    else if (bEnd === bStart) {\n      while (aStart < aEnd) {\n        // remove the node only if it's unknown or not live\n        if (!map || !map.has(a[aStart]))\n          parentNode.removeChild(get(a[aStart], -1));\n        aStart++;\n      }\n    }\n    // same node: fast path\n    else if (a[aStart] === b[bStart]) {\n      aStart++;\n      bStart++;\n    }\n    // same tail: fast path\n    else if (a[aEnd - 1] === b[bEnd - 1]) {\n      aEnd--;\n      bEnd--;\n    }\n    // single last swap: fast path\n    else if ((aEnd - aStart) === 1 && (bEnd - bStart) === 1) {\n      // we could be in a situation where the node was either unknown,\n      // be at the end of the future nodes list, or be in the middle\n      if (map && map.has(a[aStart])) {\n        // in the end or middle case, find out where to insert it\n        parentNode.insertBefore(\n          get(b[bStart], 1),\n          get(bEnd < bLength ? b[bEnd] : before, 0)\n        );\n      }\n      // if the node is unknown, just replace it with the new one\n      else\n        parentNode.replaceChild(get(b[bStart], 1), get(a[aStart], -1));\n      // break the loop, as this was the very last operation to perform\n      break;\n    }\n    // reverse swap: also fast path\n    else if (\n      a[aStart] === b[bEnd - 1] &&\n      b[bStart] === a[aEnd - 1]\n    ) {\n      // this is a \"shrink\" operation that could happen in these cases:\n      // [1, 2, 3, 4, 5]\n      // [1, 4, 3, 2, 5]\n      // or asymmetric too\n      // [1, 2, 3, 4, 5]\n      // [1, 2, 3, 5, 6, 4]\n      const node = get(a[--aEnd], -1).nextSibling;\n      parentNode.insertBefore(\n        get(b[bStart++], 1),\n        get(a[aStart++], -1).nextSibling\n      );\n      parentNode.insertBefore(get(b[--bEnd], 1), node);\n      // mark the future index as identical (yeah, it's dirty, but cheap 👍)\n      // The main reason to do this, is that when a[aEnd] will be reached,\n      // the loop will likely be on the fast path, as identical to b[bEnd].\n      // In the best case scenario, the next loop will skip the tail,\n      // but in the worst one, this node will be considered as already\n      // processed, bailing out pretty quickly from the map index check\n      a[aEnd] = b[bEnd];\n    }\n    // map based fallback, \"slow\" path\n    else {\n      // the map requires an O(bEnd - bStart) operation once\n      // to store all future nodes indexes for later purposes.\n      // In the worst case scenario, this is a full O(N) cost,\n      // and such scenario happens at least when all nodes are different,\n      // but also if both first and last items of the lists are different\n      if (!map) {\n        map = new Map;\n        let i = bStart;\n        while (i < bEnd)\n          map.set(b[i], i++);\n      }\n      // if it's a future node, hence it needs some handling\n      if (map.has(a[aStart])) {\n        // grab the index of such node, 'cause it might have been processed\n        const index = map.get(a[aStart]);\n        // if it's not already processed, look on demand for the next LCS\n        if (bStart < index && index < bEnd) {\n          let i = aStart;\n          // counts the amount of nodes that are the same in the future\n          let sequence = 1;\n          while (++i < aEnd && i < bEnd) {\n            if (!map.has(a[i]) || map.get(a[i]) !== (index + sequence))\n              break;\n            sequence++;\n          }\n          // effort decision here: if the sequence is longer than replaces\n          // needed to reach such sequence, which would brings again this loop\n          // to the fast path, prepend the difference before a sequence,\n          // and move only the future list index forward, so that aStart\n          // and bStart will be aligned again, hence on the fast path.\n          // An example considering aStart and bStart are both 0:\n          // a: [1, 2, 3, 4]\n          // b: [7, 1, 2, 3, 6]\n          // this would place 7 before 1 and, from that time on, 1, 2, and 3\n          // will be processed at zero cost\n          if (sequence > (index - bStart)) {\n            const node = get(a[aStart], 0);\n            while (bStart < index)\n              parentNode.insertBefore(get(b[bStart++], 1), node);\n          }\n          // if the effort wasn't good enough, fallback to a replace,\n          // moving both source and target indexes forward, hoping that some\n          // similar node will be found later on, to go back to the fast path\n          else {\n            parentNode.replaceChild(\n              get(b[bStart++], 1),\n              get(a[aStart++], -1)\n            );\n          }\n        }\n        // otherwise move the source forward, 'cause there's nothing to do\n        else\n          aStart++;\n      }\n      // this node has no meaning in the future list, so it's more than safe\n      // to remove it, and check the next live node out instead, meaning\n      // that only the live list index should be forwarded\n      else\n        parentNode.removeChild(get(a[aStart++], -1));\n    }\n  }\n  return b;\n});\n\n\n//# sourceURL=webpack:///./node_modules/udomdiff/esm/index.js?");
+  sharedData: [1, 2, 3],
 
-/***/ }),
+  method() {
+    return this.test;
+  }
 
-/***/ "./node_modules/uhtml/esm/handlers.js":
-/*!********************************************!*\
-  !*** ./node_modules/uhtml/esm/handlers.js ***!
-  \********************************************/
-/*! exports provided: handlers */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"handlers\", function() { return handlers; });\n/* harmony import */ var uarray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uarray */ \"./node_modules/uarray/esm/index.js\");\n/* harmony import */ var udomdiff__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! udomdiff */ \"./node_modules/udomdiff/esm/index.js\");\n/* harmony import */ var uwire__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! uwire */ \"./node_modules/uwire/esm/index.js\");\n/* harmony import */ var _node_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node.js */ \"./node_modules/uhtml/esm/node.js\");\n\n\n\n\n\n\n// this helper avoid code bloat around handleAnything() callback\nconst diff = (comment, oldNodes, newNodes) => Object(udomdiff__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(\n  comment.parentNode,\n  // TODO: there is a possible edge case where a node has been\n  //       removed manually, or it was a keyed one, attached\n  //       to a shared reference between renders.\n  //       In this case udomdiff might fail at removing such node\n  //       as its parent won't be the expected one.\n  //       The best way to avoid this issue is to filter oldNodes\n  //       in search of those not live, or not in the current parent\n  //       anymore, but this would require both a change to uwire,\n  //       exposing a parentNode from the firstChild, as example,\n  //       but also a filter per each diff that should exclude nodes\n  //       that are not in there, penalizing performance quite a lot.\n  //       As this has been also a potential issue with domdiff,\n  //       and both lighterhtml and hyperHTML might fail with this\n  //       very specific edge case, I might as well document this possible\n  //       \"diffing shenanigan\" and call it a day.\n  oldNodes,\n  newNodes,\n  uwire__WEBPACK_IMPORTED_MODULE_2__[\"diffable\"],\n  comment\n);\n\n// if an interpolation represents a comment, the whole\n// diffing will be related to such comment.\n// This helper is in charge of understanding how the new\n// content for such interpolation/hole should be updated\nconst handleAnything = (comment, nodes) => {\n  let oldValue, text;\n  const anyContent = newValue => {\n    switch (typeof newValue) {\n      // primitives are handled as text content\n      case 'string':\n      case 'number':\n      case 'boolean':\n        if (oldValue !== newValue) {\n          oldValue = newValue;\n          if (!text)\n            text = document.createTextNode('');\n          text.textContent = newValue;\n          nodes = diff(comment, nodes, [text]);\n        }\n        break;\n      // null, and undefined are used to cleanup previous content\n      case 'object':\n      case 'undefined':\n        if (newValue == null) {\n          if (oldValue) {\n            oldValue = newValue;\n            nodes = diff(comment, nodes, []);\n          }\n          break;\n        }\n        // arrays and nodes have a special treatment\n        if (Object(uarray__WEBPACK_IMPORTED_MODULE_0__[\"isArray\"])(newValue)) {\n          oldValue = newValue;\n          // arrays can be used to cleanup, if empty\n          if (newValue.length === 0)\n            nodes = diff(comment, nodes, []);\n          // or diffed, if these contains nodes or \"wires\"\n          else if (typeof newValue[0] === 'object')\n            nodes = diff(comment, nodes, newValue);\n          // in all other cases the content is stringified as is\n          else\n            anyContent(String(newValue));\n        }\n        // if the new value is a DOM node, or a wire, and it's\n        // different from the one already live, then it's diffed.\n        // if the node is a fragment, it's appended once via its childNodes\n        // There is no `else` here, meaning if the content\n        // is not expected one, nothing happens, as easy as that.\n        else if ('ELEMENT_NODE' in newValue && newValue !== oldValue) {\n          oldValue = newValue;\n          nodes = diff(\n            comment,\n            nodes,\n            newValue.nodeType === 11 ?\n              uarray__WEBPACK_IMPORTED_MODULE_0__[\"slice\"].call(newValue.childNodes) :\n              [newValue]\n          );\n        }\n    }\n  };\n  return anyContent;\n};\n\n// attributes can be:\n//  * ref=${...}      for hooks and other purposes\n//  * .setter=${...}  for Custom Elements setters or nodes with setters\n//                    such as buttons, details, options, select, etc\n//  * onevent=${...}  to automatically handle event listeners\n//  * generic=${...}  to handle an attribute just like an attribute\nconst handleAttribute = (node, name) => {\n  // hooks and ref\n  if (name === 'ref')\n    return ref => {\n      if (typeof ref === 'function')\n        ref(node);\n      else\n        ref.current = node;\n    };\n\n  // direct setters\n  if (name.slice(0, 1) === '.') {\n    const setter = name.slice(1);\n    return value => { node[setter] = value; }\n  }\n\n  let oldValue;\n\n  // events\n  if (name.slice(0, 2) === 'on') {\n    let type = name.slice(2);\n    if (!(name in node) && name.toLowerCase() in node)\n      type = type.toLowerCase();\n    return newValue => {\n      const info = Object(uarray__WEBPACK_IMPORTED_MODULE_0__[\"isArray\"])(newValue) ? newValue : [newValue, false];\n      if (oldValue !== info[0]) {\n        if (oldValue)\n          node.removeEventListener(type, oldValue, info[1]);\n        if (oldValue = info[0])\n          node.addEventListener(type, oldValue, info[1]);\n      }\n    };\n  }\n\n  // all other cases\n  let noOwner = true;\n  const attribute = document.createAttribute(name);\n  return newValue => {\n    if (oldValue !== newValue) {\n      oldValue = newValue;\n      if (oldValue == null) {\n        if (!noOwner) {\n          node.removeAttributeNode(attribute);\n          noOwner = true;\n        }\n      }\n      else {\n        attribute.value = newValue;\n        // There is no else case here.\n        // If the attribute has no owner, it's set back.\n        if (noOwner) {\n          node.setAttributeNode(attribute);\n          noOwner = false;\n        }\n      }\n    }\n  };\n};\n\n// style and textarea nodes can change only their text\n// without any possibility to accept child nodes.\n// in these two cases the content is simply updated, or cleaned,\n// accordingly with the passed value.\nconst handleText = node => {\n  let oldValue;\n  return newValue => {\n    if (oldValue !== newValue) {\n      oldValue = newValue;\n      node.textContent = newValue == null ? '' : newValue;\n    }\n  };\n};\n\n// each mapped update carries the update type and its path\n// the type is either node, attribute, or text, while\n// the path is how to retrieve the related node to update.\n// In the attribute case, the attribute name is also carried along.\nfunction handlers(options) {\n  const {type, path} = options;\n  const node = path.reduce(_node_js__WEBPACK_IMPORTED_MODULE_3__[\"reducePath\"], this);\n  return type === 'node' ?\n    handleAnything(node, []) :\n    (type === 'attr' ?\n      handleAttribute(node, options.name) :\n      handleText(node));\n};\n\n\n//# sourceURL=webpack:///./node_modules/uhtml/esm/handlers.js?");
-
-/***/ }),
-
-/***/ "./node_modules/uhtml/esm/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/uhtml/esm/index.js ***!
-  \*****************************************/
-/*! exports provided: html, svg, render */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"html\", function() { return html; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"svg\", function() { return svg; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"render\", function() { return render; });\n/* harmony import */ var umap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! umap */ \"./node_modules/umap/esm/index.js\");\n/* harmony import */ var _rabbit_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./rabbit.js */ \"./node_modules/uhtml/esm/rabbit.js\");\n\n\n\nconst {create, defineProperties} = Object;\n\n// each rendered node gets its own cache\nconst cache = Object(umap__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(new WeakMap);\n\n// both `html` and `svg` template literal tags are polluted\n// with a `for(ref[, id])` and a `node` tag too\nconst tag = type => {\n  // both `html` and `svg` tags have their own cache\n  const keyed = Object(umap__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(new WeakMap);\n  // keyed operations always re-use the same cache and unroll\n  // the template and its interpolations right away\n  const fixed = cache => (template, ...values) => Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"unroll\"])(\n    cache,\n    {type, template, values}\n  );\n  return defineProperties(\n    // non keyed operations are recognized as instance of Hole\n    // during the \"unroll\", recursively resolved and updated\n    (template, ...values) => new _rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"Hole\"](type, template, values),\n    {\n      for: {\n        // keyed operations need a reference object, usually the parent node\n        // which is showing keyed results, and optionally a unique id per each\n        // related node, handy with JSON results and mutable list of objects\n        // that usually carry a unique identifier\n        value(ref, id) {\n          const memo = keyed.get(ref) || keyed.set(ref, create(null));\n          return memo[id] || (memo[id] = fixed(Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"createCache\"])()));\n        }\n      },\n      node: {\n        // it is possible to create one-off content out of the box via node tag\n        // this might return the single created node, or a fragment with all\n        // nodes present at the root level and, of course, their child nodes\n        value: (template, ...values) => Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"unroll\"])(\n          Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"createCache\"])(),\n          {type, template, values}\n        ).valueOf()\n      }\n    }\n  );\n};\n\nconst html = tag('html');\n\nconst svg = tag('svg');\n\n// rendering means understanding what `html` or `svg` tags returned\n// and it relates a specific node to its own unique cache.\n// Each time the content to render changes, the node is cleaned up\n// and the new new content is appended, and if such content is a Hole\n// then it's \"unrolled\" to resolve all its inner nodes.\nconst render = (where, what) => {\n  const hole = typeof what === 'function' ? what() : what;\n  const info = cache.get(where) || cache.set(where, Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"createCache\"])());\n  const wire = hole instanceof _rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"Hole\"] ? Object(_rabbit_js__WEBPACK_IMPORTED_MODULE_1__[\"unroll\"])(info, hole) : hole;\n  if (wire !== info.wire) {\n    info.wire = wire;\n    where.textContent = '';\n    // valueOf() simply returns the node itself, but in case it was a \"wire\"\n    // it will eventually re-append all nodes to its fragment so that such\n    // fragment can be re-appended many times in a meaningful way\n    // (wires are basically persistent fragments facades with special behavior)\n    where.appendChild(wire.valueOf());\n  }\n  return where;\n};\n\n\n//# sourceURL=webpack:///./node_modules/uhtml/esm/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/uhtml/esm/node.js":
-/*!****************************************!*\
-  !*** ./node_modules/uhtml/esm/node.js ***!
-  \****************************************/
-/*! exports provided: reducePath, createPath, createTreeWalker, importNode, createFragment, createWalker */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"reducePath\", function() { return reducePath; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createPath\", function() { return createPath; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createTreeWalker\", function() { return createTreeWalker; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"importNode\", function() { return importNode; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createFragment\", function() { return createFragment; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createWalker\", function() { return createWalker; });\n/* harmony import */ var _ungap_create_content__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @ungap/create-content */ \"./node_modules/@ungap/create-content/esm/index.js\");\n/* harmony import */ var uarray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! uarray */ \"./node_modules/uarray/esm/index.js\");\n\n\n\n// from a generic path, retrieves the exact targeted node\nconst reducePath = (node, i) => node.childNodes[i];\n\n// from a fragment container, create an array of indexes\n// related to its child nodes, so that it's possible\n// to retrieve later on exact node via reducePath\nconst createPath = node => {\n  const path = [];\n  let {parentNode} = node;\n  while (parentNode) {\n    path.unshift(uarray__WEBPACK_IMPORTED_MODULE_1__[\"indexOf\"].call(parentNode.childNodes, node));\n    node = parentNode;\n    parentNode = node.parentNode;\n  }\n  return path;\n};\n\nconst {createTreeWalker, importNode} = document;\n\n\n// this \"hack\" tells the library if the browser is IE11 or old Edge\nconst IE = importNode.length != 1;\n\n// IE11 and old Edge discard empty nodes when cloning, potentially\n// resulting in broken paths to find updates. The workaround here\n// is to import once, upfront, the fragment that will be cloned\n// later on, so that paths are retrieved from one already parsed,\n// hence without missing child nodes once re-cloned.\nconst createFragment = IE ?\n  (text, type) => importNode.call(\n    document,\n    Object(_ungap_create_content__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(text, type),\n    true\n  ) :\n  _ungap_create_content__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\n\n// IE11 and old Edge have a different createTreeWalker signature that\n// has been deprecated in other browsers. This export is needed only\n// to guarantee the TreeWalker doesn't show warnings and, ultimately, works\nconst createWalker = IE ?\n  fragment => createTreeWalker.call(document, fragment, 1 | 128, null, false) :\n  fragment => createTreeWalker.call(document, fragment, 1 | 128);\n\n\n//# sourceURL=webpack:///./node_modules/uhtml/esm/node.js?");
-
-/***/ }),
-
-/***/ "./node_modules/uhtml/esm/rabbit.js":
-/*!******************************************!*\
-  !*** ./node_modules/uhtml/esm/rabbit.js ***!
-  \******************************************/
-/*! exports provided: createCache, unroll, Hole */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createCache\", function() { return createCache; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"unroll\", function() { return unroll; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Hole\", function() { return Hole; });\n/* harmony import */ var umap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! umap */ \"./node_modules/umap/esm/index.js\");\n/* harmony import */ var uparser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! uparser */ \"./node_modules/uparser/esm/index.js\");\n/* harmony import */ var uarray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! uarray */ \"./node_modules/uarray/esm/index.js\");\n/* harmony import */ var uwire__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! uwire */ \"./node_modules/uwire/esm/index.js\");\n/* harmony import */ var _handlers_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./handlers.js */ \"./node_modules/uhtml/esm/handlers.js\");\n/* harmony import */ var _node_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node.js */ \"./node_modules/uhtml/esm/node.js\");\n\n\n\n\n\n\n\n\n// the prefix is used to identify either comments, attributes, or nodes\n// that contain the related unique id. In the attribute cases\n// isµX=\"attribute-name\" will be used to map current X update to that\n// attribute name, while comments will be like <!--isµX-->, to map\n// the update to that specific comment node, hence its parent.\n// style and textarea will have <!--isµX--> text content, and are handled\n// directly through text-only updates.\nconst prefix = 'isµ';\n\n// Template Literals are unique per scope and static, meaning a template\n// should be parsed once, and once only, as it will always represent the same\n// content, within the exact same amount of updates each time.\n// This cache relates each template to its unique content and updates.\nconst cache = Object(umap__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(new WeakMap);\n\nconst createCache = () => ({\n  stack: [],    // each template gets a stack for each interpolation \"hole\"\n\n  entry: null,  // each entry contains details, such as:\n                //  * the template that is representing\n                //  * the type of node it represents (html or svg)\n                //  * the content fragment with all nodes\n                //  * the list of updates per each node (template holes)\n                //  * the \"wired\" node or fragment that will get updates\n                // if the template or type are different from the previous one\n                // the entry gets re-created each time\n\n  wire: null    // each rendered node represent some wired content and\n                // this reference to the latest one. If different, the node\n                // will be cleaned up and the new \"wire\" will be appended\n});\n\n// the entry stored in the rendered node cache, and per each \"hole\"\nconst createEntry = (type, template) => {\n  const {content, updates} = mapUpdates(type, template);\n  return {type, template, content, updates, wire: null};\n};\n\n// a template is instrumented to be able to retrieve where updates are needed.\n// Each unique template becomes a fragment, cloned once per each other\n// operation based on the same template, i.e. data => html`<p>${data}</p>`\nconst mapTemplate = (type, template) => {\n  const text = Object(uparser__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(template, prefix, type === 'svg');\n  const content = Object(_node_js__WEBPACK_IMPORTED_MODULE_5__[\"createFragment\"])(text, type);\n  // once instrumented and reproduced as fragment, it's crawled\n  // to find out where each update is in the fragment tree\n  const tw = Object(_node_js__WEBPACK_IMPORTED_MODULE_5__[\"createWalker\"])(content);\n  const nodes = [];\n  const length = template.length - 1;\n  let i = 0;\n  // updates are searched via unique names, linearly increased across the tree\n  // <div isµ0=\"attr\" isµ1=\"other\"><!--isµ2--><style><!--isµ3--</style></div>\n  let search = `${prefix}${i}`;\n  while (i < length) {\n    const node = tw.nextNode();\n    // if not all updates are bound but there's nothing else to crawl\n    // it means that there is something wrong with the template.\n    if (!node)\n      throw `bad template: ${text}`;\n    // if the current node is a comment, and it contains isµX\n    // it means the update should take care of any content\n    if (node.nodeType === 8) {\n      // The only comments to be considered are those\n      // which content is exactly the same as the searched one.\n      if (node.textContent === search) {\n        nodes.push({type: 'node', path: Object(_node_js__WEBPACK_IMPORTED_MODULE_5__[\"createPath\"])(node)});\n        search = `${prefix}${++i}`;\n      }\n    }\n    else {\n      // if the node is not a comment, loop through all its attributes\n      // named isµX and relate attribute updates to this node and the\n      // attribute name, retrieved through node.getAttribute(\"isµX\")\n      // the isµX attribute will be removed as irrelevant for the layout\n      while (node.hasAttribute(search)) {\n        nodes.push({\n          type: 'attr',\n          path: Object(_node_js__WEBPACK_IMPORTED_MODULE_5__[\"createPath\"])(node),\n          name: node.getAttribute(search),\n        });\n        node.removeAttribute(search);\n        search = `${prefix}${++i}`;\n      }\n      // if the node was a style or a textarea one, check its content\n      // and if it is <!--isµX--> then update tex-only this node\n      if (\n        /^(?:style|textarea)$/i.test(node.tagName) &&\n        node.textContent.trim() === `<!--${search}-->`\n      ){\n        nodes.push({type: 'text', path: Object(_node_js__WEBPACK_IMPORTED_MODULE_5__[\"createPath\"])(node)});\n        search = `${prefix}${++i}`;\n      }\n    }\n  }\n  // once all nodes to update, or their attributes, are known, the content\n  // will be cloned in the future to represent the template, and all updates\n  // related to such content retrieved right away without needing to re-crawl\n  // the exact same template, and its content, more than once.\n  return {content, nodes};\n};\n\n// if a template is unknown, perform the previous mapping, otherwise grab\n// its details such as the fragment with all nodes, and updates info.\nconst mapUpdates = (type, template) => {\n  const {content, nodes} = (\n    cache.get(template) ||\n    cache.set(template, mapTemplate(type, template))\n  );\n  // clone deeply the fragment\n  const fragment = _node_js__WEBPACK_IMPORTED_MODULE_5__[\"importNode\"].call(document, content, true);\n  // and relate an update handler per each node that needs one\n  const updates = nodes.map(_handlers_js__WEBPACK_IMPORTED_MODULE_4__[\"handlers\"], fragment);\n  // return the fragment and all updates to use within its nodes\n  return {content: fragment, updates};\n};\n\n// as html and svg can be nested calls, but no parent node is known\n// until rendered somewhere, the unroll operation is needed to\n// discover what to do with each interpolation, which will result\n// into an update operation.\nconst unroll = (info, {type, template, values}) => {\n  const {length} = values;\n  // interpolations can contain holes and arrays, so these need\n  // to be recursively discovered\n  unrollValues(info, values, length);\n  let {entry} = info;\n  // if the cache entry is either null or different from the template\n  // and the type this unroll should resolve, create a new entry\n  // assigning a new content fragment and the list of updates.\n  if (!entry || (entry.template !== template || entry.type !== type))\n    info.entry = (entry = createEntry(type, template));\n  const {content, updates, wire} = entry;\n  // even if the fragment and its nodes is not live yet,\n  // it is already possible to update via interpolations values.\n  for (let i = 0; i < length; i++)\n    updates[i](values[i]);\n  // if the entry was new, or representing a different template or type,\n  // create a new persistent entity to use during diffing.\n  // This is simply a DOM node, when the template has a single container,\n  // as in `<p></p>`, or a \"wire\" in `<p></p><p></p>` and similar cases.\n  return wire || (entry.wire = Object(uwire__WEBPACK_IMPORTED_MODULE_3__[\"persistent\"])(content));\n};\n\n// the stack retains, per each interpolation value, the cache\n// related to each interpolation value, or null, if the render\n// was conditional and the value is not special (Array or Hole)\nconst unrollValues = ({stack}, values, length) => {\n  for (let i = 0; i < length; i++) {\n    const hole = values[i];\n    // each Hole gets unrolled and re-assigned as value\n    // so that domdiff will deal with a node/wire, not with a hole\n    if (hole instanceof Hole)\n      values[i] = unroll(\n        stack[i] || (stack[i] = createCache()),\n        hole\n      );\n    // arrays are recursively resolved so that each entry will contain\n    // also a DOM node or a wire, hence it can be diffed if/when needed\n    else if (Object(uarray__WEBPACK_IMPORTED_MODULE_2__[\"isArray\"])(hole))\n      unrollValues(\n        stack[i] || (stack[i] = createCache()),\n        hole,\n        hole.length\n      );\n    // if the value is nothing special, the stack doesn't need to retain data\n    // this is useful also to cleanup previously retained data, if the value\n    // was a Hole, or an Array, but not anymore, i.e.:\n    // const update = content => html`<div>${content}</div>`;\n    // update(listOfItems); update(null); update(html`hole`)\n    else\n      stack[i] = null;\n  }\n  if (length < stack.length)\n    stack.splice(length);\n};\n\n/**\n * Holds all details wrappers needed to render the content further on.\n * @constructor\n * @param {string} type The hole type, either `html` or `svg`.\n * @param {string[]} template The template literals used to the define the content.\n * @param {Array} values Zero, one, or more interpolated values to render.\n */\nfunction Hole(type, template, values) {\n  this.type = type;\n  this.template = template;\n  this.values = values;\n};\n\n\n//# sourceURL=webpack:///./node_modules/uhtml/esm/rabbit.js?");
-
-/***/ }),
-
-/***/ "./node_modules/umap/esm/index.js":
-/*!****************************************!*\
-  !*** ./node_modules/umap/esm/index.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (_ => ({\n  // About: get: _.get.bind(_)\n  // It looks like WebKit/Safari didn't optimize bind at all,\n  // so that using bind slows it down by 60%.\n  // Firefox and Chrome are just fine in both cases,\n  // so let's use the approach that works fast everywhere 👍\n  get: key => _.get(key),\n  set: (key, value) => (_.set(key, value), value)\n}));\n\n\n//# sourceURL=webpack:///./node_modules/umap/esm/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/uparser/esm/index.js":
-/*!*******************************************!*\
-  !*** ./node_modules/uparser/esm/index.js ***!
-  \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\nconst attr = /([^\\s\\\\>\"'=]+)\\s*=\\s*(['\"]?)$/;\nconst empty = /^(?:area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)$/i;\nconst node = /<[a-z][^>]+$/i;\nconst notNode = />[^<>]*$/;\nconst selfClosing = /<([a-z]+[a-z0-9:._-]*)([^>]*?)(\\/>)/ig;\nconst trimEnd = /\\s+$/;\n\nconst isNode = (template, i) => {\n  while (i--) {\n    const chunk = template[i];\n    if (node.test(chunk))\n      return true;\n    if (notNode.test(chunk))\n      return false;\n  }\n  return false;\n};\n\nconst regular = (original, name, extra) => empty.test(name) ?\n                  original : `<${name}${extra.replace(trimEnd,'')}></${name}>`;\n\n/* harmony default export */ __webpack_exports__[\"default\"] = ((template, prefix, svg) => {\n  const text = [];\n  for (let i = 0, {length} = template; i < length; i++) {\n    const chunk = template[i];\n    if (attr.test(chunk) && isNode(template, i + 1))\n      text.push(chunk.replace(attr, (_, $1, $2) =>\n        `${prefix}${i}=${$2 ? $2 : '\"'}${$1}${$2 ? '' : '\"'}`));\n    else if ((i + 1) < length)\n      text.push(chunk, `<!--${prefix}${i}-->`);\n    else\n      text.push(chunk);\n  }\n  const output = text.join('').trim();\n  return svg ? output : output.replace(selfClosing, regular);\n});\n\n\n//# sourceURL=webpack:///./node_modules/uparser/esm/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/uwire/esm/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/uwire/esm/index.js ***!
-  \*****************************************/
-/*! exports provided: diffable, persistent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"diffable\", function() { return diffable; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"persistent\", function() { return persistent; });\n/* harmony import */ var uarray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uarray */ \"./node_modules/uarray/esm/index.js\");\n\n\nconst ELEMENT_NODE = 1;\nconst nodeType = 111;\n\nconst remove = ({firstChild, lastChild}) => {\n  const range = document.createRange();\n  range.setStartAfter(firstChild);\n  range.setEndAfter(lastChild);\n  range.deleteContents();\n  return firstChild;\n};\n\nconst diffable = (node, operation) => node.nodeType === nodeType ?\n  ((1 / operation) < 0 ?\n    (operation ? remove(node) : node.lastChild) :\n    (operation ? node.valueOf() : node.firstChild)) :\n  node\n;\n\nconst persistent = fragment => {\n  const {childNodes} = fragment;\n  const {length} = childNodes;\n  // If the fragment has no content\n  // it should return undefined and break\n  if (length < 2)\n    return childNodes[0];\n  const nodes = uarray__WEBPACK_IMPORTED_MODULE_0__[\"slice\"].call(childNodes, 0);\n  const firstChild = nodes[0];\n  const lastChild = nodes[length - 1];\n  return {\n    ELEMENT_NODE,\n    nodeType,\n    firstChild,\n    lastChild,\n    valueOf() {\n      if (childNodes.length !== length) {\n        let i = 0;\n        while (i < length)\n          fragment.appendChild(nodes[i++]);\n      }\n      return fragment;\n    }\n  };\n};\n\n\n//# sourceURL=webpack:///./node_modules/uwire/esm/index.js?");
-
-/***/ }),
-
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var uce_esm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uce/esm */ \"./node_modules/uce/esm/index.js\");\nfunction _templateObject() {\n  var data = _taggedTemplateLiteral([\"<h1>Hello \\uD83D\\uDC4B \\xB5ce</h1>\"]);\n\n  _templateObject = function _templateObject() {\n    return data;\n  };\n\n  return data;\n}\n\nfunction _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }\n\n // import { define } from 'https://unpkg.com/uce?module';\n\nconsole.log('define', uce_esm__WEBPACK_IMPORTED_MODULE_0__[\"define\"]);\nObject(uce_esm__WEBPACK_IMPORTED_MODULE_0__[\"define\"])('my-component', {\n  // if specified, it can extend built-ins too.\n  // by default it's 'element', as HTMLElement\n  \"extends\": 'div',\n  // if specified, it's like the constructor\n  // it's granted to be invoked *only once* on bootstrap\n  // and *always* before connected/attributeChanged\n  init: function init() {\n    // µhtml is provided automatically via this.html\n    // it will populate the shadow root, even if closed\n    // or simply the node, if no attachShadow is defined\n    this.html(_templateObject());\n  },\n  // if specified, it renders within its Shadow DOM\n  // compatible with both open and closed modes\n  attachShadow: {\n    mode: 'closed'\n  },\n  // if specified, observe the list of attributes\n  observedAttributes: ['test'],\n  // if specified, will be notified per each\n  // observed attribute change\n  attributeChanged: function attributeChanged(name, oldValue, newValue) {},\n  // if specified, will be invoked when the node\n  // is either appended live, or removed\n  connected: function connected() {},\n  disconnected: function disconnected() {},\n  // events are automatically attached, as long\n  // as they start with the `on` prefix\n  // the context is *always* the component,\n  // you'll never need to bind a method here\n  onClick: function onClick(event) {\n    console.log(this); // always the current Custom Element\n  },\n  // if specified with `on` prefix and `Options` suffix,\n  // allows adding the listener with a proper third argument\n  onClickOptions: {\n    once: true\n  },\n\n  // or true, or default false\n  // any other method, property, or getter/setter will be\n  // properly configured in the defined class prototype\n  get test() {\n    return Math.random();\n  },\n\n  set test(value) {\n    console.log(value);\n  },\n\n  sharedData: [1, 2, 3],\n  method: function method() {\n    return this.test;\n  }\n});\n\n//# sourceURL=webpack:///./src/index.js?");
-
-/***/ })
-
-/******/ });
+});

@@ -9,6 +9,7 @@
   "author": "Chris Richards",
   "license": "ISC",
   "dependencies": {
+    "@ungap/create-content": "^0.1.4",
     "jest": "^25.1.0",
     "uce": "^0.7.0"
   },
@@ -17,6 +18,10 @@
     "@babel/preset-env": "^7.8.7",
     "babel-loader": "^8.0.6",
     "eslint": "^6.8.0",
+    "rollup": "^2.1.0",
+    "rollup-plugin-includepaths": "^0.2.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.3.0",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
