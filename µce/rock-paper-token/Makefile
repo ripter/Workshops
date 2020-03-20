@@ -3,8 +3,7 @@
 all: deploy server
 
 build: node_modules/
-	npx rollup --config rollup/config.js
-	# npx webpack --mode development
+	npm run build
 
 clean:
 	-rm -f package-lock.json
@@ -17,8 +16,7 @@ lint: node_modules/
 	npx eslint --fix src/
 
 server: build
-	npx http-server
-	# npx webpack-dev-server --open
+	npm run dev
 
 test:
 	npx jest

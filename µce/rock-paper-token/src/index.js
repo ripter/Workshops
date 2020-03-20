@@ -1,6 +1,4 @@
-import { define } from 'uce/esm';
-// import { define } from 'https://unpkg.com/uce?module';
-console.log('define', define);
+import {define} from 'uce';
 
 define('my-component', {
   // if specified, it's like the constructor
@@ -12,6 +10,10 @@ define('my-component', {
     // or simply the node, if no attachShadow is defined
     this.html`<h1>Hello 👋 µce</h1>`;
   },
+
+  // if specified, it renders within its Shadow DOM
+  // compatible with both open and closed modes
+  attachShadow: {mode: 'closed'},
 
   // if specified, observe the list of attributes
   observedAttributes: ['test'],

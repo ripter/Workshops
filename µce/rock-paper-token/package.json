@@ -1,29 +1,21 @@
 {
-  "name": "rock-paper-token",
-  "version": "0.0.1",
-  "description": "Rock Paper Scissors without a Server",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "make test"
+  "name": "rollup-starter-app",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "npm-run-all": "^4.1.5",
+    "rollup": "^1.16.2",
+    "rollup-plugin-terser": "^5.0.0",
+    "serve": "^11.0.2"
   },
-  "author": "Chris Richards",
-  "license": "ISC",
   "dependencies": {
-    "@ungap/create-content": "^0.1.4",
-    "jest": "^25.1.0",
+    "date-fns": "^1.30.1",
     "uce": "^0.7.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
-    "babel-loader": "^8.0.6",
-    "eslint": "^6.8.0",
-    "rollup": "^2.1.0",
-    "rollup-plugin-includepaths": "^0.2.3",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.3.0",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "dev": "npm-run-all --parallel start watch",
+    "start": "serve public"
   }
 }
