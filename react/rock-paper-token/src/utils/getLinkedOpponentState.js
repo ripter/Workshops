@@ -2,6 +2,7 @@ import { isEmpty } from './isEmpty';
 
 const STATE_KEY = 'rps-state';
 
+// returns the opponent state from the URL search params or null
 export function getLinkedOpponentState() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
@@ -15,6 +16,7 @@ export function getLinkedOpponentState() {
   }
 }
 
+// returns a URL search param of the opponent state.
 export function setLinkedOpponentState(state) {
   try {
     const urlParams = new URLSearchParams();
