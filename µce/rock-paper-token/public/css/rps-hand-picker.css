@@ -1,0 +1,38 @@
+rps-hand-picker {
+  background-color: var(--color-text);
+  display: flex;
+  justify-content: space-around;
+}
+
+rps-hand-picker svg {
+  height: 100%;
+  width: 100%;
+}
+
+
+rps-hand-picker > [value] {
+  cursor: pointer;
+  height: 10em;
+  width: 10em;
+}
+
+
+
+/*
+ Active Styles
+*/
+
+/* When there is a selected value, apply the filter on all of them. */
+rps-hand-picker[selected-value] > [value] {
+  filter: blur(2px) sepia(1);
+}
+/* remove the blur filter on the matching value */
+rps-hand-picker[selected-value="rock"] [value="rock"] {
+  filter: sepia(0);
+}
+rps-hand-picker[selected-value="paper"] [value="paper"] {
+  filter: sepia(0);
+}
+rps-hand-picker[selected-value="scissors"] [value="scissors"] {
+  filter: sepia(0);
+}

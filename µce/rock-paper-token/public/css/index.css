@@ -1,0 +1,12 @@
+@import "./rps-hand-picker.css";
+
+:root {
+  --color-background: #3D9970;
+  --color-text: white;
+  --color-link: #7FDBFF;
+  --size-hand: 124px;
+}
+
+body {
+  background-color: var(--color-background);
+}

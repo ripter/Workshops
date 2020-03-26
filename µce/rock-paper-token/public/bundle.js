@@ -906,57 +906,144 @@
     return render(this, html.apply(null, arguments));
   }
 
-  define('my-component', {
-    // if specified, it's like the constructor
-    // it's granted to be invoked *only once* on bootstrap
-    // and *always* before connected/attributeChanged
+  /**
+   * Rock Paper Scissors Picker.
+   * Component that lets the user pick from the possible RPS hands.
+  */
+  const privates = new WeakMap();
+  define('rps-hand-picker', {
     init() {
+      // Setup instance level private state.
+      privates.set(this, {
+        selected: null,
+      });
+      this.render();
+    },
+
+    render() {
       // µhtml is provided automatically via this.html
-      // it will populate the shadow root, even if closed
-      // or simply the node, if no attachShadow is defined
-      this.html`<h1>Hello 👋 µce</h1>`;
+      this.html`
+    <div value="rock" onClick=${() => this.selectedValue = 'rock'}>
+      <svg>
+        <use href="#svg-rock-hand"  />
+      </svg>
+    </div>
+    <div value="paper" onClick=${() => this.selectedValue = 'paper'}>
+      <svg>
+        <use href="#svg-paper-hand"  />
+      </svg>
+    </div>
+    <div value="scissors" onClick=${() => this.selectedValue = 'scissors'}>
+      <svg>
+        <use href="#svg-scissors-hand"  />
+      </svg>
+    </div>
+    `;
     },
 
-    // if specified, it renders within its Shadow DOM
-    // compatible with both open and closed modes
-    attachShadow: {mode: 'closed'},
-
-    // if specified, observe the list of attributes
-    observedAttributes: ['test'],
-
-    // if specified, will be notified per each
-    // observed attribute change
-    attributeChanged(name, oldValue, newValue){},
-
-    // if specified, will be invoked when the node
-    // is either appended live, or removed
-    connected() {},
-    disconnected() {},
-
-    // events are automatically attached, as long
-    // as they start with the `on` prefix
-    // the context is *always* the component,
-    // you'll never need to bind a method here
-    onClick(event) {
-      console.log(this); // always the current Custom Element
+    get selectedValue() {
+      // Return the private state for this instance.
+      return privates.get(this).selected;
     },
+    set selectedValue(value) {
+      // Update the private state for this instance.
+      const state = privates.get(this);
+      state.selected = value;
+      privates.set(this, state);
 
-    // if specified with `on` prefix and `Options` suffix,
-    // allows adding the listener with a proper third argument
-    onClickOptions: {once: true}, // or true, or default false
+      // Update our selectedValue attribute.
+      if (value !== null) {
+        this.setAttribute('selected-value', value);
+      }
+      else {
+        this.removeAttribute('selected-value');
+      }
 
-    // any other method, property, or getter/setter will be
-    // properly configured in the defined class prototype
-    get test() { return Math.random(); },
+      // Emit a changed event
+      this.dispatchEvent(new CustomEvent('selected', {
+        detail: {
+          value,
+        },
+      }));
+    },
+  });
 
-    set test(value) { console.log(value); },
+  // returns true/false if the object is empty `{}`
+  function isEmpty(obj) {
+    if (!obj) { return null; }
+    return Object.keys(obj).length === 0;
+  }
 
-    sharedData: [1, 2, 3],
+  const STATE_KEY = 'rps-state';
 
-    method() {
-      return this.test;
+  // returns the opponent state from the URL search params or null
+  function getLinkState() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const state = JSON.parse(urlParams.get(STATE_KEY));
+
+      if (isEmpty(state)) { return null; }
+      return state;
+    }
+    catch (e) {
+      return null;
+    }
+  }
+
+  // returns a URL search param of the opponent state.
+  function createLinkState(state) {
+    try {
+      const urlParams = new URLSearchParams();
+      urlParams.set(STATE_KEY, JSON.stringify(state));
+      return urlParams.toString();
+    }
+    catch (e) {
+      throw new Error('Unable to update the URL.');
+    }
+  }
+
+  // Sho
+  const { elmPlayerInput } = window;
+
+  let state = {
+    selected: '',
+    opponentLink: '',
+  };
+  const dispatch = (action) => {
+    switch (action.type) {
+      case 'init':
+        break;
+      case 'selected':
+        state.selected = action.value;
+        break;
+      default:
+        console.log('unknown action', action);
     }
 
+    // Create the opponent link
+    if (state.selected) {
+      state.opponentLink = createLinkState({
+        hand: state.selected,
+      });
+    }
+
+    console.log('updated State', state);
+  };
+
+
+  // Listen for onSelected event on the player input element.
+  elmPlayerInput.addEventListener('selected', (evt) => {
+    dispatch({
+      type: 'selected',
+      value: evt.detail.value,
+    });
+  });
+
+
+  // Initalize the game
+  dispatch({
+    type: 'init',
+    value: getLinkState(),
   });
 
 }());
