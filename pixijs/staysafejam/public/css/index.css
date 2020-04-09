@@ -1,0 +1,21 @@
+
+:root {
+  --color-background: #111111;
+  --color-text: white;
+  --color-link: #7FDBFF;
+}
+
+body {
+  background-color: var(--color-background);
+}
+
+footer a {
+  color: #222;
+}
+
+
+#elRoot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
