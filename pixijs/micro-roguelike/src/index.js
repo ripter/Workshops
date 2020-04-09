@@ -3,9 +3,12 @@ import * as PIXI from 'pixi.js';
 const loader = PIXI.Loader.shared;
 
 //Create a Pixi Application
-let app = new PIXI.Application({width: 256, height: 256, resolution: 2});
+let app = new PIXI.Application({width: 800, height: 600, resolution: 2});
+// let app = new PIXI.Application({width: 256, height: 256, resolution: 2});
+// const app = new PIXI.Application();
 window.game = app;
 
+console.log('APP', app);
 
 loader.add('tilesheet', 'assets/tilesheet.json')
   .load((loader, resources) => {
