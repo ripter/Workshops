@@ -1,0 +1,14 @@
+{ "columns":10,
+ "image":"colored_tilemap_packed.png",
+ "imageheight":72,
+ "imagewidth":80,
+ "margin":0,
+ "name":"colored_tilemap_packed",
+ "spacing":0,
+ "tilecount":90,
+ "tiledversion":"1.3.3",
+ "tileheight":8,
+ "tilewidth":8,
+ "type":"tileset",
+ "version":1.2
+}

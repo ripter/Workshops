@@ -1,0 +1,14 @@
+{ "columns":16,
+ "image":"miniroguelike-morgan3d.png",
+ "imageheight":80,
+ "imagewidth":128,
+ "margin":0,
+ "name":"miniroguelike-morgan3d",
+ "spacing":0,
+ "tilecount":160,
+ "tiledversion":"1.3.3",
+ "tileheight":8,
+ "tilewidth":8,
+ "type":"tileset",
+ "version":1.2
+}
