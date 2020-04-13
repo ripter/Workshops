@@ -8,10 +8,8 @@ import {
 const TILE_SIZE = 8;
 const MAP_WIDTH = 40;
 const MAP_HEIGHT = 25;
-
 const SPRITESHEET_SRC = 'http://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/miniroguelike-morgan3d.png';
-// const MAP_SRC = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/ecsy-micro.json';
-const MAP_SRC = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/ecsy-micro.json';
+
 
 //
 // Pixi Application
@@ -27,6 +25,11 @@ window.app = app;
 app.view.style.width = null;
 app.view.style.height = null;
 
+// Game State, keep it on app for easy refrence.
+// app.gameState = {
+//   tileTextures: [],
+// };
+
 
 
 
@@ -36,6 +39,9 @@ app.view.style.height = null;
 // That's it, don't try to do more.
 //
 
+// Set value as resourceID,
+// Read value as PIXI.Texture
+// Read src as resourceID
 class Texture extends Component {
   reset() {
     this.value = null;
@@ -52,6 +58,10 @@ class Texture extends Component {
 }
 
 class TiledMap extends Component {
+  constructor() {
+    super();
+    this.src = '';
+  }
   reset() {
     this.value = null;
   }
@@ -66,11 +76,65 @@ class TiledMap extends Component {
   }
 }
 
+// SpriteSheet is a Texture cut into squires and indexed.
+class SpriteSheet extends Component {
+  constructor() {
+    super();
+    this.size = 8;
+    this.tileTextures = [];
+  }
+  reset() {
+    this.size = 8;
+    this.tileTextures = [];
+  }
+  set(obj) {
+    this.size = obj.size;
+    this.tileTextures = obj.tileTextures;
+  }
+}
+
+class Tile extends Component {
+  reset() {
+
+  }
+  set(obj) {
+
+  }
+}
+
 
 //
 // EC[S]Y Systems
 // Systems perform logic on entities, by reading/updating component data.
 
+
+class SpriteSheetCreator extends System {
+  static queries = {
+    sheets: {
+      components: [Texture, SpriteSheet],
+      listen: {
+        added: true,
+      }
+    }
+  }
+  execute(delta) {
+    // When a new sheet is added to the world,
+    // Convert it into an array of PIXI.Textures
+    this.queries.sheets.added.forEach(entity => {
+      const { size, tileTextures } = entity.getComponent(SpriteSheet);
+      const texture = entity.getComponent(Texture).value;
+      let tile, rect;
+
+      for (let y=0; y < texture.orig.height; y += size) {
+        for (let x=0; x < texture.orig.width; x += size) {
+          rect = new PIXI.Rectangle(x, y, size, size);
+          tile = new PIXI.Texture(texture, rect);
+          tileTextures.push(tile);
+        }
+      }
+    });
+  }
+}
 
 //
 // Loads and manges layers of tile maps.
@@ -81,33 +145,62 @@ class TiledMapSystem extends System {
     this.layers.sortableChildren = true;
     app.stage.addChild(this.layers);
     // Keep a reference to the tile textures.
-    this.tiles = [];
+    // this.tiles = [];
   }
   execute(delta) {
-    const { mapData } = this.queries;
-    //  When a new TiledMap is added to the world.
-    mapData.added.forEach((entity) => {
-      const texture = entity.getComponent(Texture).value;
+    // When a map is added to the world.
+    // Create Tiles for every layer/tile in the map.
+    this.queries.mapData.added.forEach((entity) => {
+      const { tileTextures } = entity.getComponent(SpriteSheet);
       const tiledMap = entity.getComponent(TiledMap).value;
       const { tileheight, tilewidth } = tiledMap;
 
-      // Create a texture for each sprite in the texture.
-      let tile, rect;
-      for (let y=0; y < texture.orig.height; y += tileheight) {
-        for (let x=0; x < texture.orig.width; x += tilewidth) {
-          rect = new PIXI.Rectangle(x, y, tilewidth, tileheight);
-          tile = new PIXI.Texture(texture, rect);
-          this.tiles.push(tile);
-        }
-      }
+      // Create tile data for each tile in the map.
+      const layers = tiledMap.layers
+        .filter(layer => layer.type === 'tilelayer')
+        .reduce((acc, layer) => {
+          const { name } = layer;
+          const layerData = Array(layer.height).fill().map(_ => new Array(layer.width));
 
-      // Create sprites for all the layers.
+          // loop over each tile
+          layer.data.forEach((tiledID, idx) => {
+            const y = (0| idx / layer.width);
+            const x = (0 | idx % layer.height);
+
+            layerData[x][y] = [
+              [Tile, {x, y, tiledID: tiledID}],
+            ];
+            // const { spriteIndex, angle, anchor } = convertTiledID(tiledID);
+            // const sprite = new PIXI.Sprite(tileTextures[spriteIndex]);
+            // sprite.position.x = x * tilewidth;
+            // sprite.position.y = y * tileheight;
+            // sprite.anchor.copyFrom(anchor);
+            // sprite.angle = angle;
+            // layerData[x][y] = {
+            //   sprite,
+            //   components: [
+            //     [Tile, {}]
+            //   ],
+            // };
+          });
+
+          acc[name] = layerData;
+          return acc;
+        }, {});
+      console.log('layers', layers);
+      /*
+      // Loop over each layer.
       tiledMap.layers.forEach(layer => {
         const container = new PIXI.Container();
         this.layers.addChild(container);
 
+
+
+        if (!layer.data) { return; }
         layer.data.forEach((tiledID, idx) => {
-          //TODO: Convert Tiled's ID into spritesheet index + transformation.
+
+          //
+
           const tiledData = convertTiledID(tiledID);
           const sprite = new PIXI.Sprite(this.tiles[tiledData.spriteIndex]);
           sprite.angle = tiledData.angle;
@@ -119,11 +212,12 @@ class TiledMapSystem extends System {
           sprite.position.copyFrom({x, y});
         });
       });
+      */
     });
   }
   static queries = {
     mapData: {
-      components: [TiledMap, Texture],
+      components: [TiledMap, SpriteSheet],
       listen: {
         added: true
       }
@@ -137,6 +231,7 @@ class TiledMapSystem extends System {
 //
 // ECSY World
 const world = app.world = new World()
+  .registerSystem(SpriteSheetCreator)
   .registerSystem(TiledMapSystem);
 
 
@@ -144,6 +239,7 @@ const world = app.world = new World()
 const map = world
   .createEntity()
   .addComponent(Texture, {value: SPRITESHEET_SRC})
+  .addComponent(SpriteSheet, {size: TILE_SIZE})
   .addComponent(TiledMap, {value: 'level1'});
 
 
@@ -171,6 +267,7 @@ function convertTiledID(tiledID) {
   const flagVert = 0x40000000;
   const flagDiag = 0x20000000;
 
+  //TODO: Finish, add angle and achor values.
   return {
     spriteIndex: (tiledID & ~(flagHorz | flagVert | flagDiag)) -1,
     angle: 0,
