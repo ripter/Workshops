@@ -47,8 +47,8 @@
                  "properties":[
                         {
                          "name":"Player",
-                         "type":"bool",
-                         "value":true
+                         "type":"string",
+                         "value":"{}"
                         }],
                  "rotation":0,
                  "type":"",
@@ -63,9 +63,9 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"OnDialog",
+                         "name":"Dialog",
                          "type":"string",
-                         "value":"story_intro"
+                         "value":"{\"value\":\"intro_1\"}"
                         }],
                  "rotation":0,
                  "type":"",
@@ -78,6 +78,12 @@
                  "height":8,
                  "id":3,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"Goal",
+                         "type":"string",
+                         "value":"{\"value\":\"green|blue|red\"}"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -89,6 +95,12 @@
                  "height":8,
                  "id":4,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"GoalItem",
+                         "type":"string",
+                         "value":"{\"value\":\"red\"}"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -100,6 +112,12 @@
                  "height":8,
                  "id":5,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"GoalItem",
+                         "type":"string",
+                         "value":"{\"value\":\"blue\"}"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -111,6 +129,12 @@
                  "height":8,
                  "id":6,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"GoalItem",
+                         "type":"string",
+                         "value":"{\"value\":\"green\"}"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -126,7 +150,7 @@
                         {
                          "name":"AI",
                          "type":"string",
-                         "value":"wander"
+                         "value":"{}"
                         }],
                  "rotation":0,
                  "type":"",
@@ -134,19 +158,14 @@
                  "width":8,
                  "x":160,
                  "y":112
-                }, 
-                {
-                 "height":8,
-                 "id":8,
-                 "name":"Progress",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":8,
-                 "x":216,
-                 "y":80
                 }],
          "opacity":1,
+         "properties":[
+                {
+                 "name":"Goal",
+                 "type":"string",
+                 "value":"{\"required\":[\"any\"],\"dialogID\":\"goal_1\"}"
+                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,
@@ -189,7 +208,7 @@
                         {
                          "name":"Tile",
                          "type":"string",
-                         "value":"{spriteIndex: 11, scale: [4, 4, 4]}"
+                         "value":"{\"spriteIndex\":11,\"scale\":[4,4,4]}"
                         }],
                  "rotation":0,
                  "type":"",
@@ -202,10 +221,16 @@
                  "height":64,
                  "id":12,
                  "name":"message",
+                 "properties":[
+                        {
+                         "name":"Text",
+                         "type":"string",
+                         "value":"{\"value\": \"\"}"
+                        }],
                  "rotation":0,
                  "text":
                     {
-                     "pixelsize":12,
+                     "pixelsize":8,
                      "text":"Deliver the Medicine.\nPush it onto the conveyor belt.",
                      "valign":"center",
                      "wrap":true

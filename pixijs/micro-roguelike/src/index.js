@@ -1,276 +1,306 @@
-import {
-  World,
-  System,
-  TagComponent,
-  Component
-} from "https://ecsy.io/build/ecsy.module.js";
+// ECSY Version 0.2.3
+import { World, System, Component, Not } from "https://ecsy.io/build/ecsy.module.js";
 
-const TILE_SIZE = 8;
-const MAP_WIDTH = 40;
-const MAP_HEIGHT = 25;
-const SPRITESHEET_SRC = 'http://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/miniroguelike-morgan3d.png';
+const VIEW_WIDTH = 320;
+const VIEW_HEIGHT = 200;
+
+// Pixi Application
+const pixi = window.pixi = new PIXI.Application({
+  resolution: window.devicePixelRatio,
+  // autoDensity: true,
+  view: window.elCanvas,
+  width: VIEW_WIDTH,
+  height: VIEW_HEIGHT,
+});
+// ECSY World
+const world = new World();
 
 
 //
-// Pixi Application
-const app = new PIXI.Application({
-  resolution: window.devicePixelRatio,
-  autoDensity: true,
-  view: window.elCanvas,
-  width: TILE_SIZE * MAP_WIDTH,
-  height: TILE_SIZE * MAP_HEIGHT
-});
-window.app = app;
-// remove the inline size so it can be scaled in CSS.
-app.view.style.width = null;
-app.view.style.height = null;
+// Starts the game
+function startGame() {
+  world
+    .registerSystem(TextureSystem)
+    .registerSystem(SpriteSystem)
+    .registerSystem(AnimatedSpriteSystem)
+    .registerSystem(PixiStageSystem)
+    .registerSystem(InputSystem)
+    .registerSystem(MovementSystem)
 
-// Game State, keep it on app for easy refrence.
-// app.gameState = {
-//   tileTextures: [],
-// };
+  //
+  // Create an animated sprite for the player to play around with.
+  world.createEntity()
+    .addComponent(LoadTexture, {
+      value: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/people.json',
+      type: SpriteSheet,
+    })
+    .addComponent(Position, {value: {x: 0, y: 0}})
+    .addComponent(LoadAnimatedSprite)
 
 
+   world.createEntity()
+    .addComponent(LoadTexture, {
+      value: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/people.png',
+      type: Texture,
+    })
+    .addComponent(LoadSprite)
+    .addComponent(Position, {value: {x: 100, y: 100}})
+
+
+  // Start the Game loop.
+  // Use Pixi's ticker for the game loop.
+  pixi.ticker.add(delta => {
+    world.execute(delta);
+  });
+}
 
 
 //
 // ECSY Components
-// Components hold data on an entity.
-// That's it, don't try to do more.
+// These hold data and provive a way to query entities.
 //
 
-// Set value as resourceID,
-// Read value as PIXI.Texture
-// Read src as resourceID
-class Texture extends Component {
-  reset() {
-    this.value = null;
-  }
-  set(val) {
-    this.value = val;
-  }
-  get value() {
-    return app.loader.resources[this.src].texture;
-  }
-  set value(src) {
-    this.src = src;
-  }
-}
-
-class TiledMap extends Component {
+// Helper class, defines a single value called `value`.
+class SingleValueComponent extends Component {
   constructor() {
     super();
-    this.src = '';
+    this.reset();
   }
   reset() {
     this.value = null;
   }
-  set(val) {
-    this.value = val;
-  }
-  get value() {
-    return app.loader.resources[this.src].data;
-  }
-  set value(src) {
-    this.src = src;
+  set(obj) {
+    this.value = obj.value;
   }
 }
 
-// SpriteSheet is a Texture cut into squires and indexed.
-class SpriteSheet extends Component {
+
+// Textures, aka PIXI.Texture
+class LoadTexture extends Component {
   constructor() {
     super();
-    this.size = 8;
-    this.tileTextures = [];
+    this.reset();
   }
   reset() {
-    this.size = 8;
-    this.tileTextures = [];
+    this.value = null;
+    this.type = Texture;
   }
   set(obj) {
-    this.size = obj.size;
-    this.tileTextures = obj.tileTextures;
+    this.value = obj.value;
+    this.type = obj.type;
   }
 }
+class SpriteSheet extends SingleValueComponent {}
+class Texture extends SingleValueComponent {}
 
-class Tile extends Component {
-  reset() {
 
-  }
-  set(obj) {
+// PIXI.Sprite
+class LoadSprite extends SingleValueComponent {}
+class LoadAnimatedSprite extends SingleValueComponent {}
+class Sprite extends SingleValueComponent {}
+class AnimatedSprite extends SingleValueComponent {}
 
-  }
-}
+
+class Position extends SingleValueComponent {}
+class Velocity extends SingleValueComponent {}
+
+
 
 
 //
-// EC[S]Y Systems
-// Systems perform logic on entities, by reading/updating component data.
-
-
-class SpriteSheetCreator extends System {
+// ECSY Systems
+// Updates data in the components.
+//
+//
+// Adds Sprites to the PIXI Stage so they will be visible.
+class PixiStageSystem extends System {
   static queries = {
-    sheets: {
-      components: [Texture, SpriteSheet],
+    sprites: {
+      components: [Sprite],
+      listen: {
+        added: true,
+      }
+    },
+    animatedSprites: {
+      components: [AnimatedSprite],
+      listen: {
+        added: true,
+      }
+    },
+  }
+  execute(delta) {
+    const { sprites, animatedSprites } = this.queries;
+    let sprite;
+
+    [...sprites.added, ...animatedSprites.added].forEach(entity => {
+      let sprite;
+      if (entity.hasComponent(Sprite)) {
+        sprite = entity.getComponent(Sprite).value;
+      }
+      else if (entity.hasComponent(AnimatedSprite)) {
+        sprite = entity.getComponent(AnimatedSprite).value;
+        sprite.animationSpeed = 0.15;
+        sprite.play();
+      }
+
+      pixi.stage.addChild(sprite);
+    });
+  }
+}
+
+//
+// Turns LoadTexture components into Texture components.
+class TextureSystem extends System {
+  static queries = {
+    toLoad: {
+      components: [LoadTexture],
+      listen: {
+        added: true,
+      },
+    },
+  }
+  execute(delta) {
+    const { toLoad } = this.queries;
+    //
+    // Add textures waiting to be loaded.
+    toLoad.added.map(entity => {
+      const src = entity.getComponent(LoadTexture).value;
+      // Skip if we already have this resource.
+      if (pixi.loader.resources[src]) { return; }
+      // Add the resource to the queue to load.
+      pixi.loader.add(src);
+    });
+    if (toLoad.added.length > 0) {
+      pixi.loader.load();
+    }
+
+    //
+    // Once the resource has loaded, swap out the Loading for a real component.
+    toLoad.results.forEach(entity => {
+      const {value: src, type: component} = entity.getComponent(LoadTexture);
+      let valueKey;
+
+      switch (component) {
+        case SpriteSheet:
+          valueKey = 'spritesheet'
+          break;
+        default:
+          valueKey = 'texture';
+      }
+
+      // Skip if we don't have the resource yet.
+      if (!pixi.loader.resources[src][valueKey]) { return; }
+      // mark the entity as being loaded.
+      entity.removeComponent(LoadTexture);
+      // Add the component with the loaded resource.
+      entity.addComponent(component, {value: pixi.loader.resources[src][valueKey]});
+    });
+  }
+}
+
+//
+// Turns LoadSprite components into Sprite components.
+class SpriteSystem extends System {
+  static queries = {
+    toLoad: {
+      components: [LoadSprite, Texture]
+    }
+  }
+  execute(delta) {
+    this.queries.toLoad.results
+    .forEach(entity => {
+      const texture = entity.getComponent(Texture).value;
+      // Create the Sprite in PIXI
+      const sprite = new PIXI.Sprite(texture);
+
+      entity.removeComponent(LoadSprite);
+      entity.addComponent(Sprite, {value: sprite});
+    });
+  }
+}
+
+
+class AnimatedSpriteSystem extends System {
+  static queries = {
+    toLoad: {
+      components: [LoadAnimatedSprite, SpriteSheet],
       listen: {
         added: true,
       }
     }
   }
   execute(delta) {
-    // When a new sheet is added to the world,
-    // Convert it into an array of PIXI.Textures
-    this.queries.sheets.added.forEach(entity => {
-      const { size, tileTextures } = entity.getComponent(SpriteSheet);
-      const texture = entity.getComponent(Texture).value;
-      let tile, rect;
+    const { toLoad } = this.queries;
+    //
+    // Load Animated Sprite
+    toLoad.added.forEach(entity => {
+      const spritesheet = entity.getComponent(SpriteSheet).value;
+      console.log('spritesheet', spritesheet);
+      const animSprite = new PIXI.AnimatedSprite(spritesheet.animations.green_shirt_right);
 
-      for (let y=0; y < texture.orig.height; y += size) {
-        for (let x=0; x < texture.orig.width; x += size) {
-          rect = new PIXI.Rectangle(x, y, size, size);
-          tile = new PIXI.Texture(texture, rect);
-          tileTextures.push(tile);
-        }
-      }
+      entity.removeComponent(LoadAnimatedSprite);
+      entity.addComponent(AnimatedSprite, {value: animSprite});
     });
   }
 }
 
-//
-// Loads and manges layers of tile maps.
-class TiledMapSystem extends System {
-  init() {
-    // Setup a sortable container to hold all the layers.
-    this.layers = new PIXI.Container();
-    this.layers.sortableChildren = true;
-    app.stage.addChild(this.layers);
-    // Keep a reference to the tile textures.
-    // this.tiles = [];
-  }
-  execute(delta) {
-    // When a map is added to the world.
-    // Create Tiles for every layer/tile in the map.
-    this.queries.mapData.added.forEach((entity) => {
-      const { tileTextures } = entity.getComponent(SpriteSheet);
-      const tiledMap = entity.getComponent(TiledMap).value;
-      const { tileheight, tilewidth } = tiledMap;
-
-      // Create tile data for each tile in the map.
-      const layers = tiledMap.layers
-        .filter(layer => layer.type === 'tilelayer')
-        .reduce((acc, layer) => {
-          const { name } = layer;
-          const layerData = Array(layer.height).fill().map(_ => new Array(layer.width));
-
-          // loop over each tile
-          layer.data.forEach((tiledID, idx) => {
-            const y = (0| idx / layer.width);
-            const x = (0 | idx % layer.height);
-
-            layerData[x][y] = [
-              [Tile, {x, y, tiledID: tiledID}],
-            ];
-            // const { spriteIndex, angle, anchor } = convertTiledID(tiledID);
-            // const sprite = new PIXI.Sprite(tileTextures[spriteIndex]);
-            // sprite.position.x = x * tilewidth;
-            // sprite.position.y = y * tileheight;
-            // sprite.anchor.copyFrom(anchor);
-            // sprite.angle = angle;
-            // layerData[x][y] = {
-            //   sprite,
-            //   components: [
-            //     [Tile, {}]
-            //   ],
-            // };
-          });
-
-          acc[name] = layerData;
-          return acc;
-        }, {});
-      console.log('layers', layers);
-      /*
-      // Loop over each layer.
-      tiledMap.layers.forEach(layer => {
-        const container = new PIXI.Container();
-        this.layers.addChild(container);
-
-
-
-        if (!layer.data) { return; }
-        layer.data.forEach((tiledID, idx) => {
-
-          //
-
-          const tiledData = convertTiledID(tiledID);
-          const sprite = new PIXI.Sprite(this.tiles[tiledData.spriteIndex]);
-          sprite.angle = tiledData.angle;
-          sprite.anchor.copyFrom(tiledData.anchor);
-          container.addChild(sprite);
-
-          const x = (0 | idx % tiledMap.width) * tilewidth;
-          const y = (0 | idx / tiledMap.width) * tileheight;
-          sprite.position.copyFrom({x, y});
-        });
-      });
-      */
-    });
-  }
+// Updates sprite position based on Position and Velocity
+class MovementSystem extends System {
   static queries = {
-    mapData: {
-      components: [TiledMap, SpriteSheet],
-      listen: {
-        added: true
-      }
+    staticSprites: {
+      components: [Sprite, Position],
+    },
+    movingSprites: {
+      components: [Sprite, Position, Velocity],
     }
   }
-}
-
-
-
-//
-//
-// ECSY World
-const world = app.world = new World()
-  .registerSystem(SpriteSheetCreator)
-  .registerSystem(TiledMapSystem);
-
-
-// Map entity.
-const map = world
-  .createEntity()
-  .addComponent(Texture, {value: SPRITESHEET_SRC})
-  .addComponent(SpriteSheet, {size: TILE_SIZE})
-  .addComponent(TiledMap, {value: 'level1'});
-
-
-
-//
-// Load and run the game
-app.loader
-  .add(SPRITESHEET_SRC)
-  .add('level1', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/775705/conveyor_level_1.json')
-  .load(() => {
-    // Setup the game loop.
-    app.ticker.add(delta => {
-      world.execute(delta);
+  execute(delta) {
+    // Position all the static sprites when they change
+    this.queries.staticSprites.results
+    .forEach(entity => {
+      const sprite = entity.getComponent(Sprite).value;
+      const position = entity.getComponent(Position).value;
+      // Update the sprite position.
+      sprite.position.copyFrom(position);
     });
-  });
 
+    // Position the moving sprites each tick.
+    this.queries.movingSprites.results
+    .forEach(entity => {
+      const { frame } = entity.getComponent(Texture).value;
+      const sprite = entity.getComponent(Sprite).value;
+      const position = entity.getComponent(Position).value;
+      const velocity = entity.getComponent(Velocity).value;
 
-//
-// Utils
+      position.x += velocity.x;
+      position.y += velocity.y;
 
-// Converts the ID exported by Tiled into a sprite index and transformation.
-function convertTiledID(tiledID) {
-  // values from: http://doc.mapeditor.org/en/latest/reference/tmx-map-format/#data
-  const flagHorz = 0x80000000;
-  const flagVert = 0x40000000;
-  const flagDiag = 0x20000000;
+      // Wrap around the X axis
+      if (position.x > VIEW_WIDTH) {
+        position.x = 0 - frame.width;
+      }
+      else if ((position.x + frame.width) < 0) {
+        position.x = VIEW_WIDTH;
+      }
 
-  //TODO: Finish, add angle and achor values.
-  return {
-    spriteIndex: (tiledID & ~(flagHorz | flagVert | flagDiag)) -1,
-    angle: 0,
-    anchor: {x: 0, y: 0},
+      // Update the sprite.
+      sprite.position.copyFrom(position);
+    });
   }
 }
+
+//
+// Listens for User input, like WASD or Arrow keys.
+class InputSystem extends System {
+  static queries = {
+
+  }
+  init() {
+
+  }
+  execute(delta) {
+
+  }
+}
+
+startGame();
