@@ -53,7 +53,7 @@ end
 -- draw a dice with value
 function draw_dice(x, y)
 	for idx,v in pairs(result) do
-	 local s = get_sprite(v)
+	 local s
 	 if is_rolling then
 	  s = spinning_sprite()
 	 else
@@ -67,7 +67,6 @@ end
 
 -- converts dice value into sprite
 function get_sprite(value)	
-	-- sprite for dice value
  if value == 1 then
  	return 2
  elseif value == -1 then
@@ -77,6 +76,7 @@ function get_sprite(value)
  end
 end
 
+
 function spinning_sprite()
  local frames = {
   6, 8, 10, 6, 8, 10, 6, 8,
@@ -84,42 +84,7 @@ function spinning_sprite()
  
  -- frame is a global between 0-30
  local alpha = flr(frame * (#frames / 30))
- 
  return frames[alpha+1]
- --return 6
---[[
- if alpha == 0 then
-  return 6
- elseif alpha == 1 then
-  return 8
- elseif alpha == 2 then
-  return 6
-  --return 10 
-   --return get_sprite(flr(rnd(3))-1)
- elseif alpha == 3 then
-  return 8
- end
- 
- return 6
- --return flr(rnd(3))-1
-]]--
---[[ 
- if frame % 10 == 0 then
-  return flr(rnd(3))-1
-	elseif frame % 2 == 0 then
-  return 6
- end
- return 8
-]]--
---[[
-		if frame % 7 == 0 then
-		 value = flr(rnd(3))-1
-		elseif frame % 2 == 0 then
-		 value = 0
-		else
-	  value = 6
-	 end
-]]--
 end
 -->8
 -- the adjective ladder
@@ -153,14 +118,6 @@ function draw_adjective(x, y)
 	print(label, x, y)
 end
 -->8
--- coroutine to play animated sprites.
-function co_animate(frames, x, y)
-	for i,frame in pairs(frames) do
-		spr_2x2(frame, x, y)
-		yield()
-	end
-end
-
 -- draws a sprite sized 2x2
 function spr_2x2(sprite, x, y)
  spr(sprite,    x,   y)
