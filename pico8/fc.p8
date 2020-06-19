@@ -152,6 +152,24 @@ end
 
 
 function wall_update(self)
+	if not self.co then
+		-- start the wall animation
+		self.co = cocreate(anim_wall)
+		self.type = 'wall'
+	elseif costatus(self.co) == 'dead' then
+		if self.type == 'wall' then
+			self.co = cocreate(anim_delay)
+			self.type = 'delay'
+		else 
+			self.co = cocreate(anim_wall)
+			self.type = 'wall'
+		end
+	else
+		coresume(self.co, self)
+	end
+end
+	
+function old_wall_update(self)
 	if not self.enabled then
 		self.delay -= 1 
 		if self.delay <= 0 then
@@ -159,27 +177,16 @@ function wall_update(self)
 		end
 		return
 	end
+
+	-- move the wall
+	self.x -= 2.5
 	
-	
-	if not self.co then
-		-- start the wall animation
-		self.co = cocreate(anim_wall)
-	elseif costatus(self.co) == 'dead' then
-		self.co = nil;
-	else
-		coresume(self.co, self)
+	-- when it reaches the end
+	-- pause and reset
+	if self.x <= -16 then
+		wall_restart(self)
 	end
 end
-	
-	-- move the wall
---	self.x -= 2.5
---	
---	-- when it reaches the end
---	-- pause and reset
---	if self.x <= -16 then
---		wall_restart(self)
---	end
---end
 
 function wall_restart(self)
 	self.x = 128
@@ -196,6 +203,7 @@ end
 -- co routines
 --
 
+-- moves the wall across the screen
 function anim_wall(self)
 	self.x = 128
 	repeat
@@ -203,6 +211,16 @@ function anim_wall(self)
 		yield()
 	until self.x <= -16
 end
+
+-- waits delay ticks
+function anim_delay(self)
+	for i=self.delay,0,-1 do
+		yield()
+	end
+end
+
+
+
 -->8
 -- collision
 
