@@ -186,6 +186,9 @@ function anim_wall(self)
 		-- reset the wall
 		self.x = 128
 		self.delay = 30 + flr(rnd(10))
+		set_hole(self)
+		
+		-- move across the screen
 		repeat
 			self.x -= 2.5
 			yield()
@@ -193,6 +196,22 @@ function anim_wall(self)
 	end
 end
 
+
+function set_hole(wall)
+	local hole = flr(rnd(10))
+	
+	for y=0,32,1 do
+		if y >= 1+hole and y <= 4+hole then
+			-- hole
+			mset(wall.mx,   y, 0)
+			mset(wall.mx+1, y, 0)
+		else
+			-- solid
+			mset(wall.mx, 	 y, 32)
+			mset(wall.mx+1, y, 33)
+		end
+	end
+end
 -->8
 -- collision
 
@@ -222,8 +241,10 @@ end
 function hit_flag(wall)
 	local y = player.y / 8
 	local x = wall.mx
-	local sn = mget(x, y)
-	return fget(sn)
+	local sn1 = mget(x, y)
+	return fget(sn1)
+--	local sn2 = mget(x+1,y+1)
+--	return fget(sn1) & fget(sn2)
 end
 
 __gfx__
