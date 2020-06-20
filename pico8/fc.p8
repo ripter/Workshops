@@ -164,16 +164,11 @@ function update_walls()
 	end
 	
 	for wall in all(walls) do
-		wall_update(wall)
-	end
-end
-
-
-function wall_update(self)
-	if not self.co then
-		self.co = cocreate(anim_wall)
-	else
-		coresume(self.co, self)
+		if not wall.co then
+			wall.co = cocreate(anim_wall)
+		else
+			coresume(wall.co, wall)
+		end
 	end
 end
 
