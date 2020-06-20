@@ -16,13 +16,14 @@ end
 
 function _update()
 	cls(12)
+	
 	player_update(player)
 	anim_update(player.anim)
 	
-	wall_update(wall1)
-	wall_update(wall2)
+	update_walls()
 	
-	update_collisions()
+	check_collision()
+--	update_collisions()
 end
 
 function _draw()
@@ -44,6 +45,8 @@ end
 high_score = 0
 score = 0
 
+game_state = 'running'
+
 player = {
 	x=24,
 	y=0,
@@ -56,19 +59,21 @@ animations = {
 	idle={0},
 }
 
+
 wall1 = {
-	enabled=true,
 	x=128,
 	mx=0, -- map x
-	delay=0,
+	delay=50,
+	co=nil,
 }
 
 wall2 = {
-	enabled=false,
 	x=128,
 	mx=2, -- map x
-	delay=45,
+	delay=100,
+	co=nil,
 }
+walls = {wall1, wall2}
 -->8
 -- animation system
 
@@ -121,10 +126,12 @@ function player_update(self)
 	-- apply gravity
 	self.vel += 0.3
 
-	-- any button press for flap
- if btn() > 0 then
- 	self.vel -= 1.6
- 	anim_play(self.anim, "flap")
+	if game_state == 'running' then
+		-- any button press for flap
+	 if btn() > 0 then
+	 	self.vel -= 1.6
+	 	anim_play(self.anim, "flap")
+	 end
  end
  
  -- limit velocity
@@ -136,7 +143,7 @@ function player_update(self)
  
  -- bounds check
  if self.vel > 0 
- 	and self.y >= 128 then
+ 	and self.y >= 112 then
  	self.vel = 0
  end
  
@@ -151,51 +158,23 @@ function wall_draw(self)
 end
 
 
+function update_walls()
+	if game_state != 'running' then
+		return
+	end
+	
+	for wall in all(walls) do
+		wall_update(wall)
+	end
+end
+
+
 function wall_update(self)
 	if not self.co then
-		-- start the wall animation
 		self.co = cocreate(anim_wall)
-		self.type = 'wall'
-	elseif costatus(self.co) == 'dead' then
-		if self.type == 'wall' then
-			self.co = cocreate(anim_delay)
-			self.type = 'delay'
-		else 
-			self.co = cocreate(anim_wall)
-			self.type = 'wall'
-		end
 	else
 		coresume(self.co, self)
 	end
-end
-	
-function old_wall_update(self)
-	if not self.enabled then
-		self.delay -= 1 
-		if self.delay <= 0 then
-			self.enabled = true
-		end
-		return
-	end
-
-	-- move the wall
-	self.x -= 2.5
-	
-	-- when it reaches the end
-	-- pause and reset
-	if self.x <= -16 then
-		wall_restart(self)
-	end
-end
-
-function wall_restart(self)
-	self.x = 128
-	self.enabled = false
-	self.delay = 35 + flr(rnd(10))
-	
-	-- change the hole position
-	local y = flr(rnd(16))
-	
 end
 
 
@@ -203,43 +182,46 @@ end
 -- co routines
 --
 
--- moves the wall across the screen
 function anim_wall(self)
-	self.x = 128
-	repeat
-		self.x -= 2.5
-		yield()
-	until self.x <= -16
-end
-
--- waits delay ticks
-function anim_delay(self)
-	for i=self.delay,0,-1 do
-		yield()
+	while true do
+		-- wait until delay ends
+		for i=self.delay,0,-1 do
+			yield()
+		end
+		
+		-- reset the wall
+		self.x = 128
+		self.delay = 30 + flr(rnd(10))
+		repeat
+			self.x -= 2.5
+			yield()
+		until self.x <= -16
 	end
 end
-
-
 
 -->8
 -- collision
 
-function update_collisions()
-	-- is a wall in range to be hit?
-	if did_hit(wall1.x, player.x) then
-		print('🐱', 8, 8)
-	elseif did_hit(wall2.x, player.x) then
-		print('☉', 8, 8)
-	else
---		print(player.x, 8, 8)
-		print(wall1.x, 20, 8)
-		print(wall2.x, 40, 8)
+function check_collision()
+	for wall in all(walls) do
+		if in_range(wall) then
+			print('hit', 8, 16)
+		end
 	end
 end
 
 
-function did_hit(x1, x2) 
-	return x1 <= x2+1 and x1 >= x2-1
+-- true if player is in range of wall
+function in_range(wall)
+	local x1 = player.x
+	local x2 = wall.x
+	return (x1+16) >= x2
+		and x1 <= (x2+16) 
+end
+
+
+function handle_collide()
+--	game_state = 'over'
 end
 __gfx__
 eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee2
