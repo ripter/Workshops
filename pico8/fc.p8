@@ -10,6 +10,11 @@ function _init()
 	palt(0, false)
 	palt(14, true)
 	
+	-- start the coroutines
+	wall1.co = cocreate(anim_wall)
+	wall2.co = cocreate(anim_wall)
+	ground.co = cocreate(anim_ground)
+	
 	-- set inital animations
 	anim_play(player.anim, "idle")
 end
@@ -41,6 +46,8 @@ function _draw()
 			player.y, 
 			16, 16
 	)
+	
+	print(score, 64,8)
 end
 
 -->8
@@ -170,7 +177,6 @@ function draw_ground()
 	local x = ground.x
 	map(0,15, x-128,120,  16,1)
  map(0,15,     x,120,  16,1)
---	line(x,128, x,120, 11)
 end
 
 --
@@ -179,26 +185,26 @@ end
 
 function update_walls()
 	for wall in all(walls) do
-		if not wall.co then
-			wall.co = cocreate(anim_wall)
-		else
-			coresume(wall.co, wall)
+		-- move the wall
+		coresume(wall.co, wall)
+		-- did it pass the player?
+		if wall.x < player.x 
+			and not wall.did_score then
+			score += 1
+			wall.did_score = true
 		end
 	end
 end
 
 
 function update_ground()
-	if not ground.co then
-			ground.co = cocreate(anim_ground)
-	else
-			coresume(ground.co, ground)
-	end
+	coresume(ground.co, ground)
 end
 
-
+-- create a new wall with a new hole
+-- in the map
 function set_hole(wall)
-	local hole = flr(rnd(10))
+	local hole = rnd(10)
 	
 	for y=0,14,1 do
 		if y >= 1+hole and y <= 4+hole then
@@ -227,6 +233,7 @@ function anim_wall(self)
 		-- reset the wall
 		self.x = 128
 		self.delay = 30 + flr(rnd(10))
+		self.did_score = false
 		set_hole(self)
 		
 		-- move across the screen
