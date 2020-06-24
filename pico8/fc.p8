@@ -10,43 +10,38 @@ function _init()
 	palt(0, false)
 	palt(14, true)
 	
-	-- start the coroutines
-	wall1.co = cocreate(anim_wall)
-	wall2.co = cocreate(anim_wall)
-	ground.co = cocreate(anim_ground)
-	
-	-- set inital animations
-	anim_play(player.anim, "idle")
+	-- setup the update coroutines
+	-- for each game object
+	add_co(ground, update_ground)
+	add_co(wall1, update_wall)
+	add_co(wall2, update_wall)
+	add_co(player, update_player)
 end
+
 
 function _update()
 	cls(12)
 	
-	player_update(player)
-	anim_update(player.anim)
-	
-	if game_state == 'running' then
-		update_walls()
-		update_ground()
-		check_collision()
+	-- run the update coroutines
+	-- for each game object
+	for go in all(cors) do
+		coresume(go.co, go.obj)
 	end
+	
+	check_collision()
 end
 
-function _draw()
-	-- draw the walls
-	wall_draw(wall1)
-	wall_draw(wall2)
-	
-	draw_ground()
 
+
+function _draw()
+	-- draw the ground
+	draw_ground()
+	-- draw the walls
+	draw_wall(wall1)
+	draw_wall(wall2)
 	-- draw the player
-	sprite(
-			player.anim.sn, 
-			player.x,
-			player.y, 
-			16, 16
-	)
-	
+	draw_player(player)
+	-- draw score
 	print(score, 64,8)
 end
 
@@ -58,16 +53,18 @@ speed = 2.5
 
 game_state = 'running'
 
--- active coroutines
+cors = {}
+
+
 ground = {
  x=128,
 }
 
 player = {
 	x=24,
-	y=0,
-	anim={},
+	y=100,
 	vel=0,
+	sn=0,
 }
 
 animations = {
@@ -91,7 +88,36 @@ wall2 = {
 }
 walls = {wall1, wall2}
 -->8
+-- draw stuff
+function draw_wall(self)
+	map(self.mx,0, self.x,0, 2,15)
+end
+
+function draw_ground()
+	local x = ground.x
+	map(0,15, x-128,120,  16,1)
+ map(0,15,     x,120,  16,1)
+end
+
+function draw_player(self)
+	sprite(
+			self.sn, 
+			self.x,
+			self.y, 
+			16, 16
+	)
+end
+
+-- draw a sprite by sprite number
+function sprite(sn, x, y, w, h)
+	local sn_x = (sn%32) * 8
+	local sn_y = flr(sn/32) * w
+	sspr(sn_x, sn_y, w, h, x, y)
+end
+
+--
 -- animation system
+--
 
 -- sets/resets the animation.
 function anim_play(self, name)
@@ -126,19 +152,44 @@ function anim_update(self)
 	self.sn = self.frames[self.index]
 end
 
+--
+-- utils
+--
 
-
--- draw a sprite by sprite number
-function sprite(sn, x, y, w, h)
-	local sn_x = (sn%32) * 8
-	local sn_y = flr(sn/32) * w
-	sspr(sn_x, sn_y, w, h, x, y)
+function add_co(obj, co)
+	add(cors, {
+		obj=obj,
+		co=cocreate(co),
+	})
 end
+
+
+
 
 -->8
 -- player
 
-function player_update(self)
+function update_player(self)
+	self.anim = cocreate(anim_run)
+	
+	while true do
+		local anim = self.anim
+		-- update the player pos
+		player_update(self)
+		-- update animation
+		if costatus(anim) == 'dead' then
+--			self.anim = cocreate(anim_run)
+		else
+		 coresume(anim, self)
+		end
+		
+		
+		yield()
+	end
+end
+
+
+function player_update(self, anim)
 	-- apply gravity
 	self.vel += 0.3
 
@@ -146,7 +197,8 @@ function player_update(self)
 		-- any button press for flap
 	 if btn() > 0 then
 	 	self.vel -= 1.6
-	 	anim_play(self.anim, "flap")
+--	 	self.anim = cocreate(aim_fly)
+	 	sfx(0)
 	 end
  end
  
@@ -164,42 +216,67 @@ function player_update(self)
  end
  
  -- update by velocity
- self.y += self.vel
+ self.y += flr(self.vel)
+end
+
+
+function player_die()
+	game_state = 'over'
+	player.anim = cocreate(anim_die)
+end
+
+
+
+
+function anim_run(self)
+	while true do
+		for i=2,6,2 do
+			self.sn = i
+			-- yield twice to slow down
+			yield()
+			yield()
+		end
+	end
+end
+
+function anim_die(self)
+	self.sn = 0
+	yield()
+end
+
+function anim_fly(self)
+	self.sn = 12
+	yield()
+	yield()
 end
 -->8
 -- wall & ground
 
-function wall_draw(self)
-	map(self.mx,0, self.x,0, 2,15)
-end
 
-function draw_ground()
-	local x = ground.x
-	map(0,15, x-128,120,  16,1)
- map(0,15,     x,120,  16,1)
-end
 
 --
 -- updates
 --
 
-function update_walls()
-	for wall in all(walls) do
-		-- move the wall
-		coresume(wall.co, wall)
-		-- did it pass the player?
-		if wall.x < player.x 
-			and not wall.did_score then
-			score += 1
-			wall.did_score = true
-		end
-	end
-end
 
 
-function update_ground()
-	coresume(ground.co, ground)
-end
+
+
+--function update_walls()
+--	for wall in all(walls) do
+--		-- move the wall
+--		coresume(wall.co, wall)
+--		-- did it pass the player?
+--		if wall.x < player.x 
+--			and not wall.did_score then
+--			score += 1
+--			wall.did_score = true
+--		end
+--	end
+--end
+
+
+
 
 -- create a new wall with a new hole
 -- in the map
@@ -207,7 +284,7 @@ function set_hole(wall)
 	local hole = rnd(10)
 	
 	for y=0,14,1 do
-		if y >= 1+hole and y <= 4+hole then
+		if y >= hole and y <= 4+hole then
 			-- hole
 			mset(wall.mx,   y, 0)
 			mset(wall.mx+1, y, 0)
@@ -223,8 +300,9 @@ end
 -- co routines
 --
 
-function anim_wall(self)
-	while true do
+function update_wall(self)
+	while true 
+		and game_state == 'running' do
 		-- wait until delay ends
 		for i=self.delay,0,-1 do
 			yield()
@@ -239,19 +317,28 @@ function anim_wall(self)
 		-- move across the screen
 		repeat
 			self.x -= speed
+			
+			-- did it pass the player?
+			if self.x < player.x 
+				and not self.did_score then
+				score += 1
+				self.did_score = true
+			end
+			
 			yield()
 		until self.x <= -16
+			or game_state != 'running'
 	end
 end
 
 
 
-function anim_ground()
-	while true do
-		ground.x -= speed
+function update_ground(self)
+	while game_state == 'running' do
+		self.x -= speed
 		yield()
-		if ground.x < 0 then
-			ground.x = 128
+		if self.x < 0 then
+			self.x = 128
 		end
 	end
 end
@@ -263,7 +350,7 @@ function check_collision()
 		if in_range(wall) then
 			local flag = hit_flag(wall)
 			if flag == 0x1 then
-				game_state = 'over'
+				player_die()
 			elseif flag == 0x2 then
 				print('cheeto', 8, 32)
 			end
@@ -291,22 +378,22 @@ function hit_flag(wall)
 end
 
 __gfx__
-eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee2
-eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-e9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999ee7eee9999599999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-979999999999eeee979999999999eeee979999999999eeee979999999999eeee979999999999eee7979999999999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-e970000000000000e970000000000000e970000000000000e9700012111224eee97000000000000ee97000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-e9999070099700eee9999070099700eee9999070099700eee999907229974eeee9999070099700eee9999070099700eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-959999009999999e959999009999999e959999009999999e959999009999999e959999009999999e959999009999999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000999aaaaaaa52eeee999aaaaaaa500000999aaaaaaa500000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-7777aaaa5aa500057777aaaa5aa500057777aaaa5aa500057777aaaa5aa54ee577778aaa5aa5000e77778aaa5aa5000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-ee777aaaaaaa000eee777aaaaaaa000eee777aaaaaaa000eee777aaaaaaa24eeee778aaaaaaa000eee778aaaaaaa000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eee777a5a5aaa5eeeee777a5a5aaa5eeeee777a5a5aaa5eeeee777a5a5aaa5eeee7788a5a5aaeeeeee7788a5a5aaa5eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeee77aaaa8887eeeeee77aaaa8887ee88ee77aaaa8887eeeeee77aaaa8887eeee7778aaaa8eeeeeee7778aaaa8887eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeee777777777ee888ee777777777eeeeeee777777777ee888ee777777777eeeee7788888eeeeeeeee778888888eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeee7777777eee8ee8ee7777777eee888eee7777777eee8888ee7777777eeeeeee778888eeeeeeeeee77888877eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeee777777eeeee88eee777777eeeeeeeeee777777eee8888eee777777eeeeeee7777777eeeeeeeee7777777eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeee77eeeeee88eeeeee77eeeee8888eeeee77eeeee8888eeeee77eeeeeeeeee7777eeeeeeeeeeee7777eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
+eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeee99999eeeeeeeeeeeeeeeeeeeeeeee
+e9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999ee7eee9999599999eeeeee9999599999eeeeeeeeeeeeeeeeeeeee
+979999999999eeee979999999999eeee979999999999eeee979999999999eeee979999999999eee7979999999999eeee979999999999eeeeeeeeeeeeeeeeeeee
+e970000000000000e970000000000000e970000000000000e970000000000000e97000000000000ee97000000000000ee970000000000000eeeeeeeeeeeeeeee
+e9999070099700eee9999070099700eee9999070099700eee9999070099700eee9999070099700eee9999070099700eee9999070099700eeeeeeeeeeeeeeeeee
+959999009999999e959999009999999e959999009999999e959999009999999e959999009999999e959999009999999e959999009999999eeeeeeeeeeeeeeeee
+999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000999aaaaaaa500000eeeeeeeeeeeeeeee
+7777aaaa5aa500057777aaaa5aa500057777aaaa5aa500057777aaaa5aa5000577778aaa5aa5000e77778aaa5aa5000e7777aaaa5aa50005eeeeeeeeeeeeeeee
+ee777aaaaaaa000ee9777aaaaaaa000ee9777aaaaaaa000ee9777aaaaaaa000eee778aaaaaaa000eee778aaaaaaa000ee9777aaaaaaa000eeeeeeeeeeeeeeeee
+eee777a5a5aaa5eee99777a5a5aaa5eee99777a5a5aaa5eee99777a5a5aaa5eeee7788a5a5aaeeeeee7788a5a5aaa5ee889777a5a5aaa5eeeeeeeeeeeeeeeeee
+eeee77aaaa8887eee99977aaaa8887eee99977aaaa8887eee99977aaaa8887eeee7778aaaa8eeeeeee7778aaaa8887ee889977aaaa8887eeeeeeeeeeeeeeeeee
+eeeee777777777eee999e777777777eee999e777777777eee999e777777777eeeee7788888eeeeeeeee778888888eeee8999e777777777eeeeeeeeeeeeeeeeee
+eeeeee7777777eeee9e9ee7777777eeee9e9ee7777777eeee9e9ee7777777eeeeeee778888eeeeeeeeee77888877eeeee9e9ee7777777eeeeeeeeeeeeeeeeeee
+eeeeeee777777eeee9e9eee777777eeee9e9eee777777eeee9e9eee777777eeeeeee7777777eeeeeeeee7777777eeeeeeeeeeee777777eeeeeeeeeeeeeeeeeee
+eeeeeeeee77eeeeee9e9eeeee77eeeeee9eeeeeee77eeeeeeee9eeeee77eeeeeeeeee7777eeeeeeeeeeee7777eeeeeeeeeeeeeeee77eeeeeeeeeeeeeeeeeeeee
 3b3bbbbbbbbbb3b324eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 3b3bbbbbbbbbb3b32eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 3b3bbbbbbbbbb3b32eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -439,3 +526,5 @@ __map__
 2021202100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 2021202100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 6060606060606060606060606060606060606060606060606060606060606050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+__sfx__
+000100000d72012750107500c7500f7500f7500070000700007000070000700007000070000700007000070000700007000070000700007000070000700007000070000700007000070000700007000070000700
