@@ -78,6 +78,7 @@ wall1 = {
 	mx=0, -- map x
 	delay=50,
 	co=nil,
+	state='delay',
 }
 
 wall2 = {
@@ -85,6 +86,7 @@ wall2 = {
 	mx=2, -- map x
 	delay=100,
 	co=nil,
+	state='delay',
 }
 walls = {wall1, wall2}
 -->8
@@ -252,7 +254,9 @@ end
 -->8
 -- wall & ground
 
-
+function init_wall(self)
+--	add_co(wall1, update_wall)
+end
 
 --
 -- updates
@@ -299,17 +303,32 @@ end
 --
 -- co routines
 --
-
 function update_wall(self)
-	while true 
-		and game_state == 'running' do
+	local co = nil
+	while game_state == 'running' do
+		if not co or costatus(co) == 'dead' then
+			if self.state == 'delay' then
+				co = cocreate(co_delay)
+			elseif self.state == 'running' then
+				co = cocreate(co_move)
+			end
+		else
+			print(self.state, 8, 16)
+			coresume(co, self)
+		end
+		yield()
+	end	
+end
+
+function update_wall_old(self)
+	while game_state == 'running' do
 		-- wait until delay ends
 		for i=self.delay,0,-1 do
 			yield()
 		end
 		
 		-- reset the wall
-		self.x = 128
+		self.x = 132
 		self.delay = 30 + flr(rnd(10))
 		self.did_score = false
 		set_hole(self)
@@ -334,12 +353,19 @@ end
 
 
 function update_ground(self)
+	local co = cocreate(co_move)
+	self.x = 128
+	self.dest = 0
+	
 	while game_state == 'running' do
-		self.x -= speed
-		yield()
-		if self.x < 0 then
+		if costatus(co) == 'dead' then
 			self.x = 128
+			co = cocreate(co_move)
+		else
+			coresume(co, self)
 		end
+		
+		yield()
 	end
 end
 -->8
@@ -377,6 +403,25 @@ function hit_flag(wall)
 --	return fget(sn1) & fget(sn2)
 end
 
+-->8
+-- co routines
+
+-- wait until delay ends
+function co_delay(self)
+	for i=self.delay,0,-1 do
+		print('delay', 8, 8)
+		yield()
+	end
+	-- next state
+	self.state = 'running'
+end
+
+function co_move(self)
+	repeat
+		self.x -= speed
+		yield()
+	until self.x <= self.dest
+end
 __gfx__
 eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
 eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeee99999eeeeeeeeeeeeeeeeeeeeeeee
