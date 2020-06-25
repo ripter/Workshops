@@ -254,13 +254,41 @@ end
 -->8
 -- wall & ground
 
-function init_wall(self)
---	add_co(wall1, update_wall)
+function update_wall(self)
+ local state = 'wait'
+	while game_state == 'running' do
+	 -- init wall
+	 if state == 'init' then
+	 	self.x = 132
+			self.delay = 30 + flr(rnd(10))
+			set_hole(self)
+			state = 'wait'
+	 -- wait for delay
+	 elseif state == 'wait' then
+	 	self.delay -= 1
+	 	if self.delay <= 0 then
+	 		state = 'move'
+	 	end
+	 -- move to player
+	 elseif state == 'move' then
+	 	self.x -= speed
+	 	if self.x <= player.x then
+	 		state = 'score'
+	 	end
+	 -- score
+	 elseif state == 'score' then
+	 	score += 1
+	 	state = 'end'
+	 -- move off screen
+	 else
+	 	self.x -= speed
+	 	if self.x <= -16 then
+	 		state = 'init'
+	 	end
+	 end
+	 yield()	
+	end
 end
-
---
--- updates
---
 
 
 
@@ -303,52 +331,52 @@ end
 --
 -- co routines
 --
-function update_wall(self)
-	local co = nil
-	while game_state == 'running' do
-		if not co or costatus(co) == 'dead' then
-			if self.state == 'delay' then
-				co = cocreate(co_delay)
-			elseif self.state == 'running' then
-				co = cocreate(co_move)
-			end
-		else
---			print(self.state, 8, 16)
-			coresume(co, self)
-		end
-		yield()
-	end	
-end
+--function update_wall_old2(self)
+--	local co = nil
+--	while game_state == 'running' do
+--		if not co or costatus(co) == 'dead' then
+--			if self.state == 'delay' then
+--				co = cocreate(co_delay)
+--			elseif self.state == 'running' then
+--				co = cocreate(co_move)
+--			end
+--		else
+----			print(self.state, 8, 16)
+--			coresume(co, self)
+--		end
+--		yield()
+--	end	
+--end
 
-function update_wall_old(self)
-	while game_state == 'running' do
-		-- wait until delay ends
-		for i=self.delay,0,-1 do
-			yield()
-		end
-		
-		-- reset the wall
-		self.x = 132
-		self.delay = 30 + flr(rnd(10))
-		self.did_score = false
-		set_hole(self)
-		
-		-- move across the screen
-		repeat
-			self.x -= speed
-			
-			-- did it pass the player?
-			if self.x < player.x 
-				and not self.did_score then
-				score += 1
-				self.did_score = true
-			end
-			
-			yield()
-		until self.x <= -16
-			or game_state != 'running'
-	end
-end
+--function update_wall_old(self)
+--	while game_state == 'running' do
+--		-- wait until delay ends
+--		for i=self.delay,0,-1 do
+--			yield()
+--		end
+--		
+--		-- reset the wall
+--		self.x = 132
+--		self.delay = 30 + flr(rnd(10))
+--		self.did_score = false
+--		set_hole(self)
+--		
+--		-- move across the screen
+--		repeat
+--			self.x -= speed
+--			
+--			-- did it pass the player?
+--			if self.x < player.x 
+--				and not self.did_score then
+--				score += 1
+--				self.did_score = true
+--			end
+--			
+--			yield()
+--		until self.x <= -16
+--			or game_state != 'running'
+--	end
+--end
 
 
 
