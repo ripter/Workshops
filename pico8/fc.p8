@@ -313,7 +313,7 @@ function update_wall(self)
 				co = cocreate(co_move)
 			end
 		else
-			print(self.state, 8, 16)
+--			print(self.state, 8, 16)
 			coresume(co, self)
 		end
 		yield()
@@ -353,16 +353,13 @@ end
 
 
 function update_ground(self)
-	local co = cocreate(co_move)
 	self.x = 128
-	self.dest = 0
 	
 	while game_state == 'running' do
-		if costatus(co) == 'dead' then
+		if self.x < 0 then
 			self.x = 128
-			co = cocreate(co_move)
 		else
-			coresume(co, self)
+			self.x -= speed
 		end
 		
 		yield()
@@ -409,7 +406,7 @@ end
 -- wait until delay ends
 function co_delay(self)
 	for i=self.delay,0,-1 do
-		print('delay', 8, 8)
+--		print('delay', 8, 8)
 		yield()
 	end
 	-- next state
