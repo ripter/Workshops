@@ -21,6 +21,7 @@ end
 
 function _update()
 	cls(12)
+	print(stat(7), 0, 0)
 	
 	-- run the update coroutines
 	-- for each game object
@@ -55,14 +56,16 @@ game_state = 'running'
 
 cors = {}
 
-
+gravity = 0.3
 ground = {
  x=128,
+ y=120,
+ ytop=128-16-8,
 }
 
 player = {
 	x=24,
-	y=100,
+	y=50,
 	vel=0,
 	sn=0,
 }
@@ -97,8 +100,9 @@ end
 
 function draw_ground()
 	local x = ground.x
-	map(0,15, x-128,120,  16,1)
- map(0,15,     x,120,  16,1)
+	local y = ground.y
+	map(0,15, x-128,y,  16,1)
+ map(0,15,     x,y,  16,1)
 end
 
 function draw_player(self)
@@ -172,6 +176,54 @@ end
 -- player
 
 function update_player(self)
+ local state = 'run'
+	while true do
+		local in_air = self.y < ground.ytop
+		
+		if in_air then
+			self.vel += gravity
+		end
+	
+		if game_state == 'running' then
+			if btn() > 0 then
+			 print('jet', 8, 8)
+			 self.vel -= 1.6
+		 elseif in_air then
+		 	print('fall', 8, 8)
+			else
+				print('run', 8, 8)
+			end
+		else
+			if in_air then
+				print('dead fall', 8, 8)
+			else
+		 	print('dead', 8, 8)
+		 end
+		end
+		
+		-- limit the velocity
+		clamp_vel(self)
+		-- cancel velocity on the ground
+		if not in_air then
+			self.vel = 0
+		end
+
+		self.y += flr(self.vel)
+	 yield()
+	end
+end
+
+-- limit velocity
+function clamp_vel(self)
+ if self.vel >= 2.0 then
+ 	self.vel = 2.0
+ elseif self.vel <= -3.0 then
+ 	self.vel = -3.0
+ end
+end
+
+
+function update_player_old(self)
 	self.anim = cocreate(anim_run)
 	
 	while true do
@@ -252,7 +304,7 @@ function anim_fly(self)
 	yield()
 end
 -->8
--- wall & ground
+-- forground
 
 function update_wall(self)
  local state = 'wait'
@@ -289,7 +341,6 @@ function update_wall(self)
 	 yield()	
 	end
 end
-
 
 
 function update_ground(self)
@@ -363,25 +414,6 @@ function hit_flag(wall)
 --	return fget(sn1) & fget(sn2)
 end
 
--->8
--- co routines
-
--- wait until delay ends
-function co_delay(self)
-	for i=self.delay,0,-1 do
---		print('delay', 8, 8)
-		yield()
-	end
-	-- next state
-	self.state = 'running'
-end
-
-function co_move(self)
-	repeat
-		self.x -= speed
-		yield()
-	until self.x <= self.dest
-end
 __gfx__
 eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
 eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeee99999eeeeeeeeeeeeeeeeeeeeeeee
