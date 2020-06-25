@@ -292,26 +292,23 @@ end
 
 
 
-
-
---function update_walls()
---	for wall in all(walls) do
---		-- move the wall
---		coresume(wall.co, wall)
---		-- did it pass the player?
---		if wall.x < player.x 
---			and not wall.did_score then
---			score += 1
---			wall.did_score = true
---		end
---	end
---end
-
+function update_ground(self)
+	self.x = 128
+	
+	while game_state == 'running' do
+		if self.x < 0 then
+			self.x = 128
+		else
+			self.x -= speed
+		end
+		
+		yield()
+	end
+end
 
 
 
--- create a new wall with a new hole
--- in the map
+-- move the hole to a random spot
 function set_hole(wall)
 	local hole = rnd(10)
 	
@@ -328,71 +325,9 @@ function set_hole(wall)
 	end
 end
 
---
--- co routines
---
---function update_wall_old2(self)
---	local co = nil
---	while game_state == 'running' do
---		if not co or costatus(co) == 'dead' then
---			if self.state == 'delay' then
---				co = cocreate(co_delay)
---			elseif self.state == 'running' then
---				co = cocreate(co_move)
---			end
---		else
-----			print(self.state, 8, 16)
---			coresume(co, self)
---		end
---		yield()
---	end	
---end
-
---function update_wall_old(self)
---	while game_state == 'running' do
---		-- wait until delay ends
---		for i=self.delay,0,-1 do
---			yield()
---		end
---		
---		-- reset the wall
---		self.x = 132
---		self.delay = 30 + flr(rnd(10))
---		self.did_score = false
---		set_hole(self)
---		
---		-- move across the screen
---		repeat
---			self.x -= speed
---			
---			-- did it pass the player?
---			if self.x < player.x 
---				and not self.did_score then
---				score += 1
---				self.did_score = true
---			end
---			
---			yield()
---		until self.x <= -16
---			or game_state != 'running'
---	end
---end
 
 
 
-function update_ground(self)
-	self.x = 128
-	
-	while game_state == 'running' do
-		if self.x < 0 then
-			self.x = 128
-		else
-			self.x -= speed
-		end
-		
-		yield()
-	end
-end
 -->8
 -- collision
 
