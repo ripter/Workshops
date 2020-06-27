@@ -12,6 +12,7 @@ function _init()
 	
 	-- setup the update coroutines
 	-- for each game object
+	cors = {}
 	add_co(ground, update_ground)
 	add_co(wall1, update_wall)
 	add_co(wall2, update_wall)
@@ -54,7 +55,7 @@ speed = 2.5
 
 game_state = 'running'
 
-cors = {}
+
 
 gravity = 0.3
 ground = {
@@ -73,26 +74,18 @@ player = {
 	state_co=nil,
 }
 
-animations = {
-	flap={2,0,4},
-	idle={0},
-}
 
 
 wall1 = {
 	x=128,
 	mx=0, -- map x
-	delay=50,
-	co=nil,
-	state='delay',
+	delay=128,
 }
 
 wall2 = {
 	x=128,
 	mx=2, -- map x
-	delay=100,
-	co=nil,
-	state='delay',
+	delay=192,
 }
 walls = {wall1, wall2}
 -->8
@@ -367,7 +360,7 @@ function hit_flag(wall)
 end
 
 __gfx__
-eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeee2eee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
+eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
 eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeee99999eeeeeeeeeeeeeeeeeeeeeeee
 e9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999eeeeee9999599999ee7eee9999599999eeeeee9999599999eeeeeeeeeeeeeeeeeeeee
 979999999999eeee979999999999eeee979999999999eeee979999999999eeee979999999999eee7979999999999eeee979999999999eeeeeeeeeeeeeeeeeeee
