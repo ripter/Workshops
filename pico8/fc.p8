@@ -21,7 +21,7 @@ end
 
 function _update()
 	cls(12)
-	print(stat(7), 0, 0)
+--	print(stat(7), 0, 0)
 	
 	-- run the update coroutines
 	-- for each game object
@@ -65,9 +65,12 @@ ground = {
 
 player = {
 	x=24,
-	y=50,
+	y=ground.ytop,
 	vel=0,
 	sn=0,
+	-- anim/sfx state and coroutine
+	state=nil,
+	state_co=nil,
 }
 
 animations = {
@@ -94,6 +97,7 @@ wall2 = {
 walls = {wall1, wall2}
 -->8
 -- draw stuff
+
 function draw_wall(self)
 	map(self.mx,0, self.x,0, 2,15)
 end
@@ -121,46 +125,8 @@ function sprite(sn, x, y, w, h)
 	sspr(sn_x, sn_y, w, h, x, y)
 end
 
---
--- animation system
---
-
--- sets/resets the animation.
-function anim_play(self, name)
-	self.frames = animations[name]
-	self.delay = 4
-	self.tick = self.delay
-	self.index = 1
-	self.sn = self.frames[self.index]
-end
 
 
--- update the animation
-function anim_update(self)
-	self.tick -= 1
-	
-	-- when tick reaches 0
-	-- update the frame index
-	if self.tick == 0 then
-		self.index += 1
-		self.tick = self.delay
-	end
-	
-	-- when we reach the last frame,
-	-- loop back to the start.
-	if self.index > #self.frames then
-		self.index = 1
-		-- revert back to idle
-		self.frames = animations.idle
-	end
-	
-	-- update the sprite number
-	self.sn = self.frames[self.index]
-end
-
---
--- utils
---
 
 function add_co(obj, co)
 	add(cors, {
@@ -188,23 +154,29 @@ function update_player(self)
 			if btn() > 0 then
 			 print('jet', 8, 8)
 			 self.vel -= 1.6
+			 play_state(self, co_jet)
 		 elseif in_air then
 		 	print('fall', 8, 8)
+		 	play_state(self, co_fall)
 			else
 				print('run', 8, 8)
+				play_state(self, co_run)
 			end
 		else
 			if in_air then
 				print('dead fall', 8, 8)
+				play_state(self, co_fall)
 			else
 		 	print('dead', 8, 8)
+		 	play_state(self, co_dead)
 		 end
 		end
 		
 		-- limit the velocity
 		clamp_vel(self)
 		-- cancel velocity on the ground
-		if not in_air then
+		if not in_air 
+			and self.vel > 0 then
 			self.vel = 0
 		end
 
@@ -212,6 +184,7 @@ function update_player(self)
 	 yield()
 	end
 end
+
 
 -- limit velocity
 function clamp_vel(self)
@@ -222,87 +195,66 @@ function clamp_vel(self)
  end
 end
 
+-- 
+function play_state(self, co)
+	if self.state_co != co
+		or costatus(self.state) == 'dead' then
+		self.state_co = co
+		self.state = cocreate(co)
+	else
+	 coresume(self.state, self)
+	end
+end
 
-function update_player_old(self)
-	self.anim = cocreate(anim_run)
-	
+
+
+
+function co_jet(self)
 	while true do
-		local anim = self.anim
-		-- update the player pos
-		player_update(self)
-		-- update animation
-		if costatus(anim) == 'dead' then
---			self.anim = cocreate(anim_run)
-		else
-		 coresume(anim, self)
-		end
-		
-		
+		self.sn = 12
+		yield()
+	end
+end
+
+function co_fall(self)
+	while true do
+		self.sn = 08
+		yield()
+		self.sn = 10
+		yield()
+	end
+end
+
+function co_run(self)
+	while true do
+		self.sn = 2
+		yield()
+		self.sn = 4
+		yield()
+		self.sn = 6
+		yield()
+	end
+end
+
+function co_dead(self)
+	while true do
+		self.sn = 0
 		yield()
 	end
 end
 
 
-function player_update(self, anim)
-	-- apply gravity
-	self.vel += 0.3
 
-	if game_state == 'running' then
-		-- any button press for flap
-	 if btn() > 0 then
-	 	self.vel -= 1.6
---	 	self.anim = cocreate(aim_fly)
-	 	sfx(0)
-	 end
- end
- 
- -- limit velocity
- if self.vel >= 2.0 then
- 	self.vel = 2.0
- elseif self.vel <= -3.0 then
- 	self.vel = -3.0
- end
- 
- -- bounds check
- if self.vel > 0 
- 	and self.y >= 103 then
- 	self.vel = 0
- end
- 
- -- update by velocity
- self.y += flr(self.vel)
-end
+
 
 
 function player_die()
 	game_state = 'over'
-	player.anim = cocreate(anim_die)
 end
 
 
 
 
-function anim_run(self)
-	while true do
-		for i=2,6,2 do
-			self.sn = i
-			-- yield twice to slow down
-			yield()
-			yield()
-		end
-	end
-end
-
-function anim_die(self)
-	self.sn = 0
-	yield()
-end
-
-function anim_fly(self)
-	self.sn = 12
-	yield()
-	yield()
-end
 -->8
 -- forground
 
