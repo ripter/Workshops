@@ -10,19 +10,16 @@ function _init()
 	palt(0, false)
 	palt(14, true)
 	
-	-- setup the update coroutines
-	-- for each game object
-	cors = {}
-	add_co(ground, update_ground)
-	add_co(wall1, update_wall)
-	add_co(wall2, update_wall)
-	add_co(player, update_player)
+	-- setup the scene manager
+	-- uses game_state
+	scene_co = cocreate(update_scene)
 end
 
 
 function _update()
 	cls(12)
 --	print(stat(7), 0, 0)
+	coresume(scene_co)
 	
 	-- run the update coroutines
 	-- for each game object
@@ -43,17 +40,52 @@ function _draw()
 	draw_wall(wall2)
 	-- draw the player
 	draw_player(player)
-	-- draw score
-	print(score, 64,8)
+	-- draw score/title
+	draw_text()
 end
 
+
+function update_scene()
+ local last_state = nil
+ while true do
+ 	-- do nothing if the state
+ 	-- did not change
+ 	if game_state == last_state then
+ 		yield()
+ 	end
+ 	
+ 	if game_state == 'init' then
+ 		cors = {}
+			add_co(ground, update_ground)
+--			game_state = 'running'
+		elseif game_state == 'running' then
+		 cors = {}
+			add_co(ground, update_ground)
+		 add_co(player, update_player)
+			add_co(wall1, update_wall)
+			add_co(wall2, update_wall)
+ 	end
+ 	
+ 	last_state = game_state
+ 	yield()
+ end
+end
+
+function add_co(obj, co)
+	add(cors, {
+		obj=obj,
+		co=cocreate(co),
+	})
+end
 -->8
 -- game state
 high_score = 0
 score = 0
 speed = 2.5
 
-game_state = 'running'
+--game_state = 'running'
+game_state = 'init'
+scene_co = nil
 
 
 
@@ -69,6 +101,7 @@ player = {
 	y=ground.ytop,
 	vel=0,
 	sn=0,
+	enabled=false,
 	-- anim/sfx state and coroutine
 	state=nil,
 	state_co=nil,
@@ -91,10 +124,13 @@ walls = {wall1, wall2}
 -->8
 -- draw stuff
 
+-- draw a wall
 function draw_wall(self)
 	map(self.mx,0, self.x,0, 2,15)
 end
 
+
+-- draw the scrolling background
 function draw_ground()
 	local x = ground.x
 	local y = ground.y
@@ -102,7 +138,22 @@ function draw_ground()
  map(0,15,     x,y,  16,1)
 end
 
+
+
+function draw_text()
+
+ if game_state == 'running' then
+  print(score, 64,8)
+ end
+end
+
+
+-- draw chester
 function draw_player(self)
+	if not self.enabled then
+		return
+	end
+	
 	sprite(
 			self.sn, 
 			self.x,
@@ -121,12 +172,7 @@ end
 
 
 
-function add_co(obj, co)
-	add(cors, {
-		obj=obj,
-		co=cocreate(co),
-	})
-end
+
 
 
 
@@ -291,7 +337,7 @@ end
 function update_ground(self)
 	self.x = 128
 	
-	while game_state == 'running' do
+	while true do
 		if self.x < 0 then
 			self.x = 128
 		else
@@ -358,6 +404,32 @@ function hit_flag(wall)
 --	local sn2 = mget(x+1,y+1)
 --	return fget(sn1) & fget(sn2)
 end
+
+-->8
+-- scenes
+
+
+function attract_scene()
+ -- show title text
+ -- run background anim
+end
+
+
+
+function play_scene()
+ -- count down (cancel-able)
+ -- run player
+ -- after countdown, run walls
+end
+
+
+
+function over_scene()
+ -- show over screen
+end
+
+
+
 
 __gfx__
 eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
