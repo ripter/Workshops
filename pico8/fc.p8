@@ -73,6 +73,7 @@ function update_scene()
 				--				add_co(nil, play_scene)
 			elseif 'over' == game_state then
 				add_co(player, update_player)
+				add_co(nil, over_scene)
 			end
 		end
 
@@ -159,11 +160,7 @@ end
 
 
 function draw_text()
-	print(game_state, 0, 0)
-
-	if game_state == 'init' then
-
-	elseif game_state == 'running' then
+	if game_state == 'running' then
 		print(score, 64,8)
 	end
 end
@@ -201,6 +198,9 @@ function draw_gameover()
 	if game_state != 'over' then
 		return
 	end
+ if player.vel != 0 then
+  return
+ end
 	local x = 26
 	local y = 42
 
@@ -225,22 +225,17 @@ function update_player(self)
 
 		if game_state == 'running' then
 			if btn() > 0 then
-				print('jet', 8, 8)
 				self.vel -= 1.6
 				play_state(self, co_jet)
 			elseif in_air then
-				print('fall', 8, 8)
 				play_state(self, co_fall)
 			else
-				print('run', 8, 8)
 				play_state(self, co_run)
 			end
 		else
 			if in_air then
-				print('dead fall', 8, 8)
 				play_state(self, co_fall)
 			else
-				print('dead', 8, 8)
 				play_state(self, co_dead)
 			end
 		end
@@ -446,6 +441,14 @@ end
 
 function over_scene()
  -- show over screen
+ while true do
+ 	print('over scene', 8, 8)
+ 	
+  if btn() > 0 then
+			game_state = 'init'
+		end
+  yield()
+ end
 end
 
 
@@ -499,7 +502,7 @@ ee99a99999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 e99a99998eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee22222666666222222222222222222666
 99aa9999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee22222666666222222222222222222666
 9a99999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee22222666066666666666666666666660
-99999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee22222666500000000000000000000005
+99999eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee22222666e0000000000000000000000e
 2222222222222222eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 6666666666666666eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 6226622662266226eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
