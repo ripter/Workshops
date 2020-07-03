@@ -9,7 +9,7 @@ function _init()
 	-- use pink as transparent
 	palt(0, false)
 	palt(14, true)
-	
+
 	-- setup the scene manager
 	-- uses game_state
 	scene_co = cocreate(update_scene)
@@ -18,15 +18,15 @@ end
 
 function _update()
 	cls(12)
---	print(stat(7), 0, 0)
+	--	print(stat(7), 0, 0)
 	coresume(scene_co)
-	
+
 	-- run the update coroutines
 	-- for each game object
 	for go in all(cors) do
 		coresume(go.co, go.obj)
 	end
-	
+
 	check_collision()
 end
 
@@ -49,35 +49,35 @@ end
 
 
 function update_scene()
- local last_state = nil
+	local last_state = nil
 
- while true do
- 	-- do nothing if the state
- 	-- did not change
- 	if game_state == last_state then
- 		-- do nothing when state does
- 		-- not change
- 	else
- 		-- reset update coroutines
- 		cors = {}
- 		last_state = game_state
- 	
- 	 if 'init' == game_state then
-			 add_co(ground, update_ground)
-			 add_co(nil, attract_scene)
-		 elseif 'running' == game_state then
+	while true do
+		-- do nothing if the state
+		-- did not change
+		if game_state == last_state then
+			-- do nothing when state does
+			-- not change
+		else
+			-- reset update coroutines
+			cors = {}
+			last_state = game_state
+
+			if 'init' == game_state then
 				add_co(ground, update_ground)
-		 	add_co(player, update_player)
+				add_co(nil, attract_scene)
+			elseif 'running' == game_state then
+				add_co(ground, update_ground)
+				add_co(player, update_player)
 				add_co(wall1, update_wall)
 				add_co(wall2, update_wall)
---				add_co(nil, play_scene)
-   elseif 'over' == game_state then
-   	add_co(player, update_player)
- 	 end
- 	end
- 	
- 	yield()
- end
+				--				add_co(nil, play_scene)
+			elseif 'over' == game_state then
+				add_co(player, update_player)
+			end
+		end
+
+		yield()
+	end
 end
 
 function add_co(obj, co)
@@ -101,9 +101,9 @@ scene_co = nil
 
 gravity = 0.3
 ground = {
- x=128,
- y=120,
- ytop=128-16-8,
+	x=128,
+	y=120,
+	ytop=128-16-8,
 }
 
 player = {
@@ -153,19 +153,19 @@ function draw_ground()
 	local x = ground.x
 	local y = ground.y
 	map(0,15, x-128,y,  16,1)
- map(0,15,     x,y,  16,1)
+	map(0,15,     x,y,  16,1)
 end
 
 
 
 function draw_text()
 	print(game_state, 0, 0)
-	
+
 	if game_state == 'init' then
-		
- elseif game_state == 'running' then
-  print(score, 64,8)
- end
+
+	elseif game_state == 'running' then
+		print(score, 64,8)
+	end
 end
 
 
@@ -174,36 +174,36 @@ function draw_player(self)
 	if not self.enabled then
 		return
 	end
-	
+
 	sprite(
-			self.sn, 
-			self.x,
-			self.y, 
-			16, 16
-	)
+	self.sn,
+	self.x,
+	self.y,
+	16, 16
+)
 end
 
 
 function draw_intro()
- if game_state != 'init' then
- 	return
- end
- local x = 26
- local y = 42
+	if game_state != 'init' then
+		return
+	end
+	local x = 26
+	local y = 42
 
- map(4,0, 16, 32, 11, 7)
- print('flappy chester', x, y)
+	map(4,0, 16, 32, 11, 7)
+	print('flappy chester', x, y)
 	print('version '..version, x, y+16)
 	print('press ❎ to start', x, y+32)
 end
 
 function draw_gameover()
- if game_state != 'over' then
- 	return
- end
- local x = 26
- local y = 42
- 
+	if game_state != 'over' then
+		return
+	end
+	local x = 26
+	local y = 42
+
 	map(4,0, 16, 32, 11, 7)
 	print('game over', x, y)
 	print('score '..score, x, y+16)
@@ -211,32 +211,26 @@ function draw_gameover()
 	print('press ❎ to replay', x-2, y+32)
 end
 
-
-
-
-
-
-
 -->8
 -- player
 
 function update_player(self)
- local state = 'run'
+	local state = 'run'
 	while true do
 		local in_air = self.y < ground.ytop
-		
+
 		if in_air then
 			self.vel += gravity
 		end
-	
+
 		if game_state == 'running' then
 			if btn() > 0 then
-			 print('jet', 8, 8)
-			 self.vel -= 1.6
-			 play_state(self, co_jet)
-		 elseif in_air then
-		 	print('fall', 8, 8)
-		 	play_state(self, co_fall)
+				print('jet', 8, 8)
+				self.vel -= 1.6
+				play_state(self, co_jet)
+			elseif in_air then
+				print('fall', 8, 8)
+				play_state(self, co_fall)
 			else
 				print('run', 8, 8)
 				play_state(self, co_run)
@@ -246,47 +240,44 @@ function update_player(self)
 				print('dead fall', 8, 8)
 				play_state(self, co_fall)
 			else
-		 	print('dead', 8, 8)
-		 	play_state(self, co_dead)
-		 end
+				print('dead', 8, 8)
+				play_state(self, co_dead)
+			end
 		end
-		
+
 		-- limit the velocity
 		clamp_vel(self)
 		-- cancel velocity on the ground
-		if not in_air 
-			and self.vel > 0 then
+		if not in_air
+		and self.vel > 0 then
 			self.vel = 0
 		end
 
 		self.y += flr(self.vel)
-	 yield()
+		yield()
 	end
 end
 
 
 -- limit velocity
 function clamp_vel(self)
- if self.vel >= 2.0 then
- 	self.vel = 2.0
- elseif self.vel <= -3.0 then
- 	self.vel = -3.0
- end
-end
-
--- 
-function play_state(self, co)
-	if self.state_co != co
-		or costatus(self.state) == 'dead' then
-		self.state_co = co
-		self.state = cocreate(co)
-	else
-	 coresume(self.state, self)
+	if self.vel >= 2.0 then
+		self.vel = 2.0
+	elseif self.vel <= -3.0 then
+		self.vel = -3.0
 	end
 end
 
-
-
+--
+function play_state(self, co)
+	if self.state_co != co
+	or costatus(self.state) == 'dead' then
+		self.state_co = co
+		self.state = cocreate(co)
+	else
+		coresume(self.state, self)
+	end
+end
 
 function co_jet(self)
 	while true do
@@ -323,67 +314,60 @@ function co_dead(self)
 end
 
 
-
-
-
-
 function player_die()
 	game_state = 'over'
 end
-
-
-
 
 -->8
 -- forground
 
 function update_wall(self)
- local state = 'wait'
+	local state = 'wait'
 	while true do
-	 -- init wall
-	 if state == 'init' then
-	 	self.x = 132
+		-- init wall
+		if state == 'init' then
+			self.x = 132
 			self.delay = 30 + flr(rnd(10))
 			set_hole(self)
 			state = 'wait'
-	 -- wait for delay
-	 elseif state == 'wait' then
-	 	self.delay -= 1
-	 	if self.delay <= 0 then
-	 		state = 'move'
-	 	end
-	 -- move to player
-	 elseif state == 'move' then
-	 	self.x -= speed
-	 	if self.x <= player.x then
-	 		state = 'score'
-	 	end
-	 -- score
-	 elseif state == 'score' then
-	 	score += 1
-	 	state = 'end'
-	 -- move off screen
-	 else
-	 	self.x -= speed
-	 	if self.x <= -16 then
-	 		state = 'init'
-	 	end
-	 end
-	 yield()	
+			-- wait for delay
+		elseif state == 'wait' then
+			self.delay -= 1
+			if self.delay <= 0 then
+				state = 'move'
+			end
+			-- move to player
+		elseif state == 'move' then
+			self.x -= speed
+			if self.x <= player.x then
+				state = 'score'
+			end
+			-- score
+		elseif state == 'score' then
+			score += 1
+			state = 'end'
+			-- move off screen
+		else
+			self.x -= speed
+			if self.x <= -16 then
+				state = 'init'
+			end
+		end
+		yield()
 	end
 end
 
 
 function update_ground(self)
 	self.x = 128
-	
+
 	while true do
 		if self.x < 0 then
 			self.x = 128
 		else
 			self.x -= speed
 		end
-		
+
 		yield()
 	end
 end
@@ -393,7 +377,7 @@ end
 -- move the hole to a random spot
 function set_hole(wall)
 	local hole = rnd(10)
-	
+
 	for y=0,14,1 do
 		if y >= hole and y <= 4+hole then
 			-- hole
@@ -432,7 +416,7 @@ function in_range(wall)
 	local x1 = player.x
 	local x2 = wall.x
 	return (x1+16) >= x2
-		and x1 <= (x2+16) 
+	 and x1 <= (x2+16)
 end
 
 -- returns the flag of the hit sprite
@@ -441,28 +425,23 @@ function hit_flag(wall)
 	local x = wall.mx
 	local sn1 = mget(x, y)
 	return fget(sn1)
---	local sn2 = mget(x+1,y+1)
---	return fget(sn1) & fget(sn2)
+	--	local sn2 = mget(x+1,y+1)
+	--	return fget(sn1) & fget(sn2)
 end
 
 -->8
 -- scenes
-
-
 function attract_scene()
- -- wait for user to press button
- -- then switch to running
- while true do
-  if btn() > 0 then
-  	game_state = 'running'
-  	player.enabled = true
-  end
-  yield()
- end
+	-- wait for user to press button
+	-- then switch to running
+	while true do
+		if btn() > 0 then
+			game_state = 'running'
+			player.enabled = true
+		end
+		yield()
+	end
 end
-
-
-
 
 
 function over_scene()
