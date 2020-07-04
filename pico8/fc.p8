@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 27
+version 28
 __lua__
 -- flappy chester
 -- by chris richards
@@ -12,22 +12,21 @@ function _init()
 
 	-- setup the scene manager
 	-- uses game_state
-	scene_co = cocreate(update_scene)
+--	scene_co = cocreate(update_scene)
 end
 
 
 function _update()
 	cls(12)
 	--	print(stat(7), 0, 0)
-	coresume(scene_co)
+	update_player(player)
 
-	-- run the update coroutines
-	-- for each game object
-	for go in all(cors) do
-		coresume(go.co, go.obj)
-	end
-
+	update_ground(ground)
+	update_wall(wall1)
+	update_wall(wall2)
+	
 	check_collision()
+	update_scene()
 end
 
 
@@ -41,7 +40,7 @@ function _draw()
 	-- draw the player
 	draw_player(player)
 	-- draw score/title
-	draw_text()
+	draw_score()
 	-- draw screens
 	draw_gameover()
 	draw_intro()
@@ -88,15 +87,15 @@ function add_co(obj, co)
 	})
 end
 -->8
-version = 0.4
+version = 0.5
 -- game state
 highscore = 0
 score = 0
 speed = 2.5
 
---game_state = 'running'
+
 game_state = 'init'
-scene_co = nil
+scene_delay = 20
 
 
 
@@ -124,12 +123,14 @@ wall1 = {
 	x=128,
 	mx=0, -- map x
 	delay=128,
+	state='wait',
 }
 
 wall2 = {
 	x=128,
 	mx=2, -- map x
 	delay=192,
+	state='wait',
 }
 walls = {wall1, wall2}
 -->8
@@ -145,6 +146,9 @@ end
 
 -- draw a wall
 function draw_wall(self)
+	if 'intro' == game_state then
+	  return
+	end
 	map(self.mx,0, self.x,0, 2,15)
 end
 
@@ -159,25 +163,20 @@ end
 
 
 
-function draw_text()
+function draw_score()
 	if game_state == 'running' then
-		print(score, 64,8)
+		print(''..score, 64,8)
 	end
 end
 
 
 -- draw chester
 function draw_player(self)
-	if not self.enabled then
+	if 'init' == game_state then
 		return
 	end
 
-	sprite(
-	self.sn,
-	self.x,
-	self.y,
-	16, 16
-)
+	sprite(self.sn, self.x,self.y, 16, 16)
 end
 
 
@@ -215,8 +214,7 @@ end
 -- player
 
 function update_player(self)
-	local state = 'run'
-	while true do
+--	while true do
 		local in_air = self.y < ground.ytop
 
 		if in_air then
@@ -249,8 +247,8 @@ function update_player(self)
 		end
 
 		self.y += flr(self.vel)
-		yield()
-	end
+--		yield()
+--	end
 end
 
 
@@ -316,55 +314,60 @@ end
 -->8
 -- forground
 
-function update_wall(self)
-	local state = 'wait'
-	while true do
-		-- init wall
-		if state == 'init' then
-			self.x = 132
-			self.delay = 30 + flr(rnd(10))
-			set_hole(self)
-			state = 'wait'
-			-- wait for delay
-		elseif state == 'wait' then
-			self.delay -= 1
-			if self.delay <= 0 then
-				state = 'move'
-			end
-			-- move to player
-		elseif state == 'move' then
-			self.x -= speed
-			if self.x <= player.x then
-				state = 'score'
-			end
-			-- score
-		elseif state == 'score' then
-			score += 1
-			state = 'end'
-			-- move off screen
-		else
-			self.x -= speed
-			if self.x <= -16 then
-				state = 'init'
-			end
-		end
-		yield()
+function update_ground(self)
+	if 'over' == game_state then
+		return
+	end
+	
+ if self.x < 0 then
+		self.x = 128
+	else
+		self.x -= speed
 	end
 end
 
 
-function update_ground(self)
-	self.x = 128
 
-	while true do
-		if self.x < 0 then
-			self.x = 128
-		else
-			self.x -= speed
-		end
-
-		yield()
+function update_wall(self)
+	local state = self.state
+	
+	if 'running' != game_state then
+	 return
 	end
+	
+	if 'over' == game_state then
+		self.state = 'init'
+	end
+	
+	-- init wall
+	if state == 'init' then
+		self.x = 132
+		self.delay = 30 + flr(rnd(10))
+		set_hole(self)
+		self.state = 'wait'
+	-- wait for delay
+	elseif state == 'wait' then
+		self.delay -= 1
+		if self.delay <= 0 then
+			self.state = 'move'
+		end
+	-- move to player
+	elseif state == 'move' then
+		self.x -= speed
+		if self.x <= player.x then
+			self.state = 'score'
+		end
+	-- score
+	elseif state == 'score' then
+		score += 1
+		self.state = 'end'
+	-- move off screen
+	else
+		self.x -= speed
+		if self.x <= -16 then
+			self.state = 'init'
+		end
+	end	
 end
 
 
@@ -385,9 +388,6 @@ function set_hole(wall)
 		end
 	end
 end
-
-
-
 
 -->8
 -- collision
@@ -426,6 +426,35 @@ end
 
 -->8
 -- scenes
+
+function update_scene()
+	print('scene: '..game_state, 0, 0)	
+	local did_press = btnp() > 0
+--	local is_ready = scene_delay <= 0
+	
+	
+ if 'init' == game_state then
+--  if not is_ready then
+--  	scene_delay -= 1
+--  end
+  
+  if did_press then  
+		 game_state = 'running'
+--		 scene_delay = 20
+		end
+	elseif 'over' == game_state then
+--	 if not is_ready then
+--  	scene_delay -= 1
+--  end
+  
+  if did_press then
+		 game_state = 'running'
+--		 scene_delay = 20
+		end
+ end
+end
+
+
 function attract_scene()
 	-- wait for user to press button
 	-- then switch to running
