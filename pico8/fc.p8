@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 28
+version 29
 __lua__
 -- flappy chester
 -- by chris richards
@@ -46,46 +46,6 @@ function _draw()
 	draw_intro()
 end
 
-
-function update_scene()
-	local last_state = nil
-
-	while true do
-		-- do nothing if the state
-		-- did not change
-		if game_state == last_state then
-			-- do nothing when state does
-			-- not change
-		else
-			-- reset update coroutines
-			cors = {}
-			last_state = game_state
-
-			if 'init' == game_state then
-				add_co(ground, update_ground)
-				add_co(nil, attract_scene)
-			elseif 'running' == game_state then
-				add_co(ground, update_ground)
-				add_co(player, update_player)
-				add_co(wall1, update_wall)
-				add_co(wall2, update_wall)
-				--				add_co(nil, play_scene)
-			elseif 'over' == game_state then
-				add_co(player, update_player)
-				add_co(nil, over_scene)
-			end
-		end
-
-		yield()
-	end
-end
-
-function add_co(obj, co)
-	add(cors, {
-		obj=obj,
-		co=cocreate(co),
-	})
-end
 -->8
 version = 0.5
 -- game state
@@ -95,7 +55,6 @@ speed = 2.5
 
 
 game_state = 'init'
-scene_delay = 20
 
 
 
@@ -165,7 +124,7 @@ end
 
 function draw_score()
 	if game_state == 'running' then
-		print(''..score, 64,8)
+		print(score, 64,8)
 	end
 end
 
@@ -331,14 +290,9 @@ end
 function update_wall(self)
 	local state = self.state
 	
-	if 'over' == game_state then
-		self.state = 'init'
-	end
 	if 'running' != game_state then
 	 return
 	end
-	
-
 	
 	-- init wall
 	if state == 'init' then
@@ -370,6 +324,7 @@ function update_wall(self)
 		end
 	end	
 end
+
 
 
 
@@ -431,49 +386,32 @@ end
 function update_scene()
 	print('scene: '..game_state, 0, 0)	
 	local did_press = btnp() > 0
---	local is_ready = scene_delay <= 0
-	
 	
  if 'init' == game_state then
   if did_press then  
 		 game_state = 'running'
 		end
-	elseif 'over' == game_state then
-  if did_press then
-		 game_state = 'init'
-		end
+	elseif 'over' == game_state
+		and player.vel == 0
+  and did_press then
+  
+  	reset_game()
+		 game_state = 'running'
  end
 end
 
 
-function attract_scene()
-	-- wait for user to press button
-	-- then switch to running
-	while true do
-		if btn() > 0 then
-			game_state = 'running'
-			player.enabled = true
-		end
-		yield()
-	end
+function reset_game()
+	wall1.x = 128
+	wall1.delay = 60
+	wall1.state = 'wait'
+	set_hole(wall1)
+	
+	wall2.x = 128
+	wall2.delay = 128
+	wall2.state = 'wait'
+	set_hole(wall2)
 end
-
-
-function over_scene()
- -- show over screen
- while true do
- 	print('over scene', 8, 8)
- 	
-  if btn() > 0 then
-			game_state = 'init'
-		end
-  yield()
- end
-end
-
-
-
-
 __gfx__
 eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeeeeeeeeeeeee99eeee777ee7eeee99eeeeeeeeeeeeee99eeeeeeeeeeeeeeeeeeeeeeeee2
 eee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999eeeeeeeeeee99999ee7eee77eee99999eeeeeeeeeee99999eeeeeeeeeeeeeeeeeeeeeeee
