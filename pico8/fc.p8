@@ -331,13 +331,14 @@ end
 function update_wall(self)
 	local state = self.state
 	
+	if 'over' == game_state then
+		self.state = 'init'
+	end
 	if 'running' != game_state then
 	 return
 	end
 	
-	if 'over' == game_state then
-		self.state = 'init'
-	end
+
 	
 	-- init wall
 	if state == 'init' then
@@ -434,22 +435,12 @@ function update_scene()
 	
 	
  if 'init' == game_state then
---  if not is_ready then
---  	scene_delay -= 1
---  end
-  
   if did_press then  
 		 game_state = 'running'
---		 scene_delay = 20
 		end
 	elseif 'over' == game_state then
---	 if not is_ready then
---  	scene_delay -= 1
---  end
-  
   if did_press then
-		 game_state = 'running'
---		 scene_delay = 20
+		 game_state = 'init'
 		end
  end
 end
