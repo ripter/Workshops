@@ -1,9 +1,8 @@
-// import init from './lib/tic_tac_toe';
-
 /**
  * Game Logic for Tic Tac Toe.
- *
+ * State logic is writen in Rust and loaded via WASM
 */
+let wasm;
 export function reducer(state, action) {
   console.group('reducer');
   console.log('state', state);
@@ -13,10 +12,9 @@ export function reducer(state, action) {
   switch (action.type) {
     case 'init':
       console.log('init game');
-      // wait for the loaded event
-      document.addEventListener('load-wasm', (wasm) => {
-        console.log('loaded', wasm);
-      });
+      wasm = action.wasm;
+      newState.hasLoaded = true;
+      wasm.greet();
       break;
     default:
 
