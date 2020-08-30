@@ -1,0 +1,11 @@
+.tic-tac-toe {
+  display: grid;
+  grid-template-columns: repeat(3, 10em);
+  grid-template-rows: repeat(3, 10em);
+}
+
+.tic-tac-toe .tile {
+  width: 10em;
+  height: 10em;
+  border: thin solid #ddd;
+}
