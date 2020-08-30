@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 
 import { reducer } from './reducer';
 
@@ -11,7 +11,15 @@ export function App() {
       null, null, null,
       null, null, null,
     ],
+    isLoading: false,
   });
+
+
+  // on mount, intitalize the state.
+  // We need to do this because the wasm is loaded externally.
+  useEffect(() => {
+    dispatch({type: 'init'});
+  },[]);
 
   return (
     <div className="tic-tac-toe">
