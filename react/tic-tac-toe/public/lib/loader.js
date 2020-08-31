@@ -1,15 +1,6 @@
-import init from './tic_tac_toe.js';
+import init, { return_string, greet } from './tic_tac_toe.js';
 
 let wasAcked = false;
-let wasm = null;
-
-// Load the WASM and JS interface
-init().then(module => {
-  wasAcked = false;
-  wasm = module;
-  beacon();
-}).catch(err => console.log(err));
-
 
 // Acknowledge the load event so the beacon stops.
 function receaveAck() {
@@ -17,7 +8,7 @@ function receaveAck() {
 }
 
 // Beacon will continue to trigger the load event until acknowledged.
-function beacon() {
+function beacon(wasm) {
   const event = new CustomEvent('load-wasm', {detail: {
     wasm: wasm,
     ack: receaveAck,
@@ -25,6 +16,18 @@ function beacon() {
   document.dispatchEvent(event);
 
   if (!wasAcked) {
-    setTimeout(beacon, 10);
+    setTimeout(beacon, 10, wasm);
   }
 }
+
+
+//
+// Load the WASM and JS interface
+init().then(module => {
+  wasAcked = false;
+  beacon({
+    return_string,
+    greet,
+    _wasm: module,
+  });
+}).catch(err => console.log(err));

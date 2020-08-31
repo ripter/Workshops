@@ -11,5 +11,5 @@ export function useWASMLoader(onLoad) {
         // Let the component know we have loaded.
         onLoad(wasm);
       });
-  },[]);
+  },[onLoad]);
 }

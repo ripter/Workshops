@@ -15,6 +15,10 @@ export function reducer(state, action) {
       wasm = action.wasm;
       newState.hasLoaded = true;
       wasm.greet();
+      // newState.board = wasm.newGame();
+      newState.state = wasm.return_string();
+
+      window.lib = wasm;
       break;
     default:
 

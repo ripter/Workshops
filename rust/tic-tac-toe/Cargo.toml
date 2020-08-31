@@ -3,12 +3,13 @@ name = "tic-tac-toe"
 version = "0.1.0"
 authors = ["ripter <ripter001@gmail.com>"]
 edition = "2018"
+wasm-opt = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["console_error_panic_hook"]
+default = ["console_error_panic_hook", "wee_alloc"]
 
 [dependencies]
 wasm-bindgen = "0.2.63"
@@ -32,3 +33,7 @@ wasm-bindgen-test = "0.3.13"
 [profile.release]
 # Tell `rustc` to optimize for small code size.
 opt-level = "s"
+
+# Turn off wasm-opt because it throws errors.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
