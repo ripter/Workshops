@@ -21,7 +21,7 @@ pub fn return_string() -> String {
     "hello".to_string()
 }
 
-// #[wasm_bindgen(js_name=newGame)]
-// pub fn new_game() -> JsValue {
-//     (42)
-// }
+#[wasm_bindgen(js_name=newGame)]
+pub fn new_game() -> Vec<u32> {
+    vec![1, 2, 3]
+}
