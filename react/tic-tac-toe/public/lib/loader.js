@@ -1,4 +1,4 @@
-import init, { newGame } from './tic_tac_toe.js';
+import init, { newGame, empty_board } from './tic_tac_toe.js';
 
 let wasAcked = false;
 
@@ -27,6 +27,7 @@ init().then(module => {
   wasAcked = false;
   beacon({
     newGame,
+    emptyBoard: empty_board,
     _wasm: module,
   });
 }).catch(err => console.log(err));

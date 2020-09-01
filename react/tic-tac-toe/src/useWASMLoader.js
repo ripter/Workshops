@@ -10,6 +10,8 @@ export function useWASMLoader(onLoad) {
         ack();
         // Let the component know we have loaded.
         onLoad(wasm);
+        console.log('loaded')
+        window.lib = wasm;
       });
-  },[onLoad]);
+  }, [onLoad]);
 }
