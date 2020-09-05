@@ -1,24 +1,25 @@
-import { useRef, useState, useReducer, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { waitForWASM } from './waitForWASM';
-// import { useWASMLoader } from './useWASMLoader';
-// import { reducer } from './reducer';
 
-const STATE_DEFAULT = {
+export const STATE_DEFAULT = {
   board: [0,0,0,0,0,0,0,0,0],
-  hasLoaded: false,
   stepNumber: 0,
 };
 
 export function useWASMState() {
+  console.group('useWASMState')
   const refGame = useRef();
   const [wasm, setWASM] = useState();
 
   useEffect(() => {
     waitForWASM().then(resp => {
+      console.group('useWASMState - waitForWASM.then')
       console.log('loaded wasm', resp);
       refGame.current = resp.new_game();
+      console.log('setting WASM', resp)
       setWASM(resp);
+      console.groupEnd();
     });
   }, []);
 
@@ -32,6 +33,7 @@ export function useWASMState() {
     },
   }
   console.log('newState', newState);
+  console.groupEnd();
   return newState;
   // return {
   //   // state: !refGame.current ? STATE_DEFAULT : {

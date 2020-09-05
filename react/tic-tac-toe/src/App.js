@@ -1,19 +1,20 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 
-import { Square } from './Square';
 import { Board } from './Board';
-import { useWASMState } from './useWASMState';
+import { useWASMState, STATE_DEFAULT } from './useWASMState';
 
 import './App.css';
 
 export function App() {
   console.group('App');
-  const { state, dispatch } = useWASMState();
+  const { state, hasLoaded } = useWASMState();
+  const dispatch = (e) => console.log('dispatched', e);
+  // const state = {...STATE_DEFAULT};
+  // const state = {...result.state}
+  // console.log('state', result.hasLoaded, result);
 
-  console.log('state', state.hasLoaded, state);
 
-
-  if (!state.hasLoaded) {
+  if (!hasLoaded) {
     console.groupEnd();
     return <div className="tic-tac-toe">
       <p>Loading...</p>

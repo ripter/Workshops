@@ -8,6 +8,7 @@ export function waitForWASM() {
         const {ack, wasm} = event.detail;
         // acknowledge  the beacon so it stops broadcasting.
         ack();
+        console.log('load-wasm acked and resolved');
         // keep a refrence for debugging/prototyping.
         window.lib = wasm;
         resolve(wasm);
