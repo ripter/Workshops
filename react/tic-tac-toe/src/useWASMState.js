@@ -11,32 +11,34 @@ export function useWASMState() {
   const refGame = useRef();
   const [wasm, setWASM] = useState();
   const [state, setState] = useState(STATE_DEFAULT);
+  const [game, setGame] = useState();
 
   useEffect(() => {
     waitForWASM().then(resp => {
-      refGame.current = resp.new_game();
-      window.game = refGame.current;
+      const newGame = resp.new_game();
+      setGame(newGame);
       setWASM(resp);
       setState({
         ...state,
-        board: resp.get_board(refGame.current),
+        board: resp.get_board(newGame),
       });
     });
   }, []);
 
   return {
     state,
-    hasLoaded: refGame.current ? true : false,
+    hasLoaded: game ? true : false,
     dispatch: (action) => {
       console.log('action', action);
       switch (action.type) {
         case 'click':
-          console.log('before mark', wasm.get_board(refGame.current));
-          wasm.set_mark(refGame.current, action.index);
-          console.log('after mark', wasm.get_board(refGame.current));
+          console.log('game', game);
+          wasm.set_mark(game, action.index);
+          // wasm.set_mark(refGame.current, action.index);
           setState({
             ...state,
-            board: wasm.get_board(refGame.current),
+            // board: wasm.get_board(refGame.current),
+            board: wasm.get_board(game),
           });
           break;
         default:

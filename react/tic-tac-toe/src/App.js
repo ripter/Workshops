@@ -6,7 +6,6 @@ import { useWASMState, STATE_DEFAULT } from './useWASMState';
 import './App.css';
 
 export function App() {
-  console.group('App');
   const { state, hasLoaded, dispatch } = useWASMState();
   // const dispatch = (e) => console.log('dispatched', e);
   // const state = {...STATE_DEFAULT};
@@ -15,7 +14,6 @@ export function App() {
 
 
   if (!hasLoaded) {
-    console.groupEnd();
     return <div className="tic-tac-toe">
       <p>Loading...</p>
     </div>;
@@ -25,7 +23,6 @@ export function App() {
     console.log('jumpTo')
   }
 
-  console.groupEnd();
   return <Game
     {...state}
     jumpTo={jumpTo}
