@@ -37,8 +37,8 @@ pub fn set_mark(state: &mut State, index: usize) {
     let old: [u8; 9] = state.history[state.step_number];
     let mark: u8 = if state.is_x_next { 107 } else { 117 };
 
-    state.step_number += 1;
-    state.history[state.step_number] = old.clone();
+    // state.step_number += 1;
+    // state.history[state.step_number] = old.clone();
     state.history[state.step_number][index] = mark;
     state.is_x_next = !state.is_x_next;
 }

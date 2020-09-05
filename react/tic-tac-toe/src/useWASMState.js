@@ -8,41 +8,40 @@ export const STATE_DEFAULT = {
 };
 
 export function useWASMState() {
-  console.group('useWASMState')
   const refGame = useRef();
   const [wasm, setWASM] = useState();
+  const [state, setState] = useState(STATE_DEFAULT);
 
   useEffect(() => {
     waitForWASM().then(resp => {
-      console.group('useWASMState - waitForWASM.then')
-      console.log('loaded wasm', resp);
       refGame.current = resp.new_game();
-      console.log('setting WASM', resp)
+      window.game = refGame.current;
       setWASM(resp);
-      console.groupEnd();
+      setState({
+        ...state,
+        board: resp.get_board(refGame.current),
+      });
     });
   }, []);
 
-  console.log('useWASMState', refGame);
-  console.log('hasLoaded', refGame.current ? true : false);
-  const newState = {
+  return {
+    state,
     hasLoaded: refGame.current ? true : false,
-    state: STATE_DEFAULT,
     dispatch: (action) => {
       console.log('action', action);
+      switch (action.type) {
+        case 'click':
+          console.log('before mark', wasm.get_board(refGame.current));
+          wasm.set_mark(refGame.current, action.index);
+          console.log('after mark', wasm.get_board(refGame.current));
+          setState({
+            ...state,
+            board: wasm.get_board(refGame.current),
+          });
+          break;
+        default:
+
+      }
     },
   }
-  console.log('newState', newState);
-  console.groupEnd();
-  return newState;
-  // return {
-  //   // state: !refGame.current ? STATE_DEFAULT : {
-  //   //   board: wasm.get_board()
-  //   // },
-  //   hasLoaded: refGame.current ? true : false,
-  //   state: STATE_DEFAULT,
-  //   dispatch: (action) => {
-  //     console.log('action', action);
-  //   },
-  // };
 }

@@ -7,8 +7,8 @@ import './App.css';
 
 export function App() {
   console.group('App');
-  const { state, hasLoaded } = useWASMState();
-  const dispatch = (e) => console.log('dispatched', e);
+  const { state, hasLoaded, dispatch } = useWASMState();
+  // const dispatch = (e) => console.log('dispatched', e);
   // const state = {...STATE_DEFAULT};
   // const state = {...result.state}
   // console.log('state', result.hasLoaded, result);
