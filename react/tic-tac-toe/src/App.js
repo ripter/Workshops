@@ -11,6 +11,7 @@ export function App() {
   // const state = {...STATE_DEFAULT};
   // const state = {...result.state}
   // console.log('state', result.hasLoaded, result);
+  console.log('App', state, hasLoaded)
 
 
   if (!hasLoaded) {
