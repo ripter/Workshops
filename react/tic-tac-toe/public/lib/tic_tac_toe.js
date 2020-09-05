@@ -1,20 +1,6 @@
 
 let wasm;
 
-/**
-*/
-export function greet() {
-    wasm.greet();
-}
-
-let cachegetInt32Memory0 = null;
-function getInt32Memory0() {
-    if (cachegetInt32Memory0 === null || cachegetInt32Memory0.buffer !== wasm.memory.buffer) {
-        cachegetInt32Memory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachegetInt32Memory0;
-}
-
 let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
 
 cachedTextDecoder.decode();
@@ -31,54 +17,53 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 /**
-* @returns {string}
+*    Creates a new Game State.
+* @returns {State}
 */
-export function return_string() {
-    try {
-        const retptr = wasm.__wbindgen_export_0.value - 16;
-        wasm.__wbindgen_export_0.value = retptr;
-        wasm.return_string(retptr);
-        var r0 = getInt32Memory0()[retptr / 4 + 0];
-        var r1 = getInt32Memory0()[retptr / 4 + 1];
-        return getStringFromWasm0(r0, r1);
-    } finally {
-        wasm.__wbindgen_export_0.value += 16;
-        wasm.__wbindgen_free(r0, r1);
-    }
+export function new_game() {
+    var ret = wasm.new_game();
+    return State.__wrap(ret);
 }
 
-function getArrayI32FromWasm0(ptr, len) {
-    return getInt32Memory0().subarray(ptr / 4, ptr / 4 + len);
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
 }
 /**
-* @returns {Int32Array}
+* @param {State} state
+* @param {number} index
 */
-export function newGame() {
-    try {
-        const retptr = wasm.__wbindgen_export_0.value - 16;
-        wasm.__wbindgen_export_0.value = retptr;
-        wasm.newGame(retptr);
-        var r0 = getInt32Memory0()[retptr / 4 + 0];
-        var r1 = getInt32Memory0()[retptr / 4 + 1];
-        var v0 = getArrayI32FromWasm0(r0, r1).slice();
-        wasm.__wbindgen_free(r0, r1 * 4);
-        return v0;
-    } finally {
-        wasm.__wbindgen_export_0.value += 16;
+export function set_mark(state, index) {
+    _assertClass(state, State);
+    wasm.set_mark(state.ptr, index);
+}
+
+let cachegetInt32Memory0 = null;
+function getInt32Memory0() {
+    if (cachegetInt32Memory0 === null || cachegetInt32Memory0.buffer !== wasm.memory.buffer) {
+        cachegetInt32Memory0 = new Int32Array(wasm.memory.buffer);
     }
+    return cachegetInt32Memory0;
 }
 
 function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 /**
+*    Returns the Game Board at the current step.
+*    The WASM doens't support exporting the history array,
+*    THis will return the current board as a Box.
+* @param {State} state
 * @returns {Uint8Array}
 */
-export function empty_board() {
+export function get_board(state) {
     try {
         const retptr = wasm.__wbindgen_export_0.value - 16;
         wasm.__wbindgen_export_0.value = retptr;
-        wasm.empty_board(retptr);
+        _assertClass(state, State);
+        wasm.get_board(retptr, state.ptr);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var v0 = getArrayU8FromWasm0(r0, r1).slice();
@@ -86,6 +71,38 @@ export function empty_board() {
         return v0;
     } finally {
         wasm.__wbindgen_export_0.value += 16;
+    }
+}
+
+/**
+*/
+export class State {
+
+    static __wrap(ptr) {
+        const obj = Object.create(State.prototype);
+        obj.ptr = ptr;
+
+        return obj;
+    }
+
+    free() {
+        const ptr = this.ptr;
+        this.ptr = 0;
+
+        wasm.__wbg_state_free(ptr);
+    }
+    /**
+    * @returns {number}
+    */
+    get step_number() {
+        var ret = wasm.__wbg_get_state_step_number(this.ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set step_number(arg0) {
+        wasm.__wbg_set_state_step_number(this.ptr, arg0);
     }
 }
 
@@ -128,8 +145,8 @@ async function init(input) {
     }
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_log_f4761e8f53864b75 = function(arg0, arg1) {
-        console.log(getStringFromWasm0(arg0, arg1));
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
     };
 
     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {

@@ -1,79 +1,57 @@
 import React, { useReducer } from 'react';
 
-import { useWASMLoader } from './useWASMLoader';
-import { reducer } from './reducer';
 import { Square } from './Square';
 import { Board } from './Board';
+import { useWASMState } from './useWASMState';
 
 import './App.css';
 
 export function App() {
-  const [state, dispatch] = useReducer(reducer, {
-    history: [
-      {
-        squares: Array(9).fill(null)
-      }
-    ],
-    stepNumber: 0,
-    xIsNext: true,
-    hasLoaded: false,
-  });
-  // when WASM has loaded, dispatch the game init.
-  useWASMLoader((wasm) => dispatch({
-    type: 'init',
-    wasm,
-  }));
-
-
   console.group('App');
-  console.log('state', state);
-  console.groupEnd();
+  const { state, dispatch } = useWASMState();
+
+  console.log('state', state.hasLoaded, state);
+
+
   if (!state.hasLoaded) {
+    console.groupEnd();
     return <div className="tic-tac-toe">
       <p>Loading...</p>
     </div>;
   }
 
-
   const jumpTo = () => {
     console.log('jumpTo')
   }
 
-  const handleClick = () => {
-    console.log('handleClick')
-  }
-
-  // return (
-  //   <div className="tic-tac-toe">
-  //     {state.board.map((tile, i) => (
-  //       <div key={i} className="tile" onClick={() => dispatch({type: 'click', index: i})}>
-  //         {tile}
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
-  return <Game {...state} jumpTo={jumpTo} click={handleClick} />;
+  console.groupEnd();
+  return <Game
+    {...state}
+    jumpTo={jumpTo}
+    click={index => dispatch({type: 'click', index})}
+  />;
 }
 
 
-// React App is a copy from the tutorial: https://reactjs.org/tutorial/tutorial.html
+// Game is a copy from the tutorial: https://reactjs.org/tutorial/tutorial.html
 // Codepen: https://codepen.io/gaearon/pen/gWWZgR?editors=0110
-// Removed the state from the original Game and replaced with with props;
+// Modified to handle the change in state.
 function Game(props) {
-  const { history, stepNumber, xIsNext } = props;
-  const current = history[stepNumber];
-  const winner = calculateWinner(current.squares);
+  console.log('Game', props);
+  const { board, stepNumber, xIsNext } = props;
+  const winner = calculateWinner(board);
 
-  const moves = history.map((step, move) => {
+  let moves = [];
+  for (let move=0; move < stepNumber; move++) {
     const desc = move ?
       'Go to move #' + move :
       'Go to game start';
-    return (
+    moves.push(
       <li key={move}>
         <button onClick={() => props.jumpTo(move)}>{desc}</button>
       </li>
     );
-  });
+  }
 
   let status;
   if (winner) {
@@ -86,7 +64,7 @@ function Game(props) {
     <div className="game">
       <div className="game-board">
         <Board
-          squares={current.squares}
+          squares={board}
           onClick={i => props.click(i)}
         />
       </div>
@@ -99,89 +77,15 @@ function Game(props) {
 }
 
 
-export class Game2 extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [
-        {
-          squares: Array(9).fill(null)
-        }
-      ],
-      stepNumber: 0,
-      xIsNext: true
-    };
-  }
-
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? "X" : "O";
-    this.setState({
-      history: history.concat([
-        {
-          squares: squares
-        }
-      ]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
-    });
-  }
-
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0
-    });
-  }
-
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-
-    let status;
-    if (winner) {
-      status = "Winner: " + winner;
-    } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
-    }
-
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            squares={current.squares}
-            onClick={i => this.handleClick(i)}
-          />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
-      </div>
-    );
-  }
-}
 
 // ========================================
 
 
+/**
+  Tests every possible winning combination.
+  If someone has all thress positions, they win!
+  @return {string|null} the winner's mark or null
+*/
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],

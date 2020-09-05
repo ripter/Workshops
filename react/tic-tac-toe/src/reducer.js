@@ -14,14 +14,21 @@ export function reducer(state, action) {
       console.log('init game');
       wasm = action.wasm;
       newState.hasLoaded = true;
-      newState.board = wasm.newGame();
+      // newState.board = wasm.newGame();
+      newState.game = wasm.new_game();
+      newState.board = wasm.get_board(newState.game);
 
       window.lib = wasm;
+      break;
+    case 'click':
+      console.log('Do the click!', action);
+      wasm.set_mark(newState.game, action.index);
       break;
     default:
 
   }
 
+  console.log('newState', newState);
   console.groupEnd()
   // return {...state};
   return newState;
