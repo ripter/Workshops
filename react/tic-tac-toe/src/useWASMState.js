@@ -8,94 +8,49 @@ export const STATE_DEFAULT = {
 };
 
 
-export function useWASMState2() {
+/**
+ * Uses a WASM compiled from Rust for game state.
+ * Returns a reducer interface for the component.
+*/
+export function useWASMState() {
+  const refwasm = useRef(null);
+  const wasm = refwasm.current;
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case 'init':
-        console.log('init called', action)
-        const newGame = action.wasm.new_game();
+        // creates a new game in rust, JS gets a pointer to it.
+        const newGame = wasm.new_game();
+        window.newGame = newGame;
         return {
-          board: action.wasm.get_board(newGame),
-          game: newGame,
-          stepNumber: newGame.step_number,
-          wasm: action.wasm,
+          game: newGame, // Keep the pointer for the next action.
+          board: wasm.get_board(newGame), // Use the pointer to get the current gameboard.
+          stepNumber: newGame.step_number, // Use the getter on the pointer to get the step number.
         };
       case 'click':
-        console.log('action', action);
-        state.wasm.set_mark(state.game, action.index);
+        wasm.set_mark(state.game, action.index);
         return {
           ...state,
-          board: state.wasm.get_board(state.game),
+          board: wasm.get_board(state.game),
           stepNumber: state.game.step_number,
         };
       default:
+        console.log('Unhandled Action', action);
         return state;
     }
   }, {hasLoaded: false, state: STATE_DEFAULT});
 
   // On mount, fetch the WASM
+  // Once we have it, init the game.
   useEffect(() => {
-    waitForWASM().then(resp => dispatch({type: 'init', wasm: resp}));
+    waitForWASM().then(resp => {
+      refwasm.current =  resp;
+      dispatch({type: 'init'});
+    });
   }, []);
 
-  console.log('state', state);
   return {
     hasLoaded: state.game ? true : false,
     state,
     dispatch
   };
-}
-
-
-
-export function useWASMState() {
-  console.group('useWASMState');
-  const refGame = useRef();
-  const [wasm, setWASM] = useState();
-  const [state, setState] = useState(STATE_DEFAULT);
-  const [game, setGame] = useState();
-
-  console.log('refGame', refGame);
-  console.log('wasm', wasm);
-  console.log('state', state);
-  console.log('game', game);
-
-  useEffect(() => {
-    waitForWASM().then(resp => {
-      console.group('loaded wasm');
-      console.log('resp', resp);
-      const newGame = resp.new_game();
-      console.log('newGame', newGame);
-      setGame(newGame);
-      setWASM(resp);
-      setState({
-        ...state,
-        board: resp.get_board(newGame),
-      });
-      console.groupEnd();
-    });
-  }, []);
-
-  console.groupEnd();
-  return {
-    state,
-    hasLoaded: game ? true : false,
-    dispatch: (action) => {
-      console.log('action', action);
-      switch (action.type) {
-        case 'click':
-          console.log('game', game);
-          wasm.set_mark(game, action.index);
-          // wasm.set_mark(refGame.current, action.index);
-          setState({
-            ...state,
-            // board: wasm.get_board(refGame.current),
-            board: wasm.get_board(game),
-          });
-          break;
-        default:
-          // ignore
-      }
-    },
-  }
 }

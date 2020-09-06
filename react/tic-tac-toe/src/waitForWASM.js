@@ -6,12 +6,8 @@ export function waitForWASM() {
       handleEvent: (event) => {
         document.removeEventListener('load-wasm', eventHandler);
         const {ack, wasm} = event.detail;
-        // acknowledge  the beacon so it stops broadcasting.
-        ack();
-        console.log('load-wasm acked and resolved');
-        // keep a refrence for debugging/prototyping.
-        window.lib = wasm;
-        resolve(wasm);
+        ack(); // acknowledge  the beacon so it stops broadcasting.
+        resolve(wasm); // resolve the promise.
       }
     }
 

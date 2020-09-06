@@ -6,91 +6,20 @@ import { useWASMState, STATE_DEFAULT } from './useWASMState';
 
 import './App.css';
 
+
+
 export function App() {
-  console.group('App');
-  const [state, setState] = useState(null);
-  // const { state, hasLoaded, dispatch } = useWASMState();
-  console.log('state', state);
-  // console.log('hasLoaded', hasLoaded);
-
-  const dispatch = e => console.log('dispatch', e);
-  // On mount, fetch the WASM
-  // useEffect(() => {
-  //   console.group('useEffect on mount')
-  //   // waitForWASM().then(resp => dispatch({type: 'init', wasm: resp}));
-  //   waitForWASM().then(wasm => {
-  //     const game = wasm.new_game();
-  //     console.log('new game', game);
-  //     // setState({
-  //     //   wasm,
-  //     //   game,
-  //     //   stepNumber: game.step_number,
-  //     //   board: wasm.get_board(game),
-  //     // });
-  //   });
-  //   console.groupEnd();
-  // }, []);
-
-
-  if (state === null) {
-    console.groupEnd();
-    return <div className="tic-tac-toe">
-      <p>Loading...</p>
-    </div>;
-  }
-
-
-
-  const moves = [
-    <h1 key={0}>Moves</h1>
-  ];
-  const status = 'Buu';
-
-  console.groupEnd();
-  return <div className="game">
-    <div className="game-board">
-      Board
-    </div>
-    <div className="game-info">
-      <div>{status}</div>
-      <ol>{moves}</ol>
-    </div>
-  </div>
-}
-
-
-
-
-
-
-
-export function App1() {
-  console.group('App')
   const { state, hasLoaded, dispatch } = useWASMState();
-  // const dispatch = (e) => console.log('dispatched', e);
-  // const state = {...STATE_DEFAULT};
-  // const state = {...result.state}
-  // console.log('state', result.hasLoaded, result);
-  console.log('state', state);
-  console.log('hasLoaded', hasLoaded);
-  console.log('dispatch', dispatch);
-
 
   if (!hasLoaded) {
-    console.groupEnd();
     return <div className="tic-tac-toe">
       <p>Loading...</p>
     </div>;
   }
 
-  const jumpTo = () => {
-    console.log('jumpTo')
-  }
-
-  console.groupEnd();
   return <Game
     {...state}
-    jumpTo={jumpTo}
+    jumpTo={stepNumber => dispatch({type: 'rewind', stepNumber})}
     click={index => dispatch({type: 'click', index})}
   />;
 }
@@ -100,8 +29,6 @@ export function App1() {
 // Codepen: https://codepen.io/gaearon/pen/gWWZgR?editors=0110
 // Modified to handle the change in state.
 function Game(props) {
-  console.group('Game');
-  console.log('props', props);
   const { board, stepNumber, xIsNext } = props;
   const winner = calculateWinner(board);
 
@@ -124,7 +51,6 @@ function Game(props) {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
-  console.groupEnd();
   return (
     <div className="game">
       <div className="game-board">
