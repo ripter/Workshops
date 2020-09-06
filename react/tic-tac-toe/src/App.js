@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { waitForWASM } from './waitForWASM';
 import { Board } from './Board';
-import { useWASMState, STATE_DEFAULT } from './useWASMState';
+import { useWASMState } from './useWASMState';
 
 import './App.css';
 
@@ -31,6 +30,7 @@ export function App() {
 function Game(props) {
   const { board, stepNumber, xIsNext } = props;
   const winner = calculateWinner(board);
+  console.log('game', board);
 
   let moves = [];
   for (let move=0; move < stepNumber; move++) {

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useReducer } from 'react';
+import { useRef, useEffect, useReducer } from 'react';
 
 import { waitForWASM } from './waitForWASM';
 
@@ -6,6 +6,20 @@ export const STATE_DEFAULT = {
   board: [0,0,0,0,0,0,0,0,0],
   stepNumber: 0,
 };
+
+
+// Returns the JS version of the Game State
+function getGameState(wasm, game) {
+  return {
+    game,
+    stepNumber: game.step_number,
+    // Rust's wasm_bindgen doens't export char array.
+    // So we export Char codes as u8 instead.
+    // then we convert them into a char array.
+    board: Array.from(wasm.get_board(game)).map(u8 => String.fromCharCode(u8)),
+  };
+}
+
 
 
 /**
@@ -18,21 +32,10 @@ export function useWASMState() {
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case 'init':
-        // creates a new game in rust, JS gets a pointer to it.
-        const newGame = wasm.new_game();
-        window.newGame = newGame;
-        return {
-          game: newGame, // Keep the pointer for the next action.
-          board: wasm.get_board(newGame), // Use the pointer to get the current gameboard.
-          stepNumber: newGame.step_number, // Use the getter on the pointer to get the step number.
-        };
+        return getGameState(wasm, wasm.new_game());
       case 'click':
         wasm.set_mark(state.game, action.index);
-        return {
-          ...state,
-          board: wasm.get_board(state.game),
-          stepNumber: state.game.step_number,
-        };
+        return getGameState(wasm, state.game);
       default:
         console.log('Unhandled Action', action);
         return state;
