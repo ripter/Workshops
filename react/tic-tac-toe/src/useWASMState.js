@@ -8,7 +8,7 @@ export const STATE_DEFAULT = {
 };
 
 
-export function useWASMState() {
+export function useWASMState2() {
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
       case 'init':
@@ -46,24 +46,37 @@ export function useWASMState() {
   };
 }
 
-export function useWASMState2() {
+
+
+export function useWASMState() {
+  console.group('useWASMState');
   const refGame = useRef();
   const [wasm, setWASM] = useState();
   const [state, setState] = useState(STATE_DEFAULT);
   const [game, setGame] = useState();
 
+  console.log('refGame', refGame);
+  console.log('wasm', wasm);
+  console.log('state', state);
+  console.log('game', game);
+
   useEffect(() => {
     waitForWASM().then(resp => {
+      console.group('loaded wasm');
+      console.log('resp', resp);
       const newGame = resp.new_game();
+      console.log('newGame', newGame);
       setGame(newGame);
       setWASM(resp);
       setState({
         ...state,
         board: resp.get_board(newGame),
       });
+      console.groupEnd();
     });
   }, []);
 
+  console.groupEnd();
   return {
     state,
     hasLoaded: game ? true : false,
@@ -81,7 +94,7 @@ export function useWASMState2() {
           });
           break;
         default:
-
+          // ignore
       }
     },
   }

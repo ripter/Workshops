@@ -6,15 +6,19 @@ import { useWASMState, STATE_DEFAULT } from './useWASMState';
 import './App.css';
 
 export function App() {
+  console.group('App')
   const { state, hasLoaded, dispatch } = useWASMState();
   // const dispatch = (e) => console.log('dispatched', e);
   // const state = {...STATE_DEFAULT};
   // const state = {...result.state}
   // console.log('state', result.hasLoaded, result);
-  console.log('App', state, hasLoaded)
+  console.log('state', state);
+  console.log('hasLoaded', hasLoaded);
+  console.log('dispatch', dispatch);
 
 
   if (!hasLoaded) {
+    console.groupEnd();
     return <div className="tic-tac-toe">
       <p>Loading...</p>
     </div>;
@@ -24,6 +28,7 @@ export function App() {
     console.log('jumpTo')
   }
 
+  console.groupEnd();
   return <Game
     {...state}
     jumpTo={jumpTo}
@@ -36,7 +41,8 @@ export function App() {
 // Codepen: https://codepen.io/gaearon/pen/gWWZgR?editors=0110
 // Modified to handle the change in state.
 function Game(props) {
-  console.log('Game', props);
+  console.group('Game');
+  console.log('props', props);
   const { board, stepNumber, xIsNext } = props;
   const winner = calculateWinner(board);
 
@@ -59,6 +65,7 @@ function Game(props) {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
+  console.groupEnd();
   return (
     <div className="game">
       <div className="game-board">
