@@ -75,6 +75,16 @@ export function get_board(state) {
 }
 
 /**
+* @param {State} state
+* @returns {number | undefined}
+*/
+export function get_winner(state) {
+    _assertClass(state, State);
+    var ret = wasm.get_winner(state.ptr);
+    return ret === 0xFFFFFF ? undefined : ret;
+}
+
+/**
 */
 export class State {
 
