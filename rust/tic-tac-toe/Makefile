@@ -4,6 +4,7 @@ all: test build
 
 
 test:
+	cargo test
 	wasm-pack test --node
 
 build:

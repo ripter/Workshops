@@ -1,4 +1,4 @@
-import init, { new_game, get_board, set_mark, State } from './tic_tac_toe.js';
+import init, { new_game, get_board, set_mark, State, set_panic_hook } from './tic_tac_toe.js';
 
 let wasAcked = false;
 
@@ -31,6 +31,7 @@ init().then(module => {
     new_game,
     set_mark,
     // State,
+    set_panic_hook,
     _wasm: module,
   });
 }).catch(err => console.log(err));

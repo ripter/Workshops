@@ -47,6 +47,9 @@ export function useWASMState() {
   useEffect(() => {
     waitForWASM().then(resp => {
       refwasm.current =  resp;
+      // turn on better debugging.
+      console.log('resp', resp);
+      // resp.
       dispatch({type: 'init'});
     });
   }, []);

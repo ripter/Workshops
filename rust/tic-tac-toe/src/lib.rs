@@ -12,6 +12,7 @@ pub struct State {
     history: [[u8; 9]; 9], // can't be converted to wasm, so not public
     pub step_number: usize,
     is_x_next: bool,
+    winner: Option<u8>,
 }
 
 
@@ -29,6 +30,7 @@ pub fn new_game() -> State {
         ],
         step_number: 0,
         is_x_next: true,
+        winner: Option::None,
     }
 }
 
@@ -44,6 +46,7 @@ pub fn set_mark(state: &mut State, index: usize) {
 }
 
 
+
 /**
     Returns the Game Board at the current step.
     The WASM doens't support exporting the history array,
@@ -52,6 +55,22 @@ pub fn set_mark(state: &mut State, index: usize) {
 #[wasm_bindgen]
 pub fn get_board(state: &State) -> Box<[u8]> {
     Box::new(state.history[state.step_number])
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_can_make_new_game() {
+        let state = new_game();
+        assert_eq!(state.winner, Option::None);
+        assert_eq!(state.step_number, 0);
+        assert_eq!(state.is_x_next, true);
+        assert_eq!(state.history[0], [0,0,0,0,0,0,0,0,0]);
+    }
+
 }
 
 
