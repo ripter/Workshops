@@ -13,6 +13,8 @@ function getGameState(wasm, game) {
   return {
     game,
     stepNumber: game.step_number,
+    winner: game.winner ? String.fromCharCode(game.winner): void 0,
+    isXNext: game.is_x_next,
     // Rust's wasm_bindgen doens't export char array.
     // So we export Char codes as u8 instead.
     // then we convert them into a char array.
@@ -31,10 +33,17 @@ export function useWASMState() {
   const wasm = refwasm.current;
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
+      // init a new game
       case 'init':
         return getGameState(wasm, wasm.new_game());
+      // handle clicking on a square
       case 'click':
+        if (state.winner) { return state; }
         wasm.set_mark(state.game, action.index);
+        return getGameState(wasm, state.game);
+      // Rewind to a previous step.
+      case 'rewind':
+        wasm.rewind(state.game, action.stepNumber);
         return getGameState(wasm, state.game);
       default:
         console.log('Unhandled Action', action);
@@ -47,9 +56,6 @@ export function useWASMState() {
   useEffect(() => {
     waitForWASM().then(resp => {
       refwasm.current =  resp;
-      // turn on better debugging.
-      console.log('resp', resp);
-      // resp.
       dispatch({type: 'init'});
     });
   }, []);

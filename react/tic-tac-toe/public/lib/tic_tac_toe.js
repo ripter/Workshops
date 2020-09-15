@@ -16,6 +16,10 @@ function getUint8Memory0() {
 function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
+
+function isLikeNone(x) {
+    return x === undefined || x === null;
+}
 /**
 *    Creates a new Game State.
 * @returns {State}
@@ -38,6 +42,15 @@ function _assertClass(instance, klass) {
 export function set_mark(state, index) {
     _assertClass(state, State);
     wasm.set_mark(state.ptr, index);
+}
+
+/**
+* @param {State} state
+* @param {number} step
+*/
+export function rewind(state, step) {
+    _assertClass(state, State);
+    wasm.rewind(state.ptr, step);
 }
 
 let cachegetInt32Memory0 = null;
@@ -115,6 +128,32 @@ export class State {
     */
     set step_number(arg0) {
         wasm.__wbg_set_state_step_number(this.ptr, arg0);
+    }
+    /**
+    * @returns {boolean}
+    */
+    get is_x_next() {
+        var ret = wasm.__wbg_get_state_is_x_next(this.ptr);
+        return ret !== 0;
+    }
+    /**
+    * @param {boolean} arg0
+    */
+    set is_x_next(arg0) {
+        wasm.__wbg_set_state_is_x_next(this.ptr, arg0);
+    }
+    /**
+    * @returns {number | undefined}
+    */
+    get winner() {
+        var ret = wasm.__wbg_get_state_winner(this.ptr);
+        return ret === 0xFFFFFF ? undefined : ret;
+    }
+    /**
+    * @param {number | undefined} arg0
+    */
+    set winner(arg0) {
+        wasm.__wbg_set_state_winner(this.ptr, isLikeNone(arg0) ? 0xFFFFFF : arg0);
     }
 }
 

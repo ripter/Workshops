@@ -1,4 +1,4 @@
-import init, { new_game, get_board, set_mark, State, set_panic_hook } from './tic_tac_toe.js';
+import init, { new_game, get_board, set_mark, State, rewind } from './tic_tac_toe.js';
 
 let wasAcked = false;
 
@@ -26,12 +26,10 @@ function beacon(wasm) {
 init().then(module => {
   wasAcked = false;
   beacon({
-    // new_board,
     get_board,
     new_game,
     set_mark,
-    // State,
-    set_panic_hook,
+    rewind,
     _wasm: module,
   });
 }).catch(err => console.log(err));

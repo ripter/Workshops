@@ -28,9 +28,7 @@ export function App() {
 // Codepen: https://codepen.io/gaearon/pen/gWWZgR?editors=0110
 // Modified to handle the change in state.
 function Game(props) {
-  const { board, stepNumber, xIsNext } = props;
-  const winner = calculateWinner(board);
-  console.log('game', board);
+  const { board, stepNumber, isXNext, winner } = props;
 
   let moves = [];
   for (let move=0; move < stepNumber; move++) {
@@ -48,7 +46,7 @@ function Game(props) {
   if (winner) {
     status = "Winner: " + winner;
   } else {
-    status = "Next player: " + (xIsNext ? "X" : "O");
+    status = "Next player: " + (isXNext ? "X" : "O");
   }
 
   return (
@@ -65,34 +63,4 @@ function Game(props) {
       </div>
     </div>
   );
-}
-
-
-
-// ========================================
-
-
-/**
-  Tests every possible winning combination.
-  If someone has all thress positions, they win!
-  @return {string|null} the winner's mark or null
-*/
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
 }
