@@ -53,6 +53,12 @@ pub fn set_mark(state: &mut State, index: usize) {
     state.winner = get_winner(&state);
 }
 
+pub fn rewind(state: &mut State, step: usize) {
+    state.step_number = step;
+    state.is_x_next = if step % 2 == 0  { true } else { false };
+    state.winner = get_winner(&state);
+}
+
 
 
 /**
@@ -66,6 +72,10 @@ pub fn get_board(state: &State) -> Box<[u8]> {
 }
 
 
+/**
+    Returns the winner u8 or None
+    Copied from the react tutorial and converted to rust.
+*/
 #[wasm_bindgen]
 pub fn get_winner(state: &State) -> Option<u8> {
     let board = get_board(state);
@@ -97,31 +107,11 @@ pub fn get_winner(state: &State) -> Option<u8> {
 
     return Option::None;
 }
-/*
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
+
+
+/**
+* Tests!
 */
-
-
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -354,6 +344,32 @@ mod tests {
             88, 79, 79
             ]);
     }
+
+    #[test]
+    fn turn_7_rewind_to_step_3() {
+        let mut state = new_game();
+        set_mark(&mut state, 5);
+        set_mark(&mut state, 3);
+        set_mark(&mut state, 2);
+        set_mark(&mut state, 8);
+        set_mark(&mut state, 1);
+        set_mark(&mut state, 7);
+        set_mark(&mut state, 6);
+
+        // rewind to turn 3
+        rewind(&mut state, 3);
+
+
+        assert_eq!(state.winner, Option::None);
+        assert_eq!(state.step_number, 3);
+        assert_eq!(state.is_x_next, false);
+        assert_eq!(get_board(&state).to_vec(), [
+            0, 0,88,
+            79,0,88,
+            0, 0,0
+            ]);
+    }
+
 }
 
 

@@ -75,6 +75,8 @@ export function get_board(state) {
 }
 
 /**
+*    Returns the winner u8 or None
+*    Copied from the react tutorial and converted to rust.
 * @param {State} state
 * @returns {number | undefined}
 */
