@@ -1,6 +1,24 @@
+
+# Simple Tic-Tac-Toe state
+
+Rust code compiled to WASM.
+
+```js
+// Create a new game state
+const gameState = wasm.new_game();
+// gameState.step_number
+// gameState.winner
+// gameState.is_x_next
+
+// Mark a square
+wasm.set_mark(gameState, squareIndex);
+
+// Rewind to a previous step.
+wasm.rewind(gameState, newStep);
+```
+
+
 Following this book: https://rustwasm.github.io/docs/wasm-bindgen/
-
-
 ## 🔋 Batteries Included
 
 * [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
