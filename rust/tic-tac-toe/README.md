@@ -3,6 +3,9 @@
 
 Rust code compiled to WASM for use by JavaScript. Create a new object with new_game() and pass it into the wasm functions to get the state for that game.
 
+* [Codepen Example](https://codepen.io/ripter/pen/wvGxmVg)
+* [React Hook (on Codepen)](https://codepen.io/ripter/pen/vYGaRVB?editors=1010)
+
 ```js
 // Create a new game state
 const gameState = wasm.new_game();
