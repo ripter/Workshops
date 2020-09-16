@@ -28,17 +28,31 @@ wasm.rewind(gameState, newStep);
 You can use the module `src/loader.js` to load the WASM and to trigger a `load-wasm` event. The event is called by a beacon, so your handling script needs to `ack()` the beacon to stop it from broadcasting.
 
 ### Load via script type="module"
-```
+```html
 <script src="https://cdn.jsdelivr.net/gh/ripter/Workshops@master/rust/tic-tac-toe/js/loader.js" type="module"></script>
 ```
 
 ### Load from existing JS Module.
-```
+```js
 // from existing JS Module.
 import 'https://cdn.jsdelivr.net/gh/ripter/Workshops@master/rust/tic-tac-toe/js/loader.js';
 ```
 
+### Async Loading
+You can use the promise returned `js/waitForWASM.js` to know when the WASM has been loaded and is ready for use.
 
+```js
+waitForWASM().then(wasm => {
+  // do something with the loaded wasm interface.
+  // like, make a new game!
+  const gameState = wasm.new_game();
+});
+```
+
+
+
+
+---
 Following this book: https://rustwasm.github.io/docs/wasm-bindgen/
 ## 🔋 Batteries Included
 
