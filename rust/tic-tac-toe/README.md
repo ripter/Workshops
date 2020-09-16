@@ -1,7 +1,7 @@
 
 # Simple Tic-Tac-Toe state
 
-Rust code compiled to WASM.
+Rust code compiled to WASM for use by JavaScript. Create a new object with new_game() and pass it into the wasm functions to get the state for that game.
 
 ```js
 // Create a new game state
@@ -9,6 +9,12 @@ const gameState = wasm.new_game();
 // gameState.step_number
 // gameState.winner
 // gameState.is_x_next
+
+// Get the current game board as an array of numbers.
+const boardU8 = wasm.get_board(gameState);
+// Get the board as an array of letters.
+const boardChar = Array.from(wasm.get_board(gameState)).map(u8 => String.fromCharCode(u8)),
+
 
 // Mark a square
 wasm.set_mark(gameState, squareIndex);
