@@ -1,9 +1,10 @@
 .PHONY: all build clean deploy lint server
 
-all: deploy server
+all: node_modules/
+	npm run dev
 
 build: node_modules/
-	npx webpack --mode development
+	npm run build
 
 clean:
 	-rm -f package-lock.json
@@ -16,7 +17,7 @@ lint: node_modules/
 	npx eslint --fix src/
 
 server: build
-	npx webpack-dev-server --open
+	npm run serve
 
 node_modules/: package.json
 	npm install
