@@ -1,15 +1,7 @@
-.PHONY: all build dev-server server plop lint clean
+.PHONY: all plop lint clean
 
-all: build lint server
-
-build: node_modules/
-	npx webpack
-
-dev-server: build
-	npx webpack-dev-server --open
-
-server: build
-	npx http-server --open
+all: node_modules/
+	npx vite
 
 node_modules/: package.json
 	npm install
