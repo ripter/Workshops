@@ -1,20 +1,28 @@
 import happyx
 
-# Serve app at http://localhost:5000
-serve "127.0.0.1", 5000:
+const PORT = 5000
+const HOST = "127.0.0.1"
+const ROOT = "public"
+
+echo &"Starting server on http://{HOST}:{PORT}/"
+
+serve HOST, PORT:
   staticDir "public"
 
   # GET Method
   get "/api/hello":
-    # Respond plaintext
-    return "Hello, world"
+    answerJson req, { 
+      "message": "Hello, world" 
+    }
 
+
+  # Redirect to index.html in the public directory
   get "/":
-    answerHtml req, """
+    answerHtml req, &"""
   <!DOCTYPE html>
   <html>
     <head>
-      <meta http-equiv="Refresh" content="0; URL=/public/index.html" />
+      <meta http-equiv="Refresh" content="0; URL=/{ROOT}/index.html" />
     </head>
   </html>
     """
