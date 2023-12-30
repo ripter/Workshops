@@ -16,6 +16,14 @@ serve HOST, PORT:
     }
 
 
+  get "/moved":
+    answer req, &"", Http301, newHttpHeaders(
+      [
+        ("Content-Type", "text/plain; charset=utf-8"), 
+        ("Location", "/")
+      ]
+    ) 
+
   # Redirect to index.html in the public directory
   get "/":
     answerHtml req, &"""
