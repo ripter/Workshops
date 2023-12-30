@@ -11,5 +11,4 @@ bin           = @["RockPaperScissorsSpockLizard"]
 # Dependencies
 
 requires "nim >= 2.0.0"
-requires "happyx"
-
+requires "happyx >= 3.5.2"
