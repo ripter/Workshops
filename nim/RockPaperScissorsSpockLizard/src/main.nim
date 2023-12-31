@@ -6,13 +6,23 @@ const ROOT = "public"
 
 echo &"Starting server on http://{HOST}:{PORT}/"
 
+model Echo:
+  message: string
+
 serve HOST, PORT:
   staticDir "public"
 
-  # GET Method
-  get "/api/hello":
+  # Everyone needs a Hello World API.
+  get "/api/helloWorld":
     answerJson req, { 
       "message": "Hello, world" 
+    }
+  
+  # Echo is fun for friends and family.
+  get "/api/echo/{message:string}":
+    echo &"Echoing {message}"
+    answerJson req, {
+      "echo": message,
     }
 
 
