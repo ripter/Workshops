@@ -3,6 +3,8 @@ import simple_parseopt
 
 import ./ssrutils
 
+# Parse command line options
+dash_dash_parameters()
 let options = get_options:
     name          = "JSON Server for Rock, Paper, Scissors, Lizard, Spock"
     arguments:seq[string]
