@@ -25,20 +25,22 @@ echo &"Starting server on http://{HOST}:{PORT}/"
 serve HOST, PORT:
   staticDir "public"
 
+  # Options describes the API endpoints and expected parameters.
   options "/api":
     return %*{
       "endpoints": [
-        "/api/handOptions",
         "/api/throw/{handA}/{handB}",
+        "/api/enum/handOptions",
         "/api/version",
         "/api/echo/{message}",
         "/api/helloWorld",
       ],
       "handOptions": HAND_OPTIONS,
+      "_version": API_VERSION,
     }
 
   # Get a list of hand options supported by the server.
-  get "/api/handOptions":
+  get "/api/enum/handOptions":
     return %*{
       "_version": API_VERSION,
       "handOptions": HAND_OPTIONS,
