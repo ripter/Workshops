@@ -1,5 +1,13 @@
 import happyx
+import simple_parseopt
+
 import ./ssrutils
+
+let options = get_options:
+    name          = "JSON Server for Rock, Paper, Scissors, Lizard, Spock"
+    arguments:seq[string]
+
+echo options
 
 const PORT = 5000
 const HOST = "127.0.0.1"
