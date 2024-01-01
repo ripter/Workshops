@@ -3,21 +3,28 @@ import simple_parseopt
 
 import ./ssrutils
 
-# Parse command line options
-dash_dash_parameters()
-let options = get_options:
-    name          = "JSON Server for Rock, Paper, Scissors, Lizard, Spock"
-    arguments:seq[string]
-
-echo options
-
-const PORT = 5000
-const HOST = "127.0.0.1"
-const ROOT = "public"
-
 const API_VERSION = "0.0.1"
 
+#
+# Setup Command Line Options
+#
+dash_dash_parameters()
+let options = get_options:
+    port = 5001 {. info("Port to listen on. Defaults to 5001") .}
+    address = "127.0.0.1" {. info("Address to listen on. Defaults to 127.0.0.1") .}
+    publicFolder = "public" {. info("Folder to serve static files from. Defaults to public") .}
 
+# I don't know why I have to do this, but it doesn't work without it.
+# These options need to be assigned to their on variables.
+let PORT = options.port
+let HOST = options.address
+let ROOT = options.publicFolder
+
+
+
+#
+# Application Code
+#
 type 
   ThrownHand = enum
     thRock = "Rock"
@@ -31,6 +38,9 @@ const HAND_OPTIONS = @[thRock, thPaper, thScissors, thVulcan, thLizard]
 
 
 
+#
+# API Endpoints
+#
 echo &"Starting server on http://{HOST}:{PORT}/"
 serve HOST, PORT:
   staticDir "public"
