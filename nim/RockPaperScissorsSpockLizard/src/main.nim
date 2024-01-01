@@ -1,9 +1,8 @@
 import happyx
 import simple_parseopt
 
-import ./ssrutils
+import ./server
 
-const API_VERSION = "0.0.1"
 
 #
 # Setup Command Line Options
@@ -21,72 +20,4 @@ let HOST = options.address
 let ROOT = options.publicFolder
 
 
-
-#
-# Application Code
-#
-type 
-  ThrownHand = enum
-    thRock = "Rock"
-    thPaper = "Paper"
-    thScissors = "Scissors"
-    thVulcan = "Vulcan"
-    thLizard = "Lizard"
-
-const HAND_OPTIONS = @[thRock, thPaper, thScissors, thVulcan, thLizard]
-
-
-
-
-#
-# API Endpoints
-#
-echo &"Starting server on http://{HOST}:{PORT}/"
-serve HOST, PORT:
-  staticDir "public"
-
-  # Options describes the API endpoints and expected parameters.
-  options "/api":
-    return %*{
-      "endpoints": [
-        "/api/throw/{handA}/{handB}",
-        "/api/enum/handOptions",
-        "/api/version",
-        "/api/echo/{message}",
-        "/api/helloWorld",
-      ],
-      "handOptions": HAND_OPTIONS,
-      "_version": API_VERSION,
-    }
-
-  # Get a list of hand options supported by the server.
-  get "/api/enum/handOptions":
-    return %*{
-      "_version": API_VERSION,
-      "handOptions": HAND_OPTIONS,
-    }
-
-
-  # Returns the AP version.
-  get "/api/version":
-    return %*{
-      "_version": API_VERSION,
-      "version": API_VERSION,
-    }
-
-
-  # Everyone needs a Hello World API.
-  get "/api/helloWorld":
-    return %*{ 
-      "message": "Hello, world",
-    }
-  
-  # Echo is fun for friends and family.
-  get "/api/echo/{message:string}":
-    return %*{
-      "echo": message,
-    }
-
-  # Redirect to index.html in the public directory
-  get "/":
-    answerRedirect req, &"/{ROOT}/index.html"
+startServer(HOST, PORT, ROOT)
