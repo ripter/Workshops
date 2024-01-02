@@ -9,3 +9,10 @@ type
     thLizard = "Lizard"
 
 const HAND_OPTIONS* = @[thRock, thPaper, thScissors, thSpock, thLizard]
+
+const BEATS* = {
+  thRock: @[thScissors, thLizard],
+  thPaper: @[thRock, thSpock],
+  thScissors: @[thPaper, thLizard],
+  thSpock: @[thScissors, thRock],
+  thLizard: @[thSpock, thPaper]

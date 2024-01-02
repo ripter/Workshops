@@ -12,7 +12,7 @@ import ./server
 dash_dash_parameters()
 help_text(
   &"\n{coBlink}{coBold}JSON API{coReset} for {coBold}{coBrightRed}Rock{coReset}, {coBold}{coBrightMagenta}Paper{coReset}, {coBold}{coBrightYellow}Scissors{coReset}, {coBold}{coBrightBlue}Spock{coReset}, {coBold}{coBrightGreen}Lizard{coReset}\n",
-  &"\nYou can get a list of available endpoints from the OPTIONS method.\nExample:\n    curl -X OPTIONS -i http://localhost:5001/api")
+  &"\nYou can get a list of available endpoints from the OPTIONS method.\nExample:\n    curl -X OPTIONS -i http://127.0.0.1:5001/api")
 
 let options = get_options:
     port = 5001 {. info("Port to listen on. Defaults to \x1b[1m 5001 \x1b[0m") .}
