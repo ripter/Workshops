@@ -2,40 +2,41 @@ import tables
 import happyx
 
 import ./consts
-import ./ssrutils
 
-proc startServer*(host:string, port:int, publicFolder: string) =
-  ## Starts the Server
+proc startServer*(host:string, port:int) =
+  ## JSON API Server for Rock, Paper, Scissors, Spock, Lizard
+  ## This starts the server and listens for requests. 
   echo &"Starting server on http://{host}:{port}/"
   serve host, port:
-    staticDir publicFolder 
-
+    #
     # Options describes the API endpoints and expected parameters.
-    options "/api":
+    options "/":
       return %*{
         "endpoints": [
-          "/api/throw/{handA}/{handB}",
-          "/api/handOptions",
-          "/api/version",
-          "/api/echo/{message}",
-          "/api/helloWorld",
+          "GET /throw/{handA}/{handB}",
+          "GET /handOptions",
+          "GET /version",
+          "GET /echo/{message}",
+          "GET /helloWorld",
+          "OPTIONS /",
         ],
         "handOptions": HAND_OPTIONS,
         "_version": API_VERSION,
       }
 
+    #
     # Get a list of hand options supported by the server.
-    get "/api/handOptions":
+    get "/handOptions":
       return %*{
         "_version": API_VERSION,
         "handOptions": HAND_OPTIONS,
       }
 
-    get "/api/throw/{handA}/{handB}":
-      echo &"handA: {handA}, handB: {handB}"
-      var winner = handB
+    #
+    # Throw a hand and see who wins.
+    get "/throw/{handA}/{handB}":
       let loserList = BEATS[handA.toThrownHand()]
-      echo &"loserList: {loserList}"
+      var winner = handB
       if handB.toThrownHand() in loserList:
         winner = handA
 
@@ -46,26 +47,25 @@ proc startServer*(host:string, port:int, publicFolder: string) =
         "winner": if handA == handB: "Tie" else: winner,
       }
 
-    # Returns the AP version.
-    get "/api/version":
+
+    #
+    # Returns the API version.
+    get "/version":
       return %*{
         "_version": API_VERSION,
         "version": API_VERSION,
       }
-
-
-    # Everyone needs a Hello World API.
-    get "/api/helloWorld":
+    #
+    # Everyone needs a Hello World in their API.
+    # Real use is to test the server is up and running.
+    get "/helloWorld":
       return %*{ 
         "message": "Hello, world",
       }
-    
-    # Echo is fun for friends and family.
-    get "/api/echo/{message:string}":
+    # 
+    # Echo is fun for friends and family, I mean debugging.
+    # Real use is to test that parameters are being passed and parsed correctly.
+    get "/echo/{message:string}":
       return %*{
         "echo": message,
       }
-
-    # Redirect to index.html in the public directory
-    get "/":
-      answerRedirect req, &"/{publicFolder}/index.html"
