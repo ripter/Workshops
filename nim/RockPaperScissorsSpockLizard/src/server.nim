@@ -1,3 +1,4 @@
+import tables
 import happyx
 
 import ./consts
@@ -32,10 +33,17 @@ proc startServer*(host:string, port:int, publicFolder: string) =
 
     get "/api/throw/{handA}/{handB}":
       echo &"handA: {handA}, handB: {handB}"
+      var winner = handB
+      let loserList = BEATS[handA.toThrownHand()]
+      echo &"loserList: {loserList}"
+      if handB.toThrownHand() in loserList:
+        winner = handA
+
       return %*{
         "_version": API_VERSION,
         "handA": handA,
         "handB": handB,
+        "winner": if handA == handB: "Tie" else: winner,
       }
 
     # Returns the AP version.
