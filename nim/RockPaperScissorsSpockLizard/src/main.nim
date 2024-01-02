@@ -1,7 +1,7 @@
 import happyx
 import simple_parseopt
 
-import ./fab
+import ./termclrs
 import ./consts
 import ./server
 
@@ -9,12 +9,13 @@ import ./server
 #
 # Setup Command Line Options
 #
-help_text(&"\nJSON API for {coRed}Rock{coEnd}, {coMagenta}Paper{coEnd}, {coYellow}Scissors{coEnd}, {coBlue}Spock{coEnd}, {coGreen}Lizard{coEnd}\n")
 dash_dash_parameters()
+help_text(&"\n{coBlink}{coBold}JSON API{coReset} for {coBold}{coBrightRed}Rock{coReset}, {coBold}{coBrightMagenta}Paper{coReset}, {coBold}{coBrightYellow}Scissors{coReset}, {coBold}{coBrightBlue}Spock{coReset}, {coBold}{coBrightGreen}Lizard{coReset}\n")
+
 let options = get_options:
-    port = 5001 {. info("Port to listen on. Defaults to 5001") .}
-    address = "127.0.0.1" {. info("Address to listen on. Defaults to 127.0.0.1") .}
-    publicFolder = "public" {. info("Folder to serve static files from. Defaults to public") .}
+    port = 5001 {. info("Port to listen on. Defaults to \x1b[1m 5001 \x1b[0m") .}
+    address = "127.0.0.1" {. info("Address to listen on. Defaults to \x1b[1m 127.0.0.1 \x1b[0m") .}
+    publicFolder = "public" {. info("Folder to serve static files from. Defaults to \x1b[1m ./public \x1b[0m") .}
 
 # I don't know why I have to do this, but it doesn't work without it.
 # These options need to be assigned to their on variables.
