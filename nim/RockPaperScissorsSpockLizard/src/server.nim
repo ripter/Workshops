@@ -34,8 +34,8 @@ proc startServer*(host:string, port:int, publicFolder: string) =
       echo &"handA: {handA}, handB: {handB}"
       return %*{
         "_version": API_VERSION,
-        "handA": "foo",
-        "handB": "bar",
+        "handA": handA,
+        "handB": handB,
       }
 
     # Returns the AP version.

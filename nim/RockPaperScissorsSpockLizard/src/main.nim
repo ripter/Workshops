@@ -1,12 +1,15 @@
 import happyx
 import simple_parseopt
 
+import ./fab
+import ./consts
 import ./server
 
 
 #
 # Setup Command Line Options
 #
+help_text(&"\nJSON API for {coRed}Rock{coEnd}, {coMagenta}Paper{coEnd}, {coYellow}Scissors{coEnd}, {coBlue}Spock{coEnd}, {coGreen}Lizard{coEnd}\n")
 dash_dash_parameters()
 let options = get_options:
     port = 5001 {. info("Port to listen on. Defaults to 5001") .}
