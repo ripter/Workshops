@@ -1,4 +1,5 @@
-import { BoxGeometry } from 'three';
+// import { BoxGeometry } from 'three';
+import { Scene } from 'three';
 
 class GeometryComponent {
   constructor() {

@@ -6,13 +6,13 @@ import ENtity from './elements/e-ntity.js';
 customElements.define('e-ntity', ENtity);
 
 // Register components
-import SceneComponent from './components/scene.js';
-import PerspectiveCameraComponent from './components/PerspectiveCamera.js';
-import WebGLRendererComponent from './components/webGLRenderer.js';
+// import SceneComponent from './components/scene.js';
+// import PerspectiveCameraComponent from './components/PerspectiveCamera.js';
+// import WebGLRendererComponent from './components/webGLRenderer.js';
 
-const scene = window.scene = new SceneComponent();
-const camera = window.camera = new PerspectiveCameraComponent();
-const renderer = window.render = new WebGLRendererComponent();
+// const scene = window.scene = new SceneComponent();
+// const camera = window.camera = new PerspectiveCameraComponent();
+// const renderer = window.render = new WebGLRendererComponent();
 
 // var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
