@@ -38,6 +38,7 @@ class ENtity extends HTMLElement {
 
   render(state) {
     this.classList = ['eNtity'];
+    console.log('e-ntity render', state);
     // hyperHTML.bind(this)`<h1>Component Loaded and Rendering</h1>`;
   }
 }
