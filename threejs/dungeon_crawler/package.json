@@ -1,0 +1,11 @@
+{
+  "name": "dungeon_crawler",
+  "version": "0.0.1",
+  "description": "Learning how to make a Dugeon Crawler in Three.JS",
+  "main": "src/main.mjs",
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "Chris Richards",
+  "license": "MIT"
+}
