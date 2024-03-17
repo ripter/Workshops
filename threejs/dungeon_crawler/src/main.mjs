@@ -40,6 +40,18 @@ loader.load(
   function ( gltf ) {
     console.log('loaded', gltf)
     scene.add( gltf.scene );
+
+    // handle Custom Tags on the models.
+    gltf.scene.traverse(function (object) {
+      if (object.isMesh) {
+        // Check if the object has a 'tag' property and if it's set to 'Mob'
+        if (object.userData.tag === 'mob') {
+          console.log('Found a mob!', object)
+          // Pass the model to your function
+          // handleMobModel(object);
+        }
+      }
+    });
   },
   // called while loading is progressing
   function ( xhr ) {
