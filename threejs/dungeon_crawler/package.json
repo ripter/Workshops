@@ -1,0 +1,12 @@
+{
+  "name": "dungeon_crawler",
+  "version": "0.0.1",
+  "description": "trying to use THREE.js to make a Dungeon Crawler Engine",
+  "main": "src/main.mjs",
+  "devDependencies": {},
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "Chris Richards",
+  "license": "MIT"
+}
