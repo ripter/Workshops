@@ -8,6 +8,8 @@ import {
   WebGLRenderer, 
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { loadModel } from './loadModel.mjs';
 
 
 //
@@ -32,39 +34,39 @@ window.addEventListener('resize', () => {
 });
 
 
-let cube;
-const loader = new GLTFLoader();
-loader.load('/models/cube.glb', function (gltf) {
-  console.log('loaded', gltf)
-  scene.add(gltf.scene);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0, 0); // Set the position of the target point
+controls.update(); // Required if controls.enableDamping or controls.autoRotate are set to true
 
-  // cube = gltf.scene;
-  // handle Custom Tags on the models.
-  gltf.scene.traverse(function (object) {
-    if (object.isMesh) {
-      // Check if the object has a 'tag' property and if it's set to 'Mob'
-      if (object.userData.tag === 'mob') {
-        console.log('Found a mob!', object)
-        // Pass the model to your function
-        // handleMobModel(object);
-      }
-    }
-  });
-},
-  function (xhr) {
-    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-  },
-  // called when loading has errors
-  function (error) {
-    console.error('An error happened', error);
+
+const levelScene = await loadModel('/models/tile_grid.glb');
+scene.add(levelScene);
+const cube = await loadModel('/models/cube.glb');
+scene.add(cube);
+
+function updatePosition(event) {
+  switch (event.key) {
+    case 'ArrowUp':
+      cube.position.z -= 1;
+      break;
+    case 'ArrowDown':
+      cube.position.z += 1;
+      break;
+    case 'ArrowLeft':
+      cube.position.x -= 1;
+      break;
+    case 'ArrowRight':
+      cube.position.x += 1;
+      break;
+    case 'w':
+      cube.position.y += 1;
+      break;
+    case 's':
+      cube.position.y -= 1;
+      break;
   }
-);
-
-
-// const geometry = new BoxGeometry();
-// const material = new MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new Mesh(geometry, material);
-// scene.add(cube);
+}
+document.addEventListener('keydown', updatePosition);
 
 camera.position.z = 5;
 
@@ -77,11 +79,12 @@ scene.add(light);
 function animateLoop() {
     requestAnimationFrame(animateLoop);
 
-    if (cube) {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-    }
+    // if (cube) {
+    //   cube.rotation.x += 0.01;
+    //   cube.rotation.y += 0.01;
+    // }
 
+    controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
     renderer.render(scene, camera);
 }
 
@@ -109,3 +112,5 @@ function calculateSize() {
 
   return { width, height };
 }
+
+
