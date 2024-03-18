@@ -32,42 +32,39 @@ window.addEventListener('resize', () => {
 });
 
 
+let cube;
 const loader = new GLTFLoader();
-loader.load(
-  // Resource URL
-  '/models/cube.glb',
-  // called when the resource is loaded
-  function ( gltf ) {
-    console.log('loaded', gltf)
-    scene.add( gltf.scene );
+loader.load('/models/cube.glb', function (gltf) {
+  console.log('loaded', gltf)
+  scene.add(gltf.scene);
 
-    // handle Custom Tags on the models.
-    gltf.scene.traverse(function (object) {
-      if (object.isMesh) {
-        // Check if the object has a 'tag' property and if it's set to 'Mob'
-        if (object.userData.tag === 'mob') {
-          console.log('Found a mob!', object)
-          // Pass the model to your function
-          // handleMobModel(object);
-        }
+  // cube = gltf.scene;
+  // handle Custom Tags on the models.
+  gltf.scene.traverse(function (object) {
+    if (object.isMesh) {
+      // Check if the object has a 'tag' property and if it's set to 'Mob'
+      if (object.userData.tag === 'mob') {
+        console.log('Found a mob!', object)
+        // Pass the model to your function
+        // handleMobModel(object);
       }
-    });
-  },
-  // called while loading is progressing
-  function ( xhr ) {
-    console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+    }
+  });
+},
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
   },
   // called when loading has errors
-  function ( error ) {
-    console.error( 'An error happened', error );
+  function (error) {
+    console.error('An error happened', error);
   }
 );
 
 
-const geometry = new BoxGeometry();
-const material = new MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new Mesh(geometry, material);
-scene.add(cube);
+// const geometry = new BoxGeometry();
+// const material = new MeshBasicMaterial({ color: 0x00ff00 });
+// const cube = new Mesh(geometry, material);
+// scene.add(cube);
 
 camera.position.z = 5;
 
@@ -80,8 +77,10 @@ scene.add(light);
 function animateLoop() {
     requestAnimationFrame(animateLoop);
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    if (cube) {
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    }
 
     renderer.render(scene, camera);
 }
