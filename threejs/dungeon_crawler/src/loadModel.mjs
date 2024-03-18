@@ -1,5 +1,10 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+/**
+ * Loads a GLTF/GLB model from the given URL.
+ * @param {string} url 
+ * @returns 
+ */
 export async function loadModel(url) {
   const loader = new GLTFLoader();
 

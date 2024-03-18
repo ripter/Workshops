@@ -1,15 +1,22 @@
 import { 
-  BoxGeometry, 
   HemisphereLight, 
-  Mesh, 
-  MeshBasicMaterial, 
   PerspectiveCamera, 
   Scene, 
   WebGLRenderer, 
 } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './loadModel.mjs';
+import { Level } from './Level.mjs';
+
+// Level is specified in the URL query string, e.g. ?level=level001
+// Load the level from the URL query string or default to 'cow_level'
+const searchParams = new URLSearchParams(location.search)
+const levelName = searchParams.get('level') || 'cow_level';
+// const level = new Level(`/levels/${levelName}.json`);
+const level = await Level.Load(`/levels/${levelName}/config.json`);
+console.log('Level:', level);
+
+
 
 
 //
@@ -17,6 +24,8 @@ import { loadModel } from './loadModel.mjs';
 //
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, 5/3, 0.1, 1000);
+// camera.position.z = 5;
+camera.position.set(5, 5, 0);
 
 //
 // Create the renderer
@@ -39,12 +48,15 @@ controls.target.set(0, 0, 0); // Set the position of the target point
 controls.update(); // Required if controls.enableDamping or controls.autoRotate are set to true
 
 
-const levelScene = await loadModel('/models/tile_grid.glb');
-scene.add(levelScene);
+// Add the Level to the scene.
+scene.add(level.scene);
+// const levelScene = await loadModel('/models/tile_grid.glb');
+// scene.add(levelScene);
 const cube = await loadModel('/models/cube.glb');
 scene.add(cube);
 
 function updatePosition(event) {
+  event.preventDefault();
   switch (event.key) {
     case 'ArrowUp':
       cube.position.z -= 1;
@@ -68,7 +80,6 @@ function updatePosition(event) {
 }
 document.addEventListener('keydown', updatePosition);
 
-camera.position.z = 5;
 
 
 // Add some light
