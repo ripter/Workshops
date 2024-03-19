@@ -14,6 +14,7 @@ const searchParams = new URLSearchParams(location.search)
 const levelName = searchParams.get('level') || 'cow_level';
 // const level = new Level(`/levels/${levelName}.json`);
 const level = await Level.Load(`/levels/${levelName}/config.json`);
+window.level = level;
 console.log('Level:', level);
 
 
