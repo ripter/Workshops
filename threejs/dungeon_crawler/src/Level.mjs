@@ -1,5 +1,6 @@
 import { Group, SphereGeometry, MeshBasicMaterial, Mesh } from 'three';
 import { loadModel } from './loadModel.mjs';
+import { xyToIndex } from './xyToIndex.mjs';
 
 export class Level {
   /**
@@ -9,6 +10,7 @@ export class Level {
   constructor(config) {
     console.log('Loading Level...', config);
     this.config = {
+      extends: null,
       ...config,
     };
     this.scene = new Group();
@@ -25,16 +27,18 @@ export class Level {
     const { defs } = this.config;
     const defIds = Object.keys(defs);
 
-    // Load all the models
-    defIds.forEach(async (key) => {
+    // Create an array of promises for loading all the models
+    const loadPromises = defIds.map(async (key) => {
       const def = defs[key];
       const model = await loadModel(def.model);
-      this.defs.set(key, {
+      this.defs.set(key.toString(), {
         ...def,
         model,
       });
     });
 
+    // Wait for all models to load
+    return await Promise.all(loadPromises);
   }
 
   /**
@@ -59,6 +63,27 @@ export class Level {
   }
 
 
+  addMapMesh() {
+    const { map, gridWidth, gridHeight } = this.config;
+
+    for (let x = 0; x < gridWidth; x++) {
+      for (let z = 0; z < gridHeight; z++) {
+        const index = xyToIndex(gridWidth, x, z);
+        const defID = map[index];
+        if (!defID) continue;
+        const def = this.defs.get(defID.toString());
+        const model = def.model.clone();
+        model.position.set(x, 0, z);
+        this.scene.add(model);
+      }
+    }
+  }
+
+  /**
+   * Loads the Level from a config file.
+   * @param {string} url 
+   * @returns 
+   */
   static async Load(url) {
     try {
       // Load the config from the given URL and create the Level.
@@ -68,6 +93,7 @@ export class Level {
       // Load the definitions for the level. These are defined in the config.
       await level.loadDefs();
 
+      level.addMapMesh();
 
       return level;
     }

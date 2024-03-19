@@ -16,7 +16,6 @@
   ],
   "defs": {
     "1": {
-      "extends": null,
       "model": "models/tile.glb"
     }
   }
