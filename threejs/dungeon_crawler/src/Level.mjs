@@ -1,4 +1,4 @@
-import { Group, SphereGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { Group, SphereGeometry, MeshBasicMaterial, Mesh, Vector3 } from 'three';
 import { loadModel } from './loadModel.mjs';
 import { xyToIndex } from './xyToIndex.mjs';
 
@@ -15,6 +15,7 @@ export class Level {
     };
     this.scene = new Group();
     this.defs = new Map();
+    this.map = config.map.map(id => id.toString());
 
     // Show the grid center points across the level
     this.addCenterPoints();
@@ -32,13 +33,40 @@ export class Level {
       const def = defs[key];
       const model = await loadModel(def.model);
       this.defs.set(key.toString(), {
+        // Default Values
+        impassable: false,
+        // Config Values
         ...def,
+        // Model Values
         model,
       });
     });
 
     // Wait for all models to load
     return await Promise.all(loadPromises);
+  }
+
+  /**
+   * Returns the tile at the given position.
+   * Uses the x and z coordinates to find the tile ID.
+   * @param {Vector3} position 
+   */
+  getTile(position) {
+    const { gridWidth, gridHeight } = this.config;
+    const { map } = this;
+    const x = Math.floor(position.x);
+    const z = Math.floor(position.z);
+    // If the position is outside the grid, return null
+    if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight) {
+      return null;
+    }
+    const tileId = map[xyToIndex(gridWidth, x, z)];
+    const def = this.defs.get(tileId);
+    console.log('Tile:', tileId, def);
+    return {
+      id: tileId,
+      ...def,
+    };
   }
 
   /**
@@ -64,7 +92,8 @@ export class Level {
 
 
   addMapMesh() {
-    const { map, gridWidth, gridHeight } = this.config;
+    const { gridWidth, gridHeight } = this.config;
+    const { map } = this;
 
     for (let x = 0; x < gridWidth; x++) {
       for (let z = 0; z < gridHeight; z++) {

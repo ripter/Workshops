@@ -14,7 +14,8 @@
       "model": "models/tile.glb"
     },
     "2": {
-      "model": "models/wall.glb"
+      "model": "models/wall.glb",
+      "impassable": true
     }
   }
 }

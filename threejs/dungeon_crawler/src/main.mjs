@@ -21,7 +21,7 @@ console.log('Level:', level);
 
 // Create the Player
 const camera = new PerspectiveCamera(75, 5/3, 0.1, 1000);
-const player = new Player(camera);
+const player = new Player(camera, level);
 window.player = player;
 
 //
