@@ -1,4 +1,4 @@
-import { Group, SphereGeometry, MeshBasicMaterial, Mesh, Vector3 } from 'three';
+import { Group, SphereGeometry, MeshBasicMaterial, Mesh, Vector3, Vector2 } from 'three';
 import { loadModel } from './loadModel.mjs';
 import { xyToIndex } from './xyToIndex.mjs';
 
@@ -8,7 +8,6 @@ export class Level {
    * @param {string} url 
    */
   constructor(config) {
-    console.log('Loading Level...', config);
     this.config = {
       extends: null,
       ...config,
@@ -62,11 +61,46 @@ export class Level {
     }
     const tileId = map[xyToIndex(gridWidth, x, z)];
     const def = this.defs.get(tileId);
-    console.log('Tile:', tileId, def);
     return {
       id: tileId,
       ...def,
     };
+  }
+
+  /**
+   * Finds a set piece that matches the given criteria. 
+   * Example: Find the Player Spawn Point with `{type: 'spawn', who: 'player'}`
+   * @param {Object} criteria 
+   * @returns 
+   */
+  findSetPiece(criteria) {
+    const { setPieces } = this.config;
+
+    // Loop through each key-value pair in the set pieces
+    for (const [key, value] of Object.entries(setPieces)) {
+      // Assume the set piece matches until proven otherwise
+      let matches = true;
+
+      // Check each key-value pair in the criteria
+      for (const [critKey, critValue] of Object.entries(criteria)) {
+        // If the set piece doesn't have the property or it doesn't match, mark as not a match
+        if (value[critKey] !== critValue) {
+          matches = false;
+          break; // Exit the inner loop early since this set piece doesn't match
+        }
+      }
+
+      // If all criteria matched, return the set piece
+      const keyAsNumbers = key.split(',').map(Number);
+      const keyAsVectors = new Vector2(...keyAsNumbers);
+      
+      if (matches) {
+        return { key, position: keyAsVectors, ...value };
+      }
+    }
+
+    // Return null if no matching set piece was found
+    return null;
   }
 
   /**

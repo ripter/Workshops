@@ -9,6 +9,12 @@
     2,1,1,1,2,
     1,1,1,1,1
   ],
+  "setPieces": {
+    "2,3" : {
+      "type": "spawn",
+      "who": "player"
+    }
+  },
   "defs": {
     "1": {
       "model": "models/tile.glb"

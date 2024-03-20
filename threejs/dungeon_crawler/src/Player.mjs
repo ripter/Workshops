@@ -14,8 +14,14 @@ export class Player {
   constructor(camera, level) {
     this.#level = level;
     this.#camera = camera;
-    camera.position.set(0, 1, 0);
     document.addEventListener('keydown', this);
+
+    // Find the spawn point and move us there.
+    const spSpawnPoint = level.findSetPiece({type: 'spawn', who: 'player'});
+    if (!spSpawnPoint) {
+      throw new Error('No spawn point found!');
+    }
+    camera.position.set(spSpawnPoint.position.x, 1, spSpawnPoint.position.y);
   }
 
   // position of the player.

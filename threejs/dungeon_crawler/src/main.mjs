@@ -8,6 +8,7 @@ import { loadModel } from './loadModel.mjs';
 import { Level } from './Level.mjs';
 import { Player } from './Player.mjs';
 
+
 //
 // Load the Level
 // Level is specified in the URL query string, e.g. ?level=level001
@@ -16,7 +17,6 @@ const searchParams = new URLSearchParams(location.search)
 const levelName = searchParams.get('level') || 'cow_level';
 const level = await Level.Load(`/levels/${levelName}/config.json`);
 window.level = level;
-console.log('Level:', level);
 
 
 // Create the Player
@@ -44,7 +44,6 @@ window.addEventListener('resize', () => {
 
 const scene = new Scene();
 // Add the Level to the scene.
-// level.scene.position.set(level.config.gridWidth / -2, 0, level.config.gridHeight / -2);
 level.scene.position.set(0, 0, 0);
 scene.add(level.scene);
 
@@ -55,37 +54,6 @@ cube.position.set(0, 0, 0);
 scene.add(cube);
 
 
-// function updatePosition(event) {
-//   event.preventDefault();
-//   switch (event.key) {
-//     case 'ArrowUp':
-//     case 'w':
-//       camera.position.z -= 1;
-//       break;
-//     case 'ArrowDown':
-//     case 's':
-//       camera.position.z += 1;
-//       break;
-//     case 'ArrowLeft':
-//     case 'a':
-//       camera.position.x -= 1;
-//       break;
-//     case 'ArrowRight':
-//     case 'd':
-//       camera.position.x += 1;
-//       break;
-//     case 'q':
-//       camera.rotateY(degToRad(90));
-//       break;
-//     case 'e':
-//       camera.rotateY(degToRad(-90));
-//       break;
-//   }
-// }
-// document.addEventListener('keydown', updatePosition);
-
-
-
 // Add some light
 const light = new HemisphereLight(0xffffff, 0x444444);
 light.position.set(1, 1, 1);
@@ -94,15 +62,9 @@ scene.add(light);
 function animateLoop() {
     requestAnimationFrame(animateLoop);
 
-    // if (cube) {
-    //   cube.rotation.x += 0.01;
-    //   cube.rotation.y += 0.01;
-    // }
-
-    // controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
+    // Render the scene
     renderer.render(scene, camera);
 }
-
 
 // Start the Animation Loop
 animateLoop();
