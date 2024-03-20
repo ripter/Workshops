@@ -12,14 +12,14 @@ export async function loadModel(url) {
     const gltf = await loader.loadAsync(url);
 
     // Process any custom tags on the models.
-    gltf.scene.traverse(function (object) {
-      if (object.isMesh) {
-        // Check if the object has a 'tag' property and if it's set to 'Mob'
-        if (object.userData.tag === 'mob') {
-          console.log('Found a mob!', object);
-        }
-      }
-    });
+    // gltf.scene.traverse(function (object) {
+    //   if (object.isMesh) {
+    //     // Check if the object has a 'tag' property and if it's set to 'Mob'
+    //     if (object.userData.tag === 'mob') {
+    //       console.log('Found a mob!', object);
+    //     }
+    //   }
+    // });
 
     return gltf.scene;
   } catch (error) {

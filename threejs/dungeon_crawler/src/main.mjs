@@ -7,6 +7,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './loadModel.mjs';
 import { Level } from './Level.mjs';
+import { degToRad } from 'three/src/math/MathUtils';
 
 // Level is specified in the URL query string, e.g. ?level=level001
 // Load the level from the URL query string or default to 'cow_level'
@@ -25,8 +26,7 @@ console.log('Level:', level);
 //
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, 5/3, 0.1, 1000);
-// camera.position.z = 5;
-camera.position.set(5, 5, 0);
+camera.position.set(0, 1, 0);
 
 //
 // Create the renderer
@@ -34,6 +34,7 @@ const renderer = new WebGLRenderer();
 const { width, height } = calculateSize();
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
+
 
 // Ensure the renderer size is updated if the window size changes
 window.addEventListener('resize', () => {
@@ -44,38 +45,43 @@ window.addEventListener('resize', () => {
 });
 
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 0, 0); // Set the position of the target point
-controls.update(); // Required if controls.enableDamping or controls.autoRotate are set to true
-
 
 // Add the Level to the scene.
+// level.scene.position.set(level.config.gridWidth / -2, 0, level.config.gridHeight / -2);
+level.scene.position.set(0, 0, 0);
 scene.add(level.scene);
-// const levelScene = await loadModel('/models/tile_grid.glb');
-// scene.add(levelScene);
+
+// Add a test cube to the scene
 const cube = await loadModel('/models/cube.glb');
+// cube.position.set(3, 0, -2);
+cube.position.set(0, 0, 0);
 scene.add(cube);
+
 
 function updatePosition(event) {
   event.preventDefault();
   switch (event.key) {
     case 'ArrowUp':
-      cube.position.z -= 1;
+    case 'w':
+      camera.position.z -= 1;
       break;
     case 'ArrowDown':
-      cube.position.z += 1;
+    case 's':
+      camera.position.z += 1;
       break;
     case 'ArrowLeft':
-      cube.position.x -= 1;
+    case 'a':
+      camera.position.x -= 1;
       break;
     case 'ArrowRight':
-      cube.position.x += 1;
+    case 'd':
+      camera.position.x += 1;
       break;
-    case 'w':
-      cube.position.y += 1;
+    case 'q':
+      camera.rotateY(degToRad(90));
       break;
-    case 's':
-      cube.position.y -= 1;
+    case 'e':
+      camera.rotateY(degToRad(-90));
       break;
   }
 }
@@ -96,7 +102,7 @@ function animateLoop() {
     //   cube.rotation.y += 0.01;
     // }
 
-    controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
+    // controls.update(); // Only required if controls.enableDamping = true, or if controls.autoRotate = true
     renderer.render(scene, camera);
 }
 
