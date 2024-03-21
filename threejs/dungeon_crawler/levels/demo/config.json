@@ -17,10 +17,12 @@
   },
   "defs": {
     "1": {
-      "model": "models/tile.glb"
+      "model": "models/tile.glb",
+      "sprite": "assets/tile1.webp"
     },
     "2": {
       "model": "models/wall.glb",
+      "sprite": "assets/tile1.webp",
       "impassable": true
     }
   }

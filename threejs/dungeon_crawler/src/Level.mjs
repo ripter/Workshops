@@ -2,6 +2,15 @@ import { Group, SphereGeometry, MeshBasicMaterial, Mesh, Vector3, Vector2 } from
 import { loadModel } from './loadModel.mjs';
 import { xyToIndex } from './xyToIndex.mjs';
 
+
+// Default values for a tile definitions
+const DEFAULT_DEF_VALUES = {
+  model: null,
+  sprite: null,
+  impassable: false,
+}
+
+
 export class Level {
   /**
    * Loads a level from the given URL.
@@ -20,6 +29,13 @@ export class Level {
     this.addCenterPoints();
   }
 
+  get width() {
+    return parseInt(this.config.gridWidth, 10);
+  }
+  get height() {
+    return parseInt(this.config.gridHeight, 10);
+  }
+
   /**
    * Load the models from the level definitions.
    */
@@ -33,7 +49,7 @@ export class Level {
       const model = await loadModel(def.model);
       this.defs.set(key.toString(), {
         // Default Values
-        impassable: false,
+        ...DEFAULT_DEF_VALUES,
         // Config Values
         ...def,
         // Model Values
@@ -51,15 +67,15 @@ export class Level {
    * @param {Vector3} position 
    */
   getTile(position) {
-    const { gridWidth, gridHeight } = this.config;
+    const { width, height } = this;
     const { map } = this;
     const x = Math.floor(position.x);
     const z = Math.floor(position.z);
     // If the position is outside the grid, return null
-    if (x < 0 || x >= gridWidth || z < 0 || z >= gridHeight) {
+    if (x < 0 || x >= width || z < 0 || z >= height) {
       return null;
     }
-    const tileId = map[xyToIndex(gridWidth, x, z)];
+    const tileId = map[xyToIndex(width, x, z)];
     const def = this.defs.get(tileId);
     return {
       id: tileId,
@@ -107,9 +123,9 @@ export class Level {
    * Add the center points of the grid to the scene.
    */
   addCenterPoints() {
-    const { gridWidth, gridHeight } = this.config;
-    for (let x = 0; x < gridWidth; x++) {
-      for (let z = 0; z < gridHeight; z++) {
+    const { width, height } = this;
+    for (let x = 0; x < width; x++) {
+      for (let z = 0; z < height; z++) {
         const point = this.createPoint({ x: x, y: 0, z: z});
         this.scene.add(point);
       }
@@ -126,12 +142,12 @@ export class Level {
 
 
   addMapMesh() {
-    const { gridWidth, gridHeight } = this.config;
+    const { width, height } = this;
     const { map } = this;
 
-    for (let x = 0; x < gridWidth; x++) {
-      for (let z = 0; z < gridHeight; z++) {
-        const index = xyToIndex(gridWidth, x, z);
+    for (let x = 0; x < width; x++) {
+      for (let z = 0; z < height; z++) {
+        const index = xyToIndex(width, x, z);
         const defID = map[index];
         if (!defID) continue;
         const def = this.defs.get(defID.toString());

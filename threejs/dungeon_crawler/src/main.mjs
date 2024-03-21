@@ -44,7 +44,8 @@ level.scene.position.set(0, 0, 0);
 scene.add(level.scene);
 
 // Create the UI
-const ui = new UI();
+const ui = new UI(level);
+await ui.init();
 window.ui = ui;
 
 // Add a test cube to the scene
