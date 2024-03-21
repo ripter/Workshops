@@ -7,6 +7,7 @@ import {
 import { loadModel } from './loadModel.mjs';
 import { Level } from './Level.mjs';
 import { Player } from './Player.mjs';
+import { UI } from './UI.mjs';
 
 
 //
@@ -24,21 +25,16 @@ const camera = new PerspectiveCamera(75, 5/3, 0.1, 1000);
 const player = new Player(camera, level);
 window.player = player;
 
+
 //
 // Create the renderer
 const renderer = new WebGLRenderer();
-const { width, height } = calculateSize();
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
+renderer.domElement.id = 'main-canvas';
+window.gameBody.appendChild(renderer.domElement);
 
-
-// Ensure the renderer size is updated if the window size changes
-window.addEventListener('resize', () => {
-  const { width, height } = calculateSize();
-  renderer.setSize(width, height);
-  camera.aspect = width / height;
-  camera.updateProjectionMatrix();
-});
+// Resize the game when the window is resized
+resizeGame();
+window.addEventListener('resize', resizeGame);
 
 
 
@@ -46,6 +42,10 @@ const scene = new Scene();
 // Add the Level to the scene.
 level.scene.position.set(0, 0, 0);
 scene.add(level.scene);
+
+// Create the UI
+const ui = new UI();
+window.ui = ui;
 
 // Add a test cube to the scene
 const cube = await loadModel('/models/cube.glb');
@@ -70,6 +70,14 @@ function animateLoop() {
 animateLoop();
 
 
+function resizeGame() {
+  const { width, height } = calculateSize();
+  window.gameBody.style.width = `${width}px`;
+  window.gameBody.style.height = `${height}px`;
+  renderer.setSize(width, height);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+}
 
 
 // Calculate the largest 5:3 aspect ratio dimensions that fit entirely in the current screen
