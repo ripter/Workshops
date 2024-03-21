@@ -26,7 +26,7 @@ export class Level {
     this.map = config.map.map(id => id.toString());
 
     // Show the grid center points across the level
-    this.addCenterPoints();
+    // this.addCenterPoints();
   }
 
   get width() {

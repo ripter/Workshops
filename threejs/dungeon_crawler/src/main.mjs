@@ -37,7 +37,6 @@ resizeGame();
 window.addEventListener('resize', resizeGame);
 
 
-
 const scene = new Scene();
 // Add the Level to the scene.
 level.scene.position.set(0, 0, 0);
@@ -47,12 +46,6 @@ scene.add(level.scene);
 const ui = new UI(level);
 await ui.init();
 window.ui = ui;
-
-// Add a test cube to the scene
-const cube = await loadModel('/models/cube.glb');
-// cube.position.set(3, 0, -2);
-cube.position.set(0, 0, 0);
-scene.add(cube);
 
 
 // Add some light
