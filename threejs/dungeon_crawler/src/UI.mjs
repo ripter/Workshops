@@ -20,21 +20,15 @@ export class UI {
     this.#level = level;
     this.app = new Application();
     this.miniMap = new Graphics();
-
-    // Load up all the assets
-    // Find all the tileIds used in the map 
-    // const tileIds = Array.from(new Set([...level.map]));
-    // tileIds.forEach((id) => {
-    //   const { sprite } = level.defs.get(id);
-    //   Assets.add({
-    //     alias: `tile-${id}`,
-    //     src: sprite, 
-    //   }); 
-    // });
-    // console.log('Tile IDs:', tileIds);
-
     // Event listeners
-    window.addEventListener('resize', this.resize.bind(this));
+    window.addEventListener('resize', this.resizeAndRerender.bind(this));
+  }
+
+  get width() {
+    return this.app.screen.width;
+  }
+  get height() {
+    return this.app.screen.height;
   }
 
   /**
@@ -43,99 +37,93 @@ export class UI {
    */
   async init() {
     const mainContext = document.getElementById('main-canvas');
-    const config = {
+    await this.app.init({
       resizeTo: mainContext,
       backgroundAlpha: 0,
-    };
-
-    console.log('Loading UI')
-    await this.app.init(config);
+    });
     this.app.canvas.id = 'ui-canvas';
     window.gameBody.appendChild(this.app.canvas);
 
-    // Add the mini map.
-    this.addMiniMap();
+    // Resize and Render the UI
+    this.resizeAndRerender();
   }
 
-  resize() {
+  resizeAndRerender() {
     this.app.resize();
+
+    // Calculate tile size so that 4x4 tiles fit into the mini map
+    const { width, height } = this;
+    this.miniMapWidth = width / 5;
+    this.miniMapHeight = height / 5;
+    this.padding = (width * 0.025);
+    this.lineWidth = (width * 0.0025);
+    this.miniMapWidth = width / 5;
+    this.miniMapHeight = height / 5;
+    this.tileSize = Math.min(this.miniMapWidth, this.miniMapHeight) / 4;
+
+
     this.addMiniMap();
   }
 
+  /**
+   * Adds the mini map to the UI.
+   * Removes any old mini map that exists. 
+   */
   async addMiniMap() {
     // Clear any old that exists
     this.app.stage.removeChild(this.miniMap);
     this.miniMap = new Graphics();
     // Calculate the size and position of the mini map
     const { app, miniMap } = this;
-    const { width, height } = app.screen;
-    const miniMapWidth = width / 5;
-    const miniMapHeight = height / 5;
-    const padding = (width * 0.025);
-    const lineWidth = (width * 0.0025);
-
-    // Draw the mini map outline
-    miniMap.rect(0, 0, miniMapWidth, miniMapHeight);
-    // miniMap.fill(0xaa4f08);
-    miniMap.stroke({ width: lineWidth, color: 0xffffff });
-
-
-    /*
-    // Add each tile in the level to the mini map
-    const promiseTiles = [];
-    for (let x = 0; x < level.gridWidth; x++) {
-      for (let z = 0; z < level.gridHeight; z++) {
-        const index = level.xyToIndex(x, z);
-        const defID = level.map[index];
-        if (!defID) continue;
-
-        promiseTiles.push((async () => {
-          const def = level.defs.get(defID);
-          const texture = await Assets.load(def.sprite);
-          const sprite = new Sprite(texture);
-          sprite.position.set(x, z);
-          this.miniMap.addChild(sprite);
-        })());
-        // const { sprite } = def;
-        // const tile = new Graphics();
-        // tile.beginTextureFill({ texture: sprite });
-        // tile.drawRect(x, z, 1, 1);
-        // tile.endFill();
-        // miniMap.addChild(tile);
-      }
-    }
-    await Promise.all(promiseTiles);
-    */
-
-
-    // Position the mini map
-    miniMap.x = width - miniMapWidth - padding;
-    miniMap.y = padding;
+    // const { width, height } = app.screen;
 
     // Fill it with the map tiles
-    await this.createMapTiles();
+    await this.addMapTiles();
+
+    // Draw the mini map outline
+    miniMap.rect(0, 0, this.miniMapWidth, this.miniMapHeight);
+    miniMap.stroke({ width: this.lineWidth, color: 0xffffff });
+
+    // Position the mini map
+    miniMap.x = this.width - this.miniMapWidth - this.padding;
+    miniMap.y = this.padding;
+
     app.stage.addChild(miniMap);
     return miniMap;
   }
 
-  async createMapTiles() {
+  /**
+   * Adds the map tiles to the mini map. 
+   */
+  async addMapTiles() {
+    const { tileSize } = this;
     const level = this.#level;
     const root = new Container();
+
     // Add each tile in the level to the mini map
     for (let x = 0; x < level.width; x++) {
-      for (let z = 0; z < level.height; z++) {
-        const index = xyToIndex(level.width, x, z);
+      for (let y = 0; y < level.height; y++) {
+        const index = xyToIndex(level.width, x, y);
         const defID = level.map[index];
         if (!defID) continue;
         // Get the Texture and create a Sprite.
         const def = level.defs.get(defID);
         const texture = await Assets.load(def.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
         const sprite = new Sprite(texture);
-        sprite.position.set(x, z);
+        const scale = tileSize / sprite.width; // This assumes a square texture for simplicity
+        sprite.scale.set(scale, scale);
+        sprite.position.set(x * tileSize, y * tileSize);
         root.addChild(sprite);
       }
     }
-    // Add the root to the mini map and return.
+
+    // Create a mask for the mini map
+    const mask = new Graphics();
+    mask.rect(0, 0, this.miniMapWidth, this.miniMapHeight);
+    mask.fill({color: 'black'});
+    root.mask = mask;
+    // Add the mask and the root to the mini map
+    this.miniMap.addChild(mask);
     this.miniMap.addChild(root);
     return root;
   }

@@ -22,7 +22,7 @@
     },
     "2": {
       "model": "models/wall.glb",
-      "sprite": "assets/tile1.webp",
+      "sprite": "assets/wall1.webp",
       "impassable": true
     }
   }
