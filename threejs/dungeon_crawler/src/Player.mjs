@@ -24,7 +24,10 @@ export class Player {
     camera.position.set(spSpawnPoint.position.x, 1, spSpawnPoint.position.y);
   }
 
-  // position of the player.
+  /**
+   * The position of the player.
+   * shorthand for `this.#camera.position`
+   */
   get position() {
     return this.#camera.position;
   }

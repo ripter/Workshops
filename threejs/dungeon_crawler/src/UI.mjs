@@ -48,6 +48,14 @@ export class UI {
     this.resizeAndRerender();
   }
 
+
+  async update() {
+    // Update the UI
+  }
+
+  /**
+   * Resizes the UI and re-renders the UI.
+   */
   resizeAndRerender() {
     this.app.resize();
 
@@ -88,6 +96,14 @@ export class UI {
     miniMap.x = this.width - this.miniMapWidth - this.padding;
     miniMap.y = this.padding;
 
+
+    // Add the Player to the minimap
+    const texture = await Assets.load('assets/player.webp');
+    this.player = new Sprite(texture);
+    const scale = this.tileSize / this.player.width;
+    this.player.scale.set(scale, scale);
+    miniMap.addChild(this.player);
+
     app.stage.addChild(miniMap);
     return miniMap;
   }
@@ -127,5 +143,6 @@ export class UI {
     this.miniMap.addChild(root);
     return root;
   }
+
 
 }

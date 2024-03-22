@@ -55,7 +55,7 @@ scene.add(light);
 
 function animateLoop() {
     requestAnimationFrame(animateLoop);
-
+    ui.update();
     // Render the scene
     renderer.render(scene, camera);
 }
