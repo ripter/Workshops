@@ -9,6 +9,7 @@ import {
   TextStyle, 
   FillGradient,
 } from '../libs/pixi.min.mjs';
+import { Minimap } from './Minimap.mjs';
 import { xyToIndex } from './xyToIndex.mjs';
 
 export class UI {
@@ -23,32 +24,33 @@ export class UI {
     this.#level = level;
     this.#player = player;
     this.app = new Application();
-    this.miniMap = {
-      root: new Container(),
-      mask: new Graphics(),
-      tileMap: new Container(),
-      background: new Graphics(),
-      playerSprite: null,
-    };
+    this.miniMap = new Minimap(level);
+    // this.miniMap = {
+    //   root: new Container(),
+    //   mask: new Graphics(),
+    //   tileMap: new Container(),
+    //   background: new Graphics(),
+    //   playerSprite: null,
+    // };
     // this.miniMap.root.addChild(
     //   this.miniMap.background,
     //   this.miniMap.tileMap,
     //   this.miniMap.mask,
     //   // this.miniMap.playerSprite,
     // );
-    this.app.stage.addChild(this.miniMap.root);
-    this.miniMap.root.addChild(this.miniMap.background);
-    this.miniMap.root.addChild(this.miniMap.tileMap);
-    this.miniMap.root.addChild(this.miniMap.mask);
+    // this.app.stage.addChild(this.miniMap.root);
+    // this.miniMap.root.addChild(this.miniMap.background);
+    // this.miniMap.root.addChild(this.miniMap.tileMap);
+    // this.miniMap.root.addChild(this.miniMap.mask);
     // this.miniMap.root.addChild(this.miniMap.playerSprite);
     // Event listeners
     window.addEventListener('resize', this.resizeAndRerender.bind(this));
   }
 
-  get width() {
+  get screenWidth() {
     return this.app.screen.width;
   }
-  get height() {
+  get screenHeight() {
     return this.app.screen.height;
   }
 
@@ -66,10 +68,14 @@ export class UI {
     this.app.canvas.id = 'ui-canvas';
     window.gameBody.appendChild(this.app.canvas);
 
-    await this.addMiniMap();
-    // this.app.stage.addChild(this.miniMap.root);
-    // Add the Player Sprite to the UI
-    this.miniMap.playerSprite = await this.loadPlayerSprite();
+    // Initalize the minimap and add it to the UI
+    await this.miniMap.init(
+      this.screenWidth / 5,
+      this.screenHeight / 5,
+    );
+    this.miniMap.scene.x = this.screenWidth - this.miniMap.width - this.miniMap.padding;
+    this.miniMap.scene.y = this.miniMap.padding;
+    this.app.stage.addChild(this.miniMap.scene);
 
     // Resize and Render the UI
     this.resizeAndRerender();
@@ -107,20 +113,20 @@ export class UI {
    */
   resizeAndRerender() {
     this.app.resize();
-
+    console.log('Resizing UI')
     // Re-calculate the size of things based on the new size
-    const { width, height } = this;
-    const miniMapWidth = width / 5;
-    const miniMapHeight = height / 5;
+    const { screenWidth: width, screenHeight: height } = this;
+    // const miniMapWidth = width / 5;
+    // const miniMapHeight = height / 5;
 
-    this.miniMap = {
-      ...this.miniMap,
-      miniMapWidth,
-      miniMapHeight,
-      padding: (width * 0.025),
-      lineWidth: 0|(width * 0.0025),
-      tileSize: Math.min(miniMapWidth, miniMapHeight) / 4,
-    };
+    // this.miniMap = {
+    //   ...this.miniMap,
+    //   miniMapWidth,
+    //   miniMapHeight,
+    //   padding: (width * 0.025),
+    //   lineWidth: 0|(width * 0.0025),
+    //   tileSize: Math.min(miniMapWidth, miniMapHeight) / 4,
+    // };
     // this.updateMiniMap();
 
   }
@@ -129,24 +135,47 @@ export class UI {
    * Adds the mini map to the UI.
    * Removes any old mini map that exists. 
    */
-  async addMiniMap() {
-    const { root, mask, tileMap, tileSize } = this.miniMap;
+  async addMiniMap3() {
+    const { 
+      root, 
+      mask, 
+      tileMap, 
+      tileSize, 
+      background,
+      miniMapWidth, miniMapHeight,
+      padding,
+    } = this.miniMap;
     const level = this.#level;
+
+    console.log('Drawing Background', miniMapWidth, miniMapHeight)
+    // Draw the mini map outline
+    // background.rect(0, 0, this.miniMapWidth, this.miniMapHeight);
+    background.rect(0, 0, 100, 100);
+    background.stroke({ width: this.lineWidth, color: 0xffffff });
+    background.fill({ color: 0xff00ff });
+
+    // root.addChild(background);
+    // this.app.stage.addChild(root);
+    // Position the mini map
+    // root.x = 100;
+    root.x = this.screenWidth - miniMapWidth - padding;
+    console.log('Root X:', root.x);
+    // root.y = this.padding;
 
     //
     // Add each tile in the level to the mini map
-    for (let x = 0; x < level.widthInTiles; x++) {
-      for (let y = 0; y < level.heightInTiles; y++) {
-        const tile = level.getTileBy3DPosition(new Vector3(x, 0, y));
-        const texture = await Assets.load(tile.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
-        const sprite = new Sprite(texture);
-        const scale = tileSize / sprite.width; // This assumes a square texture for simplicity
-        sprite.scale.set(scale, scale);
-        sprite.position.set(x * tileSize, y * tileSize);
-        console.log('Adding tile to mini map:', tile, sprite);
-        tileMap.addChild(sprite);
-      }
-    }
+    // for (let x = 0; x < level.widthInTiles; x++) {
+    //   for (let y = 0; y < level.heightInTiles; y++) {
+    //     const tile = level.getTileBy3DPosition(new Vector3(x, 0, y));
+    //     const texture = await Assets.load(tile.sprite); // PIXI.JS says this is the correct way to load a texture. They handle cache.
+    //     const sprite = new Sprite(texture);
+    //     const scale = tileSize / sprite.width; // This assumes a square texture for simplicity
+    //     sprite.scale.set(scale, scale);
+    //     sprite.position.set(x * tileSize, y * tileSize);
+    //     console.log('Adding tile to mini map:', tile, sprite);
+    //     tileMap.addChild(sprite);
+    //   }
+    // }
   }
   async addMiniMap2() {
     // Clear any old that exists
@@ -164,7 +193,7 @@ export class UI {
     miniMapContainer.stroke({ width: this.lineWidth, color: 0xffffff });
 
     // Position the mini map
-    miniMapContainer.x = this.width - this.miniMapWidth - this.padding;
+    miniMapContainer.x = this.screenWidth - this.miniMapWidth - this.padding;
     miniMapContainer.y = this.padding;
 
 
@@ -183,7 +212,7 @@ export class UI {
   /**
    * Adds the map tiles to the mini map. 
    */
-  async addMapTiles() {
+  async addMapTiles2() {
     const { tileSize, root } = this.miniMap;
     const level = this.#level;
     // const root = new Container();

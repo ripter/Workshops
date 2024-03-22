@@ -162,6 +162,8 @@ export class Level {
     }
   }
 
+  
+
   /**
    * Loads the Level from a config file.
    * @param {string} url 
