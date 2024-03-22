@@ -32,6 +32,10 @@ export class Player {
     return this.#camera.position;
   }
 
+  get rotation() {
+    return this.#camera.rotation;
+  }
+
   handleEvent(event) {
     const camera = this.#camera
     const { position } = this;
@@ -89,7 +93,7 @@ export class Player {
   attemptMove(newPosition) {
     const level = this.#level;
     // Check if the new positon is impassable
-    const tile = level.getTile(newPosition);
+    const tile = level.getTileBy3DPosition(newPosition);
     // Nope, can't move there. We are tile-locked.
     if (!tile) { return; }
     // Tile not passable, can't move there.
