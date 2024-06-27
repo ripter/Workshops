@@ -23,16 +23,14 @@ int main(void)
   // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   const Texture2D texturePacked = LoadTexture("tilemap_packed.png");
 
-  // Calculate the source rectangle for each sprite in the texture.
+  // Get the sprites for the player X and player Y
   const Rectangle framePlayerX = getSpriteRect(spriteSize, 4, 0);
   const Rectangle framePlayerY = getSpriteRect(spriteSize, 4, 1);
 
-  // const Vector2 pos = {0.0f, 0.0f};
-  // Calculate the destination rectangle
-  // Rectangle destRec = { pos.x, pos.y, frameRec.width * scaleFactor, frameRec.height * scaleFactor };
 
-  // Vector2 origin = { frameRec.width * scaleFactor / 2.0f, frameRec.height * scaleFactor / 2.0f };
-
+  // Setup a camera to use in the game
+  Camera2D camera = { 0 };
+  camera.zoom = 8.0f; // Render at 8x scale
 
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
   //--------------------------------------------------------------------------------------
@@ -43,35 +41,26 @@ int main(void)
     // Update State
 
 
+
     // Draw State
     //----------------------------------------------------------------------------------
     BeginDrawing();
       ClearBackground(RAYWHITE);
+      BeginMode2D(camera);
+        for (int idx = 0; idx < 10; idx++) {
+          // Convert the index to x and y coordinates
+          int x = idx % 3;
+          int y = idx / 3;
+          Vector2 pos = {x * spriteSize.x, y * spriteSize.y};
 
-      for (int idx = 0; idx < 10; idx++) {
-        int x = idx % 3;
-        int y = idx / 3;
-        Rectangle destRec = { x * spriteSize.x * scaleFactor, y * spriteSize.y * scaleFactor, spriteSize.x * scaleFactor, spriteSize.y * scaleFactor };
-        // Vector2 origin = { spriteSize.x * scaleFactor / 2.0f, spriteSize.y * scaleFactor / 2.0f };
-
-        if (gameBoard[idx] == 1) {
-          DrawTexturePro(texturePacked, framePlayerX, destRec, scaleOrigin, 0.0f, WHITE);
-        } else if (gameBoard[idx] == 2) {
-          DrawTexturePro(texturePacked, framePlayerY, destRec, scaleOrigin, 0.0f, WHITE);
+          if (gameBoard[idx] == 1) {
+            DrawTextureRec(texturePacked, framePlayerX, pos, WHITE);
+          } else if (gameBoard[idx] == 2) {
+            DrawTextureRec(texturePacked, framePlayerY, pos, WHITE);
+          }
         }
-      }
-      
-
-    // DrawTextureRec(texturePacked, frameRec, pos, WHITE);
-
-    // DrawTexturePro(texturePacked, frameRec, destRec, origin, 0.0f, WHITE);
-    // // DrawTexture(texturePacked, 0, 0, WHITE);
-    // // DrawTextureV(texturePacked, pos, WHITE);
-    // DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
+      EndMode2D();
     EndDrawing();
-    //----------------------------------------------------------------------------------
-    // printf("Frame time: %f\n", GetFrameTime());
   }
 
   // De-Initialization
