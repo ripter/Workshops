@@ -9,9 +9,7 @@ int main(void)
   const int screenWidth = 256;
   const int screenHeight = 256;
 
-  const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in the texture
-  const float scaleFactor = 8.0f; // How much to scale the sprite when drawing.
-  const Vector2 scaleOrigin = { 0.0f, 0.0f }; // Define the origin for scaling and rotation (center of the destination rectangle)
+  const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
 
   // Gameboard state
   int gameBoard[] = {1, 0, 0, 2, 0, 0, 0, 0, 0};
