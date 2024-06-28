@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "config.h"
-#include "externals/cJSON.h"
+#include "../externals/cJSON.h"
 #include "file_utils.h"
 
 

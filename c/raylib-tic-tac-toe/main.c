@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "raylib.h"
 
-#include "config.h"
 #include "externals/cJSON.h"
-#include "file_utils.h"
+#include "src/config.h"
+#include "src/file_utils.h"
 #include "main.h"
 
 const char* configFilepath = "config.json";

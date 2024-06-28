@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "externals/cJSON.h"
+#include "../externals/cJSON.h"
 #include "file_utils.h"
 
 // Function to read a file into a string
