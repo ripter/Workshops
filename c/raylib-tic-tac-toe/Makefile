@@ -1,10 +1,11 @@
 .PHONY: build clean
 
-SRC = main.c config.c file_utils.c externals/cJSON.c
+SRC = $(wildcard *.c) $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard externals/*.c) $(wildcard externals/**/*.c)
 EXTERNAL_LIBS = $(shell pkg-config --libs --cflags raylib)
 
-build:
+
+build: $(SRC)
 	cc $(SRC) $(EXTERNAL_LIBS) -o TicTacToe
 
 clean:
-	rm -f TicTacToe
+	rm -f *.o src/**/*.o externals/**/*.o TicTacToe
