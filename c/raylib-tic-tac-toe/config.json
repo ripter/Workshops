@@ -1,0 +1,8 @@
+{
+  "spriteSize": 8,
+  "screenWidth":  256,
+  "screenHeight": 256,
+  "tilemapFile": "tilemap_packed.png",
+  "xSprite": [4, 0],
+  "ySprite": [4, 1]
+}

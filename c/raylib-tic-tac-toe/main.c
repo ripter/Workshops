@@ -1,9 +1,28 @@
 #include <stdio.h>
 #include "raylib.h"
+#include "externals/cJSON.h"
+#include "load_json_file.h"
 #include "main.h"
+
+const char* configFilepath = "config.json";
 
 int main(void)
 {
+  cJSON* json = read_json_file(configFilepath);
+  if (json == NULL) {
+    fprintf(stderr, "Failed to read JSON file\n");
+    return 1;
+  }
+
+//     // Example: Accessing data from the JSON
+  cJSON *name = cJSON_GetObjectItem(json, "tilemapFile");
+  if (cJSON_IsString(name) && (name->valuestring != NULL))
+  {
+    printf("Name: %s\n", name->valuestring);
+  }
+  cJSON_Delete(json);
+
+
   // Initialization
   //--------------------------------------------------------------------------------------
   const int screenWidth = 256;
