@@ -3,9 +3,13 @@
 SRC = $(wildcard *.c) $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard externals/*.c) $(wildcard externals/**/*.c)
 EXTERNAL_LIBS = $(shell pkg-config --libs --cflags raylib)
 
+all: dist build
 
 build: $(SRC)
-	cc $(SRC) $(EXTERNAL_LIBS) -o TicTacToe
+	cc $(SRC) $(EXTERNAL_LIBS) -o dist/TicTacToe
+
+dist:
+	mkdir -p dist
 
 clean:
-	rm -f *.o src/**/*.o externals/**/*.o TicTacToe
+	rm -f *.o src/**/*.o externals/**/*.o dist/TicTacToe
