@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "externals/cJSON.h"
+#include "load_json_file.h"
 
 // Function to read a file into a string
 static char* read_file(const char* filename) {
@@ -10,9 +11,8 @@ static char* read_file(const char* filename) {
         return NULL;
     }
 
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
+    // Figure out the number of bytes in the file
+    long length = get_file_length(file);
 
     char* data = (char*)malloc(length + 1);
     if (data == NULL) {
@@ -53,6 +53,29 @@ cJSON* read_json_file(const char* filepath) {
 
     free(json_data);
     return json;
+}
+
+/**
+ * @brief Get the length of a file.
+ * 
+ * @param file 
+ * @return long 
+ */
+long get_file_length(FILE *file) {
+    if (fseek(file, 0, SEEK_END) != 0) {
+        perror("fseek failed");
+        return -1;
+    }
+    long length = ftell(file);
+    if (length == -1L) {
+        perror("ftell failed");
+        return -1;
+    }
+    if (fseek(file, 0, SEEK_SET) != 0) {
+        perror("fseek failed");
+        return -1;
+    }
+    return length;
 }
 
 // // Example usage
