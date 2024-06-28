@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "raylib.h"
 
 #include "externals/cJSON.h"
@@ -7,17 +8,17 @@
 #include "main.h"
 
 const char* configFilepath = "config.json";
+const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
 
 int main(void)
 {
+  // Load the application configuration
   Config config = load_config(configFilepath);
-
-  // const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
-
   // Gameboard state
-  int gameBoard[] = {1, 0, 0, 2, 0, 0, 0, 0, 0};
+  int gameBoard[] = {1, 0, 0, 2, 1, 0, 0, 0, 0};
 
-  // Initialize window before loading textures
+
+  // Initialize window and the OpenGL context
   InitWindow(config.screenWidth, config.screenHeight, config.windowTitle);
 
   // Load our textures
@@ -25,6 +26,7 @@ int main(void)
   const Texture2D texturePacked = LoadTexture(config.tilemapFile);
   const Rectangle framePlayerX = getSpriteRect(config.spriteSize, config.playerXTilemapPos);
   const Rectangle framePlayerY = getSpriteRect(config.spriteSize, config.playerYTilemapPos);
+  const Rectangle frameBar = getSpriteRect(config.spriteSize, (Vector2){2, 7});
 
 
   // Setup a camera to use in the game
@@ -33,6 +35,13 @@ int main(void)
 
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
   //--------------------------------------------------------------------------------------
+
+  EvenlySpacedValues xPositions = generateEvenlySpacedValues(0.0f, config.screenWidth, config.spriteSize.x, 3);
+  EvenlySpacedValues yPositions = generateEvenlySpacedValues(0.0f, config.screenHeight, config.spriteSize.y, 3);
+  if (xPositions.count == 0 || yPositions.count == 0) {
+    printf("Failed to generate evenly spaced values\n");
+    return 1;
+  }
 
   // Main game loop
   while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -46,16 +55,45 @@ int main(void)
     BeginDrawing();
       ClearBackground(RAYWHITE);
       BeginMode2D(camera);
-        for (int idx = 0; idx < 10; idx++) {
-          // Convert the index to x and y coordinates
-          int x = idx % 3;
-          int y = idx / 3;
-          Vector2 pos = {x * config.spriteSize.x, y * config.spriteSize.y};
+        // Draw the grid
+        // for (int x = 0; x <= 3; x++) {
+        //     DrawLineEx((Vector2){ x * config.spriteSize.x, 0 }, (Vector2){ x * config.spriteSize.x, 3 * config.spriteSize.y }, 1, RED);
+        // }
+        // for (int y = 0; y <= 3; y++) {
+        //     DrawLineEx((Vector2){ 0, y * config.spriteSize.y }, (Vector2){ 3 * config.spriteSize.x, y * config.spriteSize.y }, 1, RED);
+        // }
 
-          if (gameBoard[idx] == 1) {
-            DrawTextureRec(texturePacked, framePlayerX, pos, WHITE);
-          } else if (gameBoard[idx] == 2) {
-            DrawTextureRec(texturePacked, framePlayerY, pos, WHITE);
+            // Draw the grid lines
+        for (int x = 1; x < 3; x++) {
+          float posX = x * (config.spriteSize.x + GRID_PADDING) - (GRID_PADDING / 2);
+          DrawLineEx((Vector2){ posX, 0 }, (Vector2){ posX, config.screenHeight }, 1, RED);
+        }
+        for (int y = 1; y < 3; y++) {
+          float posY = y * (config.spriteSize.y + GRID_PADDING) - (GRID_PADDING / 2);
+          DrawLineEx((Vector2){ 0, posY }, (Vector2){ config.screenWidth, posY }, 1, RED);
+        }
+
+        // Draw Tiles
+        for (int x = 0; x < 3; x++) {
+          for (int y = 0; y < 3; y++) {
+            int idx = x + y * 3;
+            TileState tileState = gameBoard[idx];
+            Rectangle destRec = { 
+              (x * config.spriteSize.x) + (x * GRID_PADDING),
+              (y * config.spriteSize.y) + (y * GRID_PADDING),
+              config.spriteSize.x, 
+              config.spriteSize.y 
+            };
+            Rectangle frameTile = {};
+            if (tileState == PLAYER_X) {
+              frameTile = framePlayerX;
+            }
+            else if (tileState == PLAYER_O) {
+              frameTile = framePlayerY;
+            }
+            if (tileState != EMPTY) {
+              DrawTexturePro(texturePacked, frameTile, destRec, (Vector2){0, 0}, 0.0f, WHITE);
+            }
           }
         }
       EndMode2D();
@@ -64,6 +102,8 @@ int main(void)
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
+  free(xPositions.values);
+  free(yPositions.values);
   UnloadTexture(texturePacked);
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------
@@ -83,4 +123,24 @@ Rectangle getSpriteRect(Vector2 spriteSize, Vector2 position) {
   int x = position.x;
   int y = position.y;
   return (Rectangle){x * spriteSize.x, y * spriteSize.y, spriteSize.x, spriteSize.y};
+}
+
+
+EvenlySpacedValues generateEvenlySpacedValues(float start, float end, float size, int count) {
+  EvenlySpacedValues result;
+  result.values = (float*)malloc(count * sizeof(float));
+  if (!result.values) {
+    printf("Memory allocation failed\n");
+    result.count = 0;
+    return result;
+  }
+
+  result.count = count;
+  float step = (end - start - size) / (count - 1);
+
+  for (int i = 0; i < count; i++) {
+    result.values[i] = start + i * step;
+  }
+
+  return result;
 }
