@@ -1,4 +1,5 @@
 {
+  "windowTitle": "TicTacToe in C!",
   "spriteSize": 8,
   "screenWidth":  256,
   "screenHeight": 256,

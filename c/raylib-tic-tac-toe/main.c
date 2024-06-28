@@ -18,7 +18,7 @@ int main(void)
   int gameBoard[] = {1, 0, 0, 2, 0, 0, 0, 0, 0};
 
   // Initialize window before loading textures
-  InitWindow(config.screenWidth, config.screenHeight, "TicTacToe!");
+  InitWindow(config.screenWidth, config.screenHeight, config.windowTitle);
 
   // Load our textures
   // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)

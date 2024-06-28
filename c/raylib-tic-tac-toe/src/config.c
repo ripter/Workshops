@@ -28,6 +28,7 @@ Config load_config(const char* filepath) {
     cJSON* tilemapFile = cJSON_GetObjectItem(json, "tilemapFile");
     cJSON* playerXTilemapPos = cJSON_GetObjectItem(json, "playerXTilemapPos");
     cJSON* playerYTilemapPos = cJSON_GetObjectItem(json, "playerYTilemapPos");
+    cJSON* windowTitle = cJSON_GetObjectItem(json, "windowTitle");
 
     if (cJSON_IsNumber(spriteSize)) {
         config.spriteSize.x = (float)spriteSize->valuedouble;
@@ -45,6 +46,11 @@ Config load_config(const char* filepath) {
     if (cJSON_IsString(tilemapFile) && (tilemapFile->valuestring != NULL)) {
         strncpy(config.tilemapFile, tilemapFile->valuestring, sizeof(config.tilemapFile) - 1);
         config.tilemapFile[sizeof(config.tilemapFile) - 1] = '\0'; // ensure null termination
+    }
+
+    if (cJSON_IsString(windowTitle) && (windowTitle->valuestring != NULL)) {
+        strncpy(config.windowTitle, windowTitle->valuestring, sizeof(config.windowTitle) - 1);
+        config.windowTitle[sizeof(config.windowTitle) - 1] = '\0'; // ensure null termination
     }
 
     if (cJSON_IsArray(playerXTilemapPos) && cJSON_GetArraySize(playerXTilemapPos) == 2) {
