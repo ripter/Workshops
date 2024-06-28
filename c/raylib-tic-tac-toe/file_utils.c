@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "externals/cJSON.h"
-#include "load_json_file.h"
+#include "file_utils.h"
 
 // Function to read a file into a string
 static char* read_file(const char* filename) {

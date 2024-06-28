@@ -3,7 +3,7 @@
 
 #include "config.h"
 #include "externals/cJSON.h"
-#include "load_json_file.h"
+#include "file_utils.h"
 #include "main.h"
 
 const char* configFilepath = "config.json";
