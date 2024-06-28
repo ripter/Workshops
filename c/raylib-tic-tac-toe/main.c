@@ -23,13 +23,8 @@ int main(void)
   // Load our textures
   // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   const Texture2D texturePacked = LoadTexture(config.tilemapFile);
-  // const Texture2D texturePacked = LoadTexture("tilemap_packed.png");
-  // Get the sprites for the player X and player Y
-  // const Rectangle framePlayerX = getSpriteRect(config.spriteSize, 4, 0);
-  const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
-  const Rectangle framePlayerX = {4 * spriteSize.x, 0 * spriteSize.y, spriteSize.x, spriteSize.y};
-  const Rectangle framePlayerY = {4 * spriteSize.x, 1 * spriteSize.y, spriteSize.x, spriteSize.y};
-  // const Rectangle framePlayerY = getSpriteRect(spriteSize, 4, 1);
+  const Rectangle framePlayerX = getSpriteRect(config.spriteSize, 4, 0);
+  const Rectangle framePlayerY = getSpriteRect(config.spriteSize, 4, 1);
 
 
   // Setup a camera to use in the game
@@ -55,9 +50,7 @@ int main(void)
           // Convert the index to x and y coordinates
           int x = idx % 3;
           int y = idx / 3;
-          Vector2 pos = {x * spriteSize.x, y * spriteSize.y};
-          // printf("idx: %d, x: %d, y: %d\n", idx, x, y);
-          // printf("board: %d\n", gameBoard[idx]);
+          Vector2 pos = {x * config.spriteSize.x, y * config.spriteSize.y};
 
           if (gameBoard[idx] == 1) {
             DrawTextureRec(texturePacked, framePlayerX, pos, WHITE);

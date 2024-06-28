@@ -30,9 +30,8 @@ Config load_config(const char* filepath) {
     cJSON* playerYTilemapPos = cJSON_GetObjectItem(json, "playerYTilemapPos");
 
     if (cJSON_IsNumber(spriteSize)) {
-        // config.spriteSize = spriteSize->valueint;
-        config.spriteSize.x = spriteSize->valuedouble;
-        config.spriteSize.x = spriteSize->valuedouble;
+        config.spriteSize.x = (float)spriteSize->valuedouble;
+        config.spriteSize.y = (float)spriteSize->valuedouble;
     }
 
     if (cJSON_IsNumber(screenWidth)) {
