@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "raylib.h"
+
+#include "config.h"
 #include "externals/cJSON.h"
 #include "load_json_file.h"
 #include "main.h"
@@ -8,41 +10,26 @@ const char* configFilepath = "config.json";
 
 int main(void)
 {
-  cJSON* json = read_json_file(configFilepath);
-  if (json == NULL) {
-    fprintf(stderr, "Failed to read JSON file\n");
-    return 1;
-  }
+  Config config = load_config(configFilepath);
 
-//     // Example: Accessing data from the JSON
-  cJSON *name = cJSON_GetObjectItem(json, "tilemapFile");
-  if (cJSON_IsString(name) && (name->valuestring != NULL))
-  {
-    printf("Name: %s\n", name->valuestring);
-  }
-  cJSON_Delete(json);
-
-
-  // Initialization
-  //--------------------------------------------------------------------------------------
-  const int screenWidth = 256;
-  const int screenHeight = 256;
-
-  const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
+  // const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
 
   // Gameboard state
   int gameBoard[] = {1, 0, 0, 2, 0, 0, 0, 0, 0};
 
   // Initialize window before loading textures
-  InitWindow(screenWidth, screenHeight, "TicTacToe!");
+  InitWindow(config.screenWidth, config.screenHeight, "TicTacToe!");
 
   // Load our textures
   // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
-  const Texture2D texturePacked = LoadTexture("tilemap_packed.png");
-
+  const Texture2D texturePacked = LoadTexture(config.tilemapFile);
+  // const Texture2D texturePacked = LoadTexture("tilemap_packed.png");
   // Get the sprites for the player X and player Y
-  const Rectangle framePlayerX = getSpriteRect(spriteSize, 4, 0);
-  const Rectangle framePlayerY = getSpriteRect(spriteSize, 4, 1);
+  // const Rectangle framePlayerX = getSpriteRect(config.spriteSize, 4, 0);
+  const Vector2 spriteSize = {8.0f, 8.0f}; // Size of sprites in pixels
+  const Rectangle framePlayerX = {4 * spriteSize.x, 0 * spriteSize.y, spriteSize.x, spriteSize.y};
+  const Rectangle framePlayerY = {4 * spriteSize.x, 1 * spriteSize.y, spriteSize.x, spriteSize.y};
+  // const Rectangle framePlayerY = getSpriteRect(spriteSize, 4, 1);
 
 
   // Setup a camera to use in the game
@@ -69,6 +56,8 @@ int main(void)
           int x = idx % 3;
           int y = idx / 3;
           Vector2 pos = {x * spriteSize.x, y * spriteSize.y};
+          // printf("idx: %d, x: %d, y: %d\n", idx, x, y);
+          // printf("board: %d\n", gameBoard[idx]);
 
           if (gameBoard[idx] == 1) {
             DrawTextureRec(texturePacked, framePlayerX, pos, WHITE);
