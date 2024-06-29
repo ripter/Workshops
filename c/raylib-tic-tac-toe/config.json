@@ -5,5 +5,5 @@
   "screenHeight": 256,
   "tilemapFile": "tilemap_packed.png",
   "playerXTilemapPos": [4, 5],
-  "playerYTilemapPos": [8, 8]
+  "playerOTilemapPos": [8, 8]
 }

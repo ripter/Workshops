@@ -27,7 +27,7 @@ Config load_config(const char* filepath) {
     cJSON* screenHeight = cJSON_GetObjectItem(json, "screenHeight");
     cJSON* tilemapFile = cJSON_GetObjectItem(json, "tilemapFile");
     cJSON* playerXTilemapPos = cJSON_GetObjectItem(json, "playerXTilemapPos");
-    cJSON* playerYTilemapPos = cJSON_GetObjectItem(json, "playerYTilemapPos");
+    cJSON* playerOTilemapPos = cJSON_GetObjectItem(json, "playerOTilemapPos");
     cJSON* windowTitle = cJSON_GetObjectItem(json, "windowTitle");
 
     if (cJSON_IsNumber(spriteSize)) {
@@ -62,12 +62,12 @@ Config load_config(const char* filepath) {
         }
     }
 
-    if (cJSON_IsArray(playerYTilemapPos) && cJSON_GetArraySize(playerYTilemapPos) == 2) {
-        cJSON *x = cJSON_GetArrayItem(playerYTilemapPos, 0);
-        cJSON *y = cJSON_GetArrayItem(playerYTilemapPos, 1);
+    if (cJSON_IsArray(playerOTilemapPos) && cJSON_GetArraySize(playerOTilemapPos) == 2) {
+        cJSON *x = cJSON_GetArrayItem(playerOTilemapPos, 0);
+        cJSON *y = cJSON_GetArrayItem(playerOTilemapPos, 1);
         if (cJSON_IsNumber(x) && cJSON_IsNumber(y)) {
-            config.playerYTilemapPos.x = (float)x->valuedouble;
-            config.playerYTilemapPos.y = (float)y->valuedouble;
+            config.playerOTilemapPos.x = (float)x->valuedouble;
+            config.playerOTilemapPos.y = (float)y->valuedouble;
         }
     }
 

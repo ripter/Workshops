@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef TTT_SRC_CONFIG_H
+#define TTT_SRC_CONFIG_H
 #include "raylib.h"
 
 typedef struct {
@@ -9,9 +9,9 @@ typedef struct {
     char tilemapFile[256]; // assuming the file name will not exceed 255 characters
     Vector2 spriteSize;
     Vector2 playerXTilemapPos;
-    Vector2 playerYTilemapPos;
+    Vector2 playerOTilemapPos;
 } Config;
 
 Config load_config(const char* filepath);
 
-#endif // CONFIG_H
+#endif // TTT_SRC_CONFIG_H
