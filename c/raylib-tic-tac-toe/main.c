@@ -22,8 +22,6 @@ int main(void)
     EMPTY, PLAYER_X, EMPTY,
     PLAYER_O, EMPTY, EMPTY,
   };
-  int gameBoardWidth = 3;
-  int gameBoardHeight = 3;
 
 
   // Initialize window and the OpenGL context
@@ -90,7 +88,7 @@ int main(void)
     BeginDrawing();
       ClearBackground(RAYWHITE);
       BeginMode2D(camera);
-        drawGameBoard(texturePacked, gameBoard, gameBoardWidth, GRID_PADDING, framePlayerX, framePlayerY);
+        drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING, framePlayerX, framePlayerY);
       EndMode2D();
     EndDrawing();
   }

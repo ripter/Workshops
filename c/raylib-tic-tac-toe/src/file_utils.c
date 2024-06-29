@@ -3,6 +3,8 @@
 #include "../externals/cJSON.h"
 #include "file_utils.h"
 
+// TODO: Use the raylib file utils instead of this custom implementation
+
 // Function to read a file into a string
 static char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
