@@ -32,9 +32,9 @@ int main(void)
   // Load our textures
   // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
   const Texture2D texturePacked = LoadTexture(config.tilemapFile);
-  const Rectangle framePlayerX = getSpriteRect(config.spriteSize.x, config.playerXTilemapPos);
-  const Rectangle framePlayerY = getSpriteRect(config.spriteSize.x, config.playerOTilemapPos);
-  const Rectangle frameBar = getSpriteRect(config.spriteSize.x, (Vector2){1, 7});
+  const Rectangle framePlayerX = getSpriteRect(config.tileSize, config.playerXTilemapPos);
+  const Rectangle framePlayerY = getSpriteRect(config.tileSize, config.playerOTilemapPos);
+  // const Rectangle frameBar = getSpriteRect(config.tileSize, (Vector2){1, 7});
 
 
   // Setup a camera to use in the game

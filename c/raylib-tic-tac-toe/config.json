@@ -1,8 +1,8 @@
 {
   "windowTitle": "TicTacToe in C!",
-  "spriteSize": 8,
   "screenWidth":  256,
   "screenHeight": 256,
+  "tileSize": 8,
   "tilemapFile": "tilemap_packed.png",
   "playerXTilemapPos": [4, 5],
   "playerOTilemapPos": [8, 8]
