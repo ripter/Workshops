@@ -10,7 +10,7 @@
 #include "main.h"
 
 const char* configFilepath = "config.json";
-const int GRID_PADDING = 0; // Padding value for a single side of a grid cell.
+const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
 
 int main(void)
 {
@@ -40,7 +40,6 @@ int main(void)
 
   // Setup a camera to use in the game
   Camera2D camera = { 0 };
-  // camera.zoom = 8.0f; // Render at 8x scale
   camera.zoom = 1.0f; // Render at 1x scale
 
   SetTargetFPS(60); // Set our game to run at 60 frames-per-second
@@ -53,7 +52,6 @@ int main(void)
     // Update State
     if (IsKeyPressed(KEY_ONE)) {
       camera.zoom = 1.0f;
-      // SetMouseScale(1.0f, 1.0f);
     }
     else if (IsKeyPressed(KEY_TWO)) {
       camera.zoom = 2.0f;
@@ -86,7 +84,7 @@ int main(void)
 
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      Vector2 mousePos = GetMousePosition();
+      Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
       int x = (int)(mousePos.x / (config.tileSize + GRID_PADDING));
       int y = (int)(mousePos.y / (config.tileSize + GRID_PADDING));
       int idx = x + (y * 3);
@@ -105,13 +103,13 @@ int main(void)
     // Draw State
     //----------------------------------------------------------------------------------
     BeginDrawing();
-      ClearBackground(RAYWHITE);
+      ClearBackground(BLACK);
       BeginMode2D(camera);
         drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING, framePlayerX, framePlayerY);
       EndMode2D();
 
       snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
-      DrawText(buffer, 0, 0, 8, GRAY);
+      DrawText(buffer, 0, 0, 8, WHITE);
     EndDrawing();
   }
 
