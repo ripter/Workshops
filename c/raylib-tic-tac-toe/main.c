@@ -7,6 +7,7 @@
 #include "src/draw.h"
 #include "src/file_utils.h"
 #include "src/sprite.h"
+#include "src/drawTitleScene.h"
 #include "main.h"
 
 const char* configFilepath = "config.json";
@@ -16,6 +17,7 @@ int main(void)
 {
   // Load the application configuration
   Config config = load_config(configFilepath);
+  Scene currentScene = TITLE;
   // Gameboard state
   TileState gameBoard[] = {
     EMPTY, EMPTY, EMPTY,
@@ -105,16 +107,28 @@ int main(void)
     BeginDrawing();
       ClearBackground(BLACK);
       BeginMode2D(camera);
-        drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING, framePlayerX, framePlayerY);
+      switch (currentScene) {
+        case TITLE: {
+          drawTitleScene(texturePacked, config);
+        } break;
+        case GAMEPLAY: {
+          drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING,
+                        framePlayerX, framePlayerY);
+          snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
+          DrawText(buffer, 0, 0, 8, WHITE);
+        } break;
+        default: {
+          snprintf(buffer, sizeof(buffer), "Invalid Scene: %d", currentScene);
+          DrawText(buffer, 0, 0, 8, WHITE);
+        } break;
+      }
       EndMode2D();
-
-      snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
-      DrawText(buffer, 0, 0, 8, WHITE);
     EndDrawing();
   }
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
+  free_config(config); // Free the configuration memory
   UnloadTexture(texturePacked);
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------

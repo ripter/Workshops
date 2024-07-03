@@ -5,5 +5,22 @@
   "tileSize": 8,
   "tilemapFile": "tilemap_packed.png",
   "playerXTilemapPos": [4, 5],
-  "playerOTilemapPos": [8, 8]
+  "playerOTilemapPos": [8, 8],
+  "sprites": [
+    {
+      "id": 1, 
+      "pos": [4, 5],
+      "rotation": 0
+    },
+    {
+      "id": 2, 
+      "pos": [8, 8],
+      "rotation": 0
+    }, 
+    {
+      "id": 3,
+      "pos": [0, 7],
+      "rotation": 0
+    }
+  ]
 }

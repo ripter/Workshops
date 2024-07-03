@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
 #include "../externals/cJSON.h"
+#include "config.h"
 #include "file_utils.h"
+#include "sprite.h"
 
 
 
@@ -29,17 +30,27 @@ Config load_config(const char *filepath) {
   cJSON *playerXTilemapPos = cJSON_GetObjectItem(json, "playerXTilemapPos");
   cJSON *playerOTilemapPos = cJSON_GetObjectItem(json, "playerOTilemapPos");
   cJSON *windowTitle = cJSON_GetObjectItem(json, "windowTitle");
+  cJSON *sprites = cJSON_GetObjectItem(json, "sprites");
 
   if (cJSON_IsNumber(tileSize)) {
     config.tileSize = (int)tileSize->valueint;
+  } else {
+    fprintf(stderr, "Failed to read tile size from JSON\n");
+    exit(1);
   }
 
   if (cJSON_IsNumber(screenWidth)) {
     config.screenWidth = screenWidth->valueint;
+  } else {
+    fprintf(stderr, "Failed to read screen width from JSON\n");
+    exit(1);
   }
 
   if (cJSON_IsNumber(screenHeight)) {
     config.screenHeight = screenHeight->valueint;
+  } else {
+    fprintf(stderr, "Failed to read screen height from JSON\n");
+    exit(1);
   }
 
   if (cJSON_IsString(tilemapFile) && (tilemapFile->valuestring != NULL)) {
@@ -47,6 +58,9 @@ Config load_config(const char *filepath) {
             sizeof(config.tilemapFile) - 1);
     config.tilemapFile[sizeof(config.tilemapFile) - 1] =
         '\0'; // ensure null termination
+  } else {
+    fprintf(stderr, "Failed to read tilemap file name from JSON\n");
+    exit(1);
   }
 
   if (cJSON_IsString(windowTitle) && (windowTitle->valuestring != NULL)) {
@@ -76,6 +90,57 @@ Config load_config(const char *filepath) {
     }
   }
 
+  // Load all the sprites
+  if (cJSON_IsArray(sprites)) {
+    // Allocate memory for the sprites
+    int numSprites = cJSON_GetArraySize(sprites);
+    config.sprites = (Sprite *)malloc(numSprites * sizeof(Sprite));
+    if (config.sprites == NULL) {
+      fprintf(stderr, "Failed to allocate %zu bytes of memory for sprites\n", (numSprites * sizeof(Sprite)));
+      exit(1); 
+    }
+
+    // Save the sprite count. C doesn't do this for us.
+    config.numberOfSprites = numSprites;
+
+    // Load each sprite
+    for (int i = 0; i < numSprites; i++) {
+      cJSON *sprite = cJSON_GetArrayItem(sprites, i);
+      cJSON *id = cJSON_GetObjectItem(sprite, "id");
+      cJSON *pos = cJSON_GetObjectItem(sprite, "pos");
+      cJSON *rotation = cJSON_GetObjectItem(sprite, "rotation");
+
+      if (cJSON_IsNumber(id) && cJSON_IsArray(pos) &&
+          cJSON_GetArraySize(pos) == 2 && cJSON_IsNumber(rotation)) {
+
+        config.sprites[i].id = id->valueint;
+        cJSON *x = cJSON_GetArrayItem(pos, 0);
+        cJSON *y = cJSON_GetArrayItem(pos, 1);
+        if (cJSON_IsNumber(x) && cJSON_IsNumber(y)) {
+          config.sprites[i].rect.x = (float)x->valuedouble;
+          config.sprites[i].rect.y = (float)y->valuedouble;
+          config.sprites[i].rect.width = (float)config.tileSize;
+          config.sprites[i].rect.height = (float)config.tileSize;
+        }
+        if (cJSON_IsNumber(rotation)) {
+          config.sprites[i].rotation = rotation->valueint;
+        }
+
+        printf("\nSprite %d: %d\n", i, id->valueint);
+        printf("pos: %f, %f\n", (float)x->valuedouble, (float)y->valuedouble);
+        printf("\n");
+      } else {
+        fprintf(stderr, "Failed to read sprite %d from JSON\n", i);
+        exit(1);
+      }
+    }
+  }
+
   cJSON_Delete(json);
   return config;
+}
+
+
+void free_config(Config config) {
+  free(config.sprites);
 }
