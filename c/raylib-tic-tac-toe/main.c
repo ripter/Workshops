@@ -37,7 +37,6 @@ int main(void)
   const Texture2D texturePacked = LoadTexture(config.tilemapFile);
   const Rectangle framePlayerX = getSpriteRect(config.tileSize, config.playerXTilemapPos);
   const Rectangle framePlayerY = getSpriteRect(config.tileSize, config.playerOTilemapPos);
-  // const Rectangle frameBar = getSpriteRect(config.tileSize, (Vector2){1, 7});
 
 
   // Setup a camera to use in the game

@@ -1,7 +1,7 @@
 {
   "windowTitle": "TicTacToe in C!",
-  "screenWidth":  256,
-  "screenHeight": 256,
+  "screenWidth":  320,
+  "screenHeight": 320,
   "tileSize": 8,
   "tilemapFile": "tilemap_packed.png",
   "playerXTilemapPos": [4, 5],
@@ -19,8 +19,63 @@
     }, 
     {
       "id": 3,
+      "name": "orange horz line",
+      "pos": [1, 7],
+      "rotation": 0
+    }, 
+    {
+      "id": 4,
+      "name": "orange vert line",
+      "pos": [1, 7],
+      "rotation": 90
+    }, 
+    {
+      "id": 5,
+      "name": "orange circle end right",
       "pos": [0, 7],
       "rotation": 0
+    }, 
+    {
+      "id": 6,
+      "name": "orange circle end left",
+      "pos": [0, 7],
+      "rotation": 0
+    }, 
+    {
+      "id": 7,
+      "name": "orange circle end up",
+      "pos": [0, 7],
+      "rotation": 180 
+    }, 
+    {
+      "id": 8,
+      "name": "orange circle end down",
+      "pos": [0, 7],
+      "rotation": 270 
+    }, 
+    {
+      "id": 9,
+      "name": "orange big arrow right",
+      "pos": [3, 7],
+      "rotation": 0
+    },
+    {
+      "id": 10,
+      "name": "orange big arrow left",
+      "pos": [3, 7],
+      "rotation": 180
+    },
+    {
+      "id": 11,
+      "name": "orange big arrow up",
+      "pos": [3, 7],
+      "rotation": 90
+    },
+    {
+      "id": 12,
+      "name": "orange big arrow down",
+      "pos": [3, 7],
+      "rotation": 270
     }
   ]
 }

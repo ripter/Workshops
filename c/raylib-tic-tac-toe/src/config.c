@@ -117,18 +117,14 @@ Config load_config(const char *filepath) {
         cJSON *x = cJSON_GetArrayItem(pos, 0);
         cJSON *y = cJSON_GetArrayItem(pos, 1);
         if (cJSON_IsNumber(x) && cJSON_IsNumber(y)) {
-          config.sprites[i].rect.x = (float)x->valuedouble;
-          config.sprites[i].rect.y = (float)y->valuedouble;
+          config.sprites[i].rect.x = (float)x->valuedouble * (float)config.tileSize;
+          config.sprites[i].rect.y = (float)y->valuedouble * (float)config.tileSize;
           config.sprites[i].rect.width = (float)config.tileSize;
           config.sprites[i].rect.height = (float)config.tileSize;
         }
         if (cJSON_IsNumber(rotation)) {
           config.sprites[i].rotation = rotation->valueint;
         }
-
-        printf("\nSprite %d: %d\n", i, id->valueint);
-        printf("pos: %f, %f\n", (float)x->valuedouble, (float)y->valuedouble);
-        printf("\n");
       } else {
         fprintf(stderr, "Failed to read sprite %d from JSON\n", i);
         exit(1);
