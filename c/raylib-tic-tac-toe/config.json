@@ -76,6 +76,84 @@
       "name": "orange big arrow down",
       "pos": [3, 7],
       "rotation": 270
+    },
+    {
+      "id": 13,
+      "name": "orange small arrow right",
+      "pos": [2, 7],
+      "rotation": 0
+    },
+    {
+      "id": 14,
+      "name": "orange small arrow left",
+      "pos": [2, 7],
+      "rotation": 180
+    },
+    {
+      "id": 15,
+      "name": "orange small arrow up",
+      "pos": [2, 7],
+      "rotation": 90
+    },
+    {
+      "id": 16,
+      "name": "orange small arrow down",
+      "pos": [2, 7],
+      "rotation": 270
+    },
+    {
+      "id": 17,
+      "name": "lake edge top left",
+      "pos": [11, 7],
+      "rotation": 0
+    },
+    {
+      "id": 18,
+      "name": "lake edge top",
+      "pos": [12, 7],
+      "rotation": 0
+    },
+    {
+      "id": 19,
+      "name": "lake edge top right",
+      "pos": [13, 7],
+      "rotation": 0
+    },
+    {
+      "id": 20,
+      "name": "lake edge left",
+      "pos": [11, 8],
+      "rotation": 0
+    },
+    {
+      "id": 21,
+      "name": "lake center",
+      "pos": [12, 8],
+      "rotation": 0
+    },
+    {
+      "id": 22,
+      "name": "lake edge right",
+      "pos": [13, 8],
+      "rotation": 0
+    },
+    {
+      "id": 23,
+      "name": "lake edge bottom left",
+      "pos": [11, 9],
+      "rotation": 0
+    },
+    {
+      "id": 24,
+      "name": "lake edge bottom",
+      "pos": [12, 9],
+      "rotation": 0
+    },
+    {
+      "id": 25,
+      "name": "lake edge bottom right",
+      "pos": [13, 9],
+      "rotation": 0
     }
   ]
 }

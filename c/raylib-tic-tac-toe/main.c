@@ -38,6 +38,9 @@ int main(void)
   const Rectangle framePlayerX = getSpriteRect(config.tileSize, config.playerXTilemapPos);
   const Rectangle framePlayerY = getSpriteRect(config.tileSize, config.playerOTilemapPos);
 
+  // Load fonts
+  Font titleFont = LoadFont("fonts/Poppins/Poppins-Bold.ttf");
+
 
   // Setup a camera to use in the game
   Camera2D camera = { 0 };
@@ -108,7 +111,7 @@ int main(void)
       BeginMode2D(camera);
       switch (currentScene) {
         case TITLE: {
-          drawTitleScene(texturePacked, config);
+          drawTitleScene(texturePacked, config, titleFont);
         } break;
         case GAMEPLAY: {
           drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING,
@@ -128,6 +131,7 @@ int main(void)
   // De-Initialization
   //--------------------------------------------------------------------------------------
   free_config(config); // Free the configuration memory
+  UnloadFont(titleFont);
   UnloadTexture(texturePacked);
   CloseWindow(); // Close window and OpenGL context
   //--------------------------------------------------------------------------------------
