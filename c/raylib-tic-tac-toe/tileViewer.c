@@ -6,6 +6,7 @@
 #include "src/draw.h"
 
 const char* configFilepath = "./config.json";
+const int fontSize = 12;
 
 int main(int argc, char* argv[]) {
   // Load the application configuration
@@ -17,13 +18,16 @@ int main(int argc, char* argv[]) {
 
   // Camera
   Camera2D camera = { 0 };
-  camera.zoom = 1.0f; // Render at 1x scale
+  camera.zoom = 10.0f; // Render at 1x scale
   camera.target = (Vector2){config.screenWidth / 2.0f, config.screenHeight / 2.0f};
   camera.offset = (Vector2){config.screenWidth / 2.0f, config.screenHeight / 2.0f};
   char zoomText[256] = {0}; // Buffer to hold on-screen text
 
+  int xCenter = (config.screenWidth / 2) - (config.tileSize / 2);
+  int yCenter = (config.screenHeight / 2) - (config.tileSize / 2);
+
   int spriteId = 1;
-  float lastZoom = camera.zoom;
+  char spriteIdText[256] = {0};
 
   SetTargetFPS(60); 
   // Main game loop
@@ -31,16 +35,23 @@ int main(int argc, char* argv[]) {
     // Update State
     //----------------------------------------------------------------------------------
     camera.zoom = getCameraZoom(camera.zoom);
-    // Update the zoom text
-    snprintf(zoomText, sizeof(zoomText), "Press [1-0] to set camera zoom. (Zoom: %.2f)", camera.zoom);
 
-    int xCenter = (config.screenWidth / 2) - (config.tileSize / 2);
-    int yCenter = (config.screenHeight / 2) - (config.tileSize / 2);
-
-    if (lastZoom != camera.zoom){
-      printf("x: %d, y: %d\ttileSize: %d, zoom: %f\n", xCenter, yCenter, config.tileSize, camera.zoom);
-      lastZoom = camera.zoom;
+    if (IsKeyPressed(KEY_UP)) {
+      spriteId++;
+    } else if (IsKeyPressed(KEY_DOWN)) {
+      spriteId--;
     }
+
+    if (spriteId > config.numberOfSprites) {
+      spriteId = 1;
+    } else if (spriteId < 1) {
+      spriteId = config.numberOfSprites;
+    }
+
+    // Update Label Text
+    snprintf(zoomText, sizeof(zoomText), "[1-0, -, +] to set camera zoom. (Zoom: %.2f)", camera.zoom);
+    snprintf(spriteIdText, sizeof(spriteIdText), "[up, down] to set Sprite ID. (Currend: %d)", spriteId);
+
 
     // Draw State
     //----------------------------------------------------------------------------------
@@ -49,11 +60,14 @@ int main(int argc, char* argv[]) {
       ClearBackground(BLACK);
       BeginMode2D(camera);
       {
-        drawSprite(texturePacked, config, (Vector2){xCenter, yCenter}, config.tileSize, 1);
+        drawSprite(texturePacked, config, (Vector2){xCenter, yCenter}, config.tileSize, spriteId);
       }
       EndMode2D();
+
       // Draw Text on top of everything else.
-      DrawText(zoomText, 10, 10, 10, GRAY);
+      DrawText(zoomText, fontSize, config.screenHeight - (fontSize * 1), fontSize, RAYWHITE);
+      DrawText(spriteIdText, fontSize, config.screenHeight - (fontSize * 2), fontSize, RAYWHITE);
+
     }
     EndDrawing();
   }
