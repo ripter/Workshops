@@ -37,19 +37,19 @@
     }, 
     {
       "id": 6,
-      "name": "orange circle end left",
+      "name": "orange circle end down",
       "pos": [0, 7],
-      "rotation": 0
+      "rotation": 90
     }, 
     {
       "id": 7,
-      "name": "orange circle end up",
+      "name": "orange circle end left",
       "pos": [0, 7],
       "rotation": 180 
     }, 
     {
       "id": 8,
-      "name": "orange circle end down",
+      "name": "orange circle end up",
       "pos": [0, 7],
       "rotation": 270 
     }, 
@@ -67,38 +67,38 @@
     },
     {
       "id": 11,
-      "name": "orange big arrow up",
+      "name": "orange big arrow down",
       "pos": [3, 7],
       "rotation": 90
     },
     {
       "id": 12,
-      "name": "orange big arrow down",
+      "name": "orange big arrow up",
       "pos": [3, 7],
       "rotation": 270
     },
     {
       "id": 13,
       "name": "orange small arrow right",
-      "pos": [2, 7],
+      "pos": [3, 6],
       "rotation": 0
     },
     {
       "id": 14,
       "name": "orange small arrow left",
-      "pos": [2, 7],
+      "pos": [3, 6],
       "rotation": 180
     },
     {
       "id": 15,
-      "name": "orange small arrow up",
-      "pos": [2, 7],
+      "name": "orange small arrow down",
+      "pos": [3, 6],
       "rotation": 90
     },
     {
       "id": 16,
-      "name": "orange small arrow down",
-      "pos": [2, 7],
+      "name": "orange small arrow up",
+      "pos": [3, 6],
       "rotation": 270
     },
     {

@@ -23,8 +23,8 @@ int main(int argc, char* argv[]) {
   camera.offset = (Vector2){config.screenWidth / 2.0f, config.screenHeight / 2.0f};
   char zoomText[256] = {0}; // Buffer to hold on-screen text
 
-  int xCenter = (config.screenWidth / 2) - (config.tileSize / 2);
-  int yCenter = (config.screenHeight / 2) - (config.tileSize / 2);
+  int xCenter = (config.screenWidth / 2);
+  int yCenter = (config.screenHeight / 2);
 
   int spriteId = 1;
   char spriteIdText[256] = {0};
