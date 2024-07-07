@@ -29,3 +29,20 @@ void drawGameBoard(Texture2D texture, TileState gameboard[9], int gridSize, int 
   }
 }
 
+// Draws a single sprite at the given position.
+// Position is the top-left corner of the sprite.
+void drawSprite(Texture2D texture, Config config, Vector2 position,
+                int tileSize, int spriteId) {
+
+  if (spriteId == 0) {
+    return;
+  }
+  const int x = position.x;
+  const int y = position.y;
+
+  Sprite *sprite = getSpriteById(config, spriteId);
+  Rectangle destRec = {x, y, tileSize, tileSize};
+
+  DrawTexturePro(texture, sprite->rect, destRec, (Vector2){0.5, 0.5},
+                 sprite->rotation, WHITE);
+}
