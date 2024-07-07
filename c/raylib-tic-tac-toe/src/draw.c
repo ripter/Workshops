@@ -42,7 +42,8 @@ void drawSprite(Texture2D texture, Config config, Vector2 position,
 
   Sprite *sprite = getSpriteById(config, spriteId);
   Rectangle destRec = {x, y, tileSize, tileSize};
+  Vector2 origin = {sprite->rect.width / 2, sprite->rect.height / 2};
 
-  DrawTexturePro(texture, sprite->rect, destRec, (Vector2){0.5, 0.5},
-                 sprite->rotation, WHITE);
+  DrawTexturePro(texture, sprite->rect, destRec, origin, sprite->rotation,
+                 WHITE);
 }
