@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "raylib.h"
 
@@ -23,12 +24,25 @@ int background[] = {
 };
 
 
-SceneTitle UpdateTitleScene(SceneTitle state) { 
+SceneTitle UpdateTitleScene(SceneTitle state, Config config) { 
   int choice = state.ActiveChoice;
+
+  // Mouse click any item to activate it
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    Vector2 mouse = GetMousePosition();
+    if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config.screenHeight - (backgroundSize * 3), backgroundSize * 4, backgroundSize})) {
+      choice = 0;
+    } else if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config.screenHeight - (backgroundSize * 2), backgroundSize * 4, backgroundSize})) {
+      choice = 1;
+    } else if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config.screenHeight - (backgroundSize * 1), backgroundSize * 4, backgroundSize})) {
+      choice = 2;
+    }
+    printf("Mouse Choice: %d\n", choice);
+  }
 
   // Enter/Space to select the menu item
   if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
-    if (choice == 0) {
+    if (choice == TITLE_CHOICE_QUIT) {
       CloseWindow(); 
     }
   }

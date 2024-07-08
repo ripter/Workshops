@@ -20,7 +20,7 @@ int main(void)
   Config config = load_config(configFilepath);
   Scene currentScene = TITLE;
 
-  SceneTitle titleState = {2};
+  SceneTitle titleState = { TITLE_CHOICE_PLAY };
 
   // Gameboard state
   TileState gameBoard[] = {
@@ -61,7 +61,7 @@ int main(void)
     camera.zoom = getCameraZoom(camera.zoom);
 
     if (currentScene == TITLE) {
-      titleState = UpdateTitleScene(titleState);
+      titleState = UpdateTitleScene(titleState, config);
     }
     // Mouse Clicks on Gameboard
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
