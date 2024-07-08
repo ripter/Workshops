@@ -3,13 +3,13 @@
 #include "raylib.h"
 
 #include "externals/cJSON.h"
+#include "main.h"
 #include "src/camera.h"
 #include "src/config.h"
 #include "src/draw.h"
-#include "src/drawTitleScene.h"
 #include "src/file_utils.h"
+#include "src/SceneTitle.h"
 #include "src/sprite.h"
-#include "main.h"
 
 const char* configFilepath = "config.json";
 const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
@@ -19,6 +19,9 @@ int main(void)
   // Load the application configuration
   Config config = load_config(configFilepath);
   Scene currentScene = TITLE;
+
+  SceneTitle titleState = {0};
+
   // Gameboard state
   TileState gameBoard[] = {
     EMPTY, EMPTY, EMPTY,
@@ -57,7 +60,10 @@ int main(void)
     //--------------------------------------------------------------------------------------
     camera.zoom = getCameraZoom(camera.zoom);
 
-
+    if (currentScene == TITLE) {
+      titleState = UpdateTitleScene(titleState);
+    }
+    // Mouse Clicks on Gameboard
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
       int x = (int)(mousePos.x / (config.tileSize + GRID_PADDING));
@@ -82,7 +88,7 @@ int main(void)
       BeginMode2D(camera);
       switch (currentScene) {
         case TITLE: {
-          drawTitleScene(texturePacked, config, titleFont);
+          DrawTitleScene(titleState, texturePacked, config, titleFont);
         } break;
         case GAMEPLAY: {
           drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING,

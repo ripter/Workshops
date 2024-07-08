@@ -4,6 +4,7 @@
 
 #include "../main.h"
 #include "config.h"
+#include "SceneTitle.h"
 
 void drawGameBoard(Texture2D texture, TileState gameboard[9], int gridSize, int padding, Rectangle framePlayerX, Rectangle framePlayerO);
 
