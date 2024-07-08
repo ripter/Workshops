@@ -23,40 +23,47 @@ int background[] = {
 
 
 SceneTitle UpdateTitleScene(SceneTitle state) { 
+  int choice = state.ActiveChoice;
   // Arrow keys to navigate the menu
   if (IsKeyPressed(KEY_UP)) {
-    state.ActiveChoice -= 1;
+    choice += 1;
   } else if (IsKeyPressed(KEY_DOWN)) {
-    state.ActiveChoice += 1;
+    choice -= 1;
   }
 
+  // Bounds check the active choice
+  if (choice < 0) {
+    choice = 2;
+  } else if (choice > 2) {
+    choice = 0;
+  }
+  
+  state.ActiveChoice = choice;
   return state;
 }
 
 
 // TODO: Reactor so Font is not required.
-void DrawTitleScene(SceneTitle state, Texture2D texture, Config config,
-                    Font font) {
+void DrawTitleScene(SceneTitle state, Texture2D texture, Config config, Font font) {
 
   for (int x = 0; x < backgroundWidth; x++) {
     for (int y = 0; y < backgroundHeight; y++) {
       int idx = x + (y * backgroundWidth);
       int spriteId = background[idx];
 
-      drawSprite(texture, config,
+      DrawSprite(texture, config,
                  (Vector2){x * backgroundSize, y * backgroundSize},
                  backgroundSize, spriteId);
     }
   }
 
   // Get the Y position of the selected menu item.
-  int activeY =
-      config.screenHeight - (backgroundSize * (state.ActiveChoice + 2));
+  int activeY = config.screenHeight - (backgroundSize * (state.ActiveChoice+1));
 
   // Draw special tiles for the selected menu item.
-  drawSprite(texture, config, (Vector2){backgroundSize * 1, activeY},
+  DrawSprite(texture, config, (Vector2){backgroundSize * 1, activeY},
              backgroundSize, 5);
-  drawSprite(texture, config, (Vector2){backgroundSize * 8, activeY},
+  DrawSprite(texture, config, (Vector2){backgroundSize * 8, activeY},
              backgroundSize, 9);
 
   // Draw the labels over the background.
@@ -70,10 +77,12 @@ void DrawTitleScene(SceneTitle state, Texture2D texture, Config config,
              (Vector2){(backgroundSize * 4) + 8, (backgroundSize * 2) + 24},
              backgroundSize * 2, 8, WHITE);
 
+  DrawText("Play", (backgroundSize * 3) + 3,
+           config.screenHeight - (backgroundSize * 3) - 3, backgroundSize, RED);
   DrawText("Play", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 4), backgroundSize, WHITE);
+           config.screenHeight - (backgroundSize * 3) - 5, backgroundSize, WHITE);
   DrawText("Config", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 3), backgroundSize, MAGENTA);
+           config.screenHeight - (backgroundSize * 2) - 5, backgroundSize, WHITE);
   DrawText("Quit", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 2), backgroundSize, WHITE);
+           config.screenHeight - (backgroundSize * 1) - 5, backgroundSize, WHITE);
 }

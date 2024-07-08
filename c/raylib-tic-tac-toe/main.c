@@ -20,7 +20,7 @@ int main(void)
   Config config = load_config(configFilepath);
   Scene currentScene = TITLE;
 
-  SceneTitle titleState = {0};
+  SceneTitle titleState = {2};
 
   // Gameboard state
   TileState gameBoard[] = {

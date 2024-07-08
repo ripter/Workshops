@@ -5,6 +5,6 @@
 Rectangle getSpriteRect(int spriteSize, Vector2 position);
 Sprite* getSpriteById(Config config, int id);
 
-void drawSprite(Texture2D texture, Config config, Vector2 position, int tileSize, int spriteId); 
+void DrawSprite(Texture2D texture, Config config, Vector2 position, int tileSize, int spriteId); 
 
 #endif // TTT_SRC_SPRITE_H

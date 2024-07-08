@@ -31,7 +31,7 @@ Sprite* getSpriteById(Config config, int id) {
 
 // Draws a single sprite at the given position.
 // Position is the top-left corner of the sprite.
-void drawSprite(Texture2D texture, Config config, Vector2 position,
+void DrawSprite(Texture2D texture, Config config, Vector2 position,
                 int tileSize, int spriteId) {
 
   if (spriteId == 0) {

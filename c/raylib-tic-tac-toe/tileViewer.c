@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
       ClearBackground(BLACK);
       BeginMode2D(camera);
       {
-        drawSprite(texturePacked, config, (Vector2){xCenter, yCenter}, config.tileSize, spriteId);
+        DrawSprite(texturePacked, config, (Vector2){xCenter, yCenter}, config.tileSize, spriteId);
       }
       EndMode2D();
 
