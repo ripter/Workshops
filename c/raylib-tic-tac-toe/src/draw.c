@@ -28,3 +28,8 @@ void drawGameBoard(Texture2D texture, TileState gameboard[9], int gridSize, int 
     }
   }
 }
+
+void DrawTextShadowed(const char* text, int x, int y, int fontSize, Color fg, Color bg) {
+  DrawText(text, x + 3, y + 3, fontSize, bg);
+  DrawText(text, x, y, fontSize, fg);
+}

@@ -3,6 +3,7 @@
 
 #include  "SceneTitle.h"
 #include "sprite.h"
+#include "draw.h"
 
 
 int backgroundSize = 32;
@@ -77,12 +78,20 @@ void DrawTitleScene(SceneTitle state, Texture2D texture, Config config, Font fon
              (Vector2){(backgroundSize * 4) + 8, (backgroundSize * 2) + 24},
              backgroundSize * 2, 8, WHITE);
 
-  DrawText("Play", (backgroundSize * 3) + 3,
-           config.screenHeight - (backgroundSize * 3) - 3, backgroundSize, RED);
-  DrawText("Play", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 3) - 5, backgroundSize, WHITE);
-  DrawText("Config", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 2) - 5, backgroundSize, WHITE);
-  DrawText("Quit", backgroundSize * 3,
-           config.screenHeight - (backgroundSize * 1) - 5, backgroundSize, WHITE);
+
+  DrawTextShadowed("Play", 
+                   backgroundSize * 3,
+                   config.screenHeight - (backgroundSize * 3) - 5, 
+                   backgroundSize, 
+                   WHITE, BLACK);
+  DrawTextShadowed("Config", 
+                   backgroundSize * 3,
+                   config.screenHeight - (backgroundSize * 2) - 5, 
+                   backgroundSize, 
+                   WHITE, BLACK);
+  DrawTextShadowed("Quit", 
+                   backgroundSize * 3,
+                   config.screenHeight - (backgroundSize * 1) - 5, 
+                   backgroundSize, 
+                   WHITE, BLACK);
 }
