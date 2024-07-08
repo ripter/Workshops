@@ -1,8 +1,0 @@
-#ifndef TTT_SRC_DRAW_TITLE_SCENE_H
-#define TTT_SRC_DRAW_TITLE_SCENE_H
-#include "config.h"
-#include "SceneTitle.h"
-
-// void drawTitleScene(SceneTitle state, Texture2D texture, Config config, Font font); 
-
-#endif // TTT_SRC_DRAW_TITLE_SCENE_H

@@ -2,7 +2,7 @@
 #include "raylib.h"
 
 #include  "SceneTitle.h"
-#include "draw.h"
+#include "sprite.h"
 
 
 int backgroundSize = 32;

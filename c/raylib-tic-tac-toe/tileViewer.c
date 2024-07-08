@@ -3,7 +3,7 @@
 
 #include "src/config.h"
 #include "src/camera.h"
-#include "src/draw.h"
+#include "src/sprite.h"
 
 const char* configFilepath = "./config.json";
 const int fontSize = 12;
