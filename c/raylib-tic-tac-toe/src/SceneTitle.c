@@ -25,6 +25,15 @@ int background[] = {
 
 SceneTitle UpdateTitleScene(SceneTitle state) { 
   int choice = state.ActiveChoice;
+
+  // Enter/Space to select the menu item
+  if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+    if (choice == 0) {
+      CloseWindow(); 
+    }
+  }
+
+
   // Arrow keys to navigate the menu
   if (IsKeyPressed(KEY_UP)) {
     choice += 1;
