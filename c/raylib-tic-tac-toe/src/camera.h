@@ -1,9 +1,14 @@
-#ifndef TTT_SRC_CAMERA_H
-#define TTT_SRC_CAMERA_H
+#pragma once
 
-#define CAMERA_ZOOM_MIN 1.0f
-#define CAMERA_ZOOM_MAX 30.0f
+#include "raylib.h"
 
-float getCameraZoom(float currentZoom);
+// Define the minimum and maximum zoom levels for the camera.
+static const float CameraZoomMin = 1.0f;
+static const float CameraZoomMax = 30.0f;
 
-#endif // TTT_SRC_CAMERA_H
+// Macros for minimum and maximum
+#define MIN(a, b) (((a) <= (b)) ? (a) : (b))
+#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
+
+// Updates the camera zoom level based on user input.
+void UpdateCameraZoom(Camera2D *camera);

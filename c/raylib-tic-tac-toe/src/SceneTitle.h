@@ -1,5 +1,4 @@
-#ifndef TTT_SRC_SCENE_TITLE_H
-#define TTT_SRC_SCENE_TITLE_H
+#pragma once
 
 #include "raylib.h"
 #include "config.h"
@@ -16,5 +15,3 @@ typedef struct {
 
 void UpdateTitleScene(SceneTitle *state, const Config *config);
 void DrawTitleScene(const SceneTitle *state, Texture2D texture, const Config *config, Font font);
-
-#endif // TTT_SRC_SCENE_TITLE_H

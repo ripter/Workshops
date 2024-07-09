@@ -1,7 +1,5 @@
-#ifndef TTT_SRC_TYPES_H
-#define TTT_SRC_TYPES_H
+#pragma once
 #include "raylib.h"
-
 
 // Represents a sprite in the game.
 // id: the id of the sprite.
@@ -25,5 +23,3 @@ typedef struct {
     Sprite *sprites;            // Array of sprites
     int numberOfSprites;        // Number of sprites
 } Config;
-
-#endif // TTT_SRC_TYPES_H

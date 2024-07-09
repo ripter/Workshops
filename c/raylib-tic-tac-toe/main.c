@@ -2,13 +2,11 @@
 #include <stdlib.h>
 #include "raylib.h"
 
-#include "externals/cJSON.h"
 #include "main.h"
-#include "src/camera.h"
+#include "src/Camera.h"
 #include "src/config.h"
 #include "src/draw.h"
 #include "src/SceneTitle.h"
-#include "src/sprite.h"
 
 const char* configFilepath = "config.json";
 const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
@@ -63,7 +61,7 @@ int main(void)
   {
     // Update State
     //--------------------------------------------------------------------------------------
-    camera.zoom = getCameraZoom(camera.zoom);
+    UpdateCameraZoom(&camera);
 
     if (currentScene == TITLE) {
       UpdateTitleScene(titleState, config);
