@@ -14,4 +14,4 @@ typedef struct {
 } SceneTitle;
 
 void UpdateTitleScene(SceneTitle *state, const Config *config);
-void DrawTitleScene(const SceneTitle *state, Texture2D texture, const Config *config, Font font);
+void DrawTitleScene(const SceneTitle *state, const Config *config, Texture2D texture, Font font);

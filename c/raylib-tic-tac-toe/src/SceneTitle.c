@@ -81,7 +81,7 @@ void UpdateTitleScene(SceneTitle *state, const Config *config) {
 }
 
 // TODO: Refactor so Font is not required.
-void DrawTitleScene(const SceneTitle *state, Texture2D texture, const Config *config, Font font) {
+void DrawTitleScene(const SceneTitle *state, const Config *config, Texture2D texture, Font font) {
     for (int x = 0; x < backgroundWidth; x++) {
         for (int y = 0; y < backgroundHeight; y++) {
             int idx = x + (y * backgroundWidth);

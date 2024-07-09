@@ -4,9 +4,10 @@
 
 #include "main.h"
 #include "src/Camera.h"
-#include "src/config.h"
+#include "src/Config.h"
 #include "src/draw.h"
 #include "src/SceneTitle.h"
+#include "src/SceneGameplay.h"
 
 const char* configFilepath = "config.json";
 const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
@@ -38,9 +39,11 @@ int main(void)
 
   // Initialize State
   // --------------------------------------------------------------------------------------
-  // SceneTitle titleState = { TitleChoicePlay };
   SceneTitle *titleState = (SceneTitle *)malloc(sizeof(SceneTitle));
   titleState->ActiveChoice = TitleChoicePlay;
+
+  GameplayScene *gameplayState = (GameplayScene *)malloc(sizeof(GameplayScene)); 
+
 
   // Gameboard state
   TileState gameBoard[] = {
@@ -67,22 +70,25 @@ int main(void)
     if (currentScene == TITLE) {
       UpdateTitleScene(titleState, config);
     }
-    // Mouse Clicks on Gameboard
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-      Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
-      int x = (int)(mousePos.x / (config->tileSize + GRID_PADDING));
-      int y = (int)(mousePos.y / (config->tileSize + GRID_PADDING));
-      int idx = x + (y * 3);
-      if (gameBoard[idx] == EMPTY) {
-        gameBoard[idx] = PLAYER_X;
-      }
-      else if (gameBoard[idx] == PLAYER_X) {
-        gameBoard[idx] = PLAYER_O;
-      }
-      else if (gameBoard[idx] == PLAYER_O) {
-        gameBoard[idx] = EMPTY;
-      }
+    else if (currentScene == GAMEPLAY) {
+      UpdateGameplayScene(gameplayState, config);
     }
+    // // Mouse Clicks on Gameboard
+    // if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    //   Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
+    //   int x = (int)(mousePos.x / (config->tileSize + GRID_PADDING));
+    //   int y = (int)(mousePos.y / (config->tileSize + GRID_PADDING));
+    //   int idx = x + (y * 3);
+    //   if (gameBoard[idx] == EMPTY) {
+    //     gameBoard[idx] = PLAYER_X;
+    //   }
+    //   else if (gameBoard[idx] == PLAYER_X) {
+    //     gameBoard[idx] = PLAYER_O;
+    //   }
+    //   else if (gameBoard[idx] == PLAYER_O) {
+    //     gameBoard[idx] = EMPTY;
+    //   }
+    // }
 
 
     // Draw State
@@ -92,13 +98,14 @@ int main(void)
       BeginMode2D(camera);
       switch (currentScene) {
         case TITLE: {
-          DrawTitleScene(titleState, texturePacked, config, titleFont);
+          DrawTitleScene(titleState, config, texturePacked, titleFont);
         } break;
         case GAMEPLAY: {
-          drawGameBoard(texturePacked, gameBoard, config->tileSize, GRID_PADDING,
-                        framePlayerX, framePlayerY);
-          snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
-          DrawText(buffer, 0, 0, 8, WHITE);
+          DrawGameplayScene(gameplayState, config, texturePacked);
+          // drawGameBoard(texturePacked, gameBoard, config->tileSize, GRID_PADDING,
+          //               framePlayerX, framePlayerY);
+          // snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
+          // DrawText(buffer, 0, 0, 8, WHITE);
         } break;
         default: {
           snprintf(buffer, sizeof(buffer), "Invalid Scene: %d", currentScene);
