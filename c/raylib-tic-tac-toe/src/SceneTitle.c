@@ -3,7 +3,7 @@
 #include "raylib.h"
 
 #include "SceneTitle.h"
-#include "sprite.h"
+#include "Sprite.h"
 #include "draw.h"
 
 const int backgroundSize = 32;

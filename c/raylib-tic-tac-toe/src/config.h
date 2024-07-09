@@ -1,5 +1,5 @@
 #pragma once
-#include "sprite.h"
+#include "Sprite.h"
 #include "types.h"
 
 Config *LoadConfig(const char *filepath);

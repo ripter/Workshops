@@ -4,8 +4,8 @@
 
 #include "../externals/cJSON.h"
 #include "FileUtils.h"
-#include "config.h"
-#include "sprite.h"
+#include "Config.h"
+#include "Sprite.h"
 
 /**
  * @brief Load the configuration from a JSON file

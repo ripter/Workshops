@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "raylib.h"
-#include "sprite.h"
-#include "config.h"
+#include "Sprite.h"
+#include "Config.h"
 
 // Returns a rectangle that represents the sprite at the given position.
 Rectangle CalculateSpriteRect(int spriteSize, Vector2 position) {

@@ -3,7 +3,7 @@
 
 #include "../main.h"
 #include "draw.h"
-#include "sprite.h"
+#include "Sprite.h"
 
 void drawGameBoard(Texture2D texture, TileState gameboard[9], int gridSize, int padding, Rectangle framePlayerX, Rectangle framePlayerO) {
   // Draw Tiles
