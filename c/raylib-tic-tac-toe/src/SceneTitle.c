@@ -6,10 +6,10 @@
 #include "sprite.h"
 #include "draw.h"
 
-static int backgroundSize = 32;
-static int backgroundWidth = 10;
-static int backgroundHeight = 10;
-static int background[] = {
+const int backgroundSize = 32;
+const int backgroundWidth = 10;
+const int backgroundHeight = 10;
+const int background[] = {
     0, 17, 18, 18, 18, 18, 18, 18, 19, 0,
     0, 20, 21, 21, 21, 21, 21, 21, 22, 0,
     0, 20, 21, 21, 21, 21, 21, 21, 22, 0,
@@ -21,35 +21,53 @@ static int background[] = {
     0, 0, 3, 3, 3, 3, 3, 3, 0, 0,
     0, 0, 3, 3, 3, 3, 3, 3, 0, 0
 };
+const int xChoice = backgroundSize * 2;
+const int widthChoice = backgroundSize * 4; 
+
 
 void UpdateTitleScene(SceneTitle *state, const Config *config) {
     int choice = state->ActiveChoice;
+    bool didClick = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
     // Mouse click any item to activate it
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    if (didClick) {
         Vector2 mouse = GetMousePosition();
-        if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config->screenHeight - (backgroundSize * 3), backgroundSize * 4, backgroundSize})) {
+        Rectangle playRect = { 
+            xChoice,
+            config->screenHeight - (backgroundSize * 3), 
+            widthChoice, backgroundSize };
+        Rectangle configRect = {
+            xChoice,
+            config->screenHeight - (backgroundSize * 2), 
+            widthChoice, backgroundSize };
+        Rectangle quitRect = {
+            xChoice,
+            config->screenHeight - (backgroundSize * 1), 
+            widthChoice, backgroundSize };
+
+        if (CheckCollisionPointRec(mouse, quitRect)) {
             choice = TitleChoiceQuit;
-        } else if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config->screenHeight - (backgroundSize * 2), backgroundSize * 4, backgroundSize})) {
+        } else if (CheckCollisionPointRec(mouse, configRect)) {
             choice = TitleChoiceConfig;
-        } else if (CheckCollisionPointRec(mouse, (Rectangle){backgroundSize * 3, config->screenHeight - (backgroundSize * 1), backgroundSize * 4, backgroundSize})) {
+        } else if (CheckCollisionPointRec(mouse, playRect)) {
             choice = TitleChoicePlay;
         }
-        printf("Mouse Choice: %d\n", choice);
     }
 
     // Enter/Space to select the menu item
-    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+    // Or clicking the selected menu item.
+    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE) || (didClick && choice == state->ActiveChoice)) {  
         if (choice == TitleChoiceQuit) {
             CloseWindow();
         }
     }
 
     // Arrow keys to navigate the menu
+    // Quit is 0 and Play is 2, so we can use the enum values directly
     if (IsKeyPressed(KEY_UP)) {
-        choice -= 1;
-    } else if (IsKeyPressed(KEY_DOWN)) {
         choice += 1;
+    } else if (IsKeyPressed(KEY_DOWN)) {
+        choice -= 1;
     }
 
     // Bounds check the active choice

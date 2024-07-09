@@ -40,6 +40,7 @@ int main(void)
   // --------------------------------------------------------------------------------------
   // SceneTitle titleState = { TitleChoicePlay };
   SceneTitle *titleState = (SceneTitle *)malloc(sizeof(SceneTitle));
+  titleState->ActiveChoice = TitleChoicePlay;
 
   // Gameboard state
   TileState gameBoard[] = {
