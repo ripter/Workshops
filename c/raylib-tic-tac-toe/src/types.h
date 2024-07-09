@@ -18,12 +18,12 @@ typedef struct {
     int screenWidth;
     int screenHeight;
     int tileSize;
-    char windowTitle[256]; // assuming the window title will not exceed 255 characters
-    char tilemapFile[256]; // assuming the file name will not exceed 255 characters
-    Vector2 playerXTilemapPos;
-    Vector2 playerOTilemapPos;
-    Sprite* sprites;
-    int numberOfSprites;
+    char windowTitle[256];      // Window title, max 255 characters + null terminator
+    char tilemapFile[256];      // Tilemap file name, max 255 characters + null terminator
+    Vector2 playerXTilemapPos;  // Position of player X in the tilemap
+    Vector2 playerOTilemapPos;  // Position of player O in the tilemap
+    Sprite *sprites;            // Array of sprites
+    int numberOfSprites;        // Number of sprites
 } Config;
 
 #endif // TTT_SRC_TYPES_H

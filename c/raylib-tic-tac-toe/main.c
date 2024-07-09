@@ -7,7 +7,6 @@
 #include "src/camera.h"
 #include "src/config.h"
 #include "src/draw.h"
-#include "src/file_utils.h"
 #include "src/SceneTitle.h"
 #include "src/sprite.h"
 
@@ -17,10 +16,32 @@ const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
 int main(void)
 {
   // Load the application configuration
-  Config config = load_config(configFilepath);
+  Config *config = LoadConfig(configFilepath);
   Scene currentScene = TITLE;
 
-  SceneTitle titleState = { TITLE_CHOICE_PLAY };
+  // Initialize window and the OpenGL context
+  // NOTE: Most of the graphic functions must be called after window initialization
+  //     : including loading textures, fonts, or creating render textures.
+  InitWindow(config->screenWidth, config->screenHeight, config->windowTitle);
+
+  // Load our textures
+  const Texture2D texturePacked = LoadTexture(config->tilemapFile);
+  const Rectangle framePlayerX = CalculateSpriteRect(config->tileSize, config->playerXTilemapPos);
+  const Rectangle framePlayerY = CalculateSpriteRect(config->tileSize, config->playerOTilemapPos);
+
+  // Load fonts
+  Font titleFont = LoadFont("fonts/Poppins/Poppins-Bold.ttf");
+
+  // Setup a camera to use in the game
+  Camera2D camera = { 0 };
+  camera.zoom = 1.0f; // Render at 1x scale
+
+
+
+  // Initialize State
+  // --------------------------------------------------------------------------------------
+  // SceneTitle titleState = { TitleChoicePlay };
+  SceneTitle *titleState = (SceneTitle *)malloc(sizeof(SceneTitle));
 
   // Gameboard state
   TileState gameBoard[] = {
@@ -33,27 +54,11 @@ int main(void)
   char buffer[256] = {0};
 
 
-  // Initialize window and the OpenGL context
-  InitWindow(config.screenWidth, config.screenHeight, config.windowTitle);
 
-  // Load our textures
-  // NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
-  const Texture2D texturePacked = LoadTexture(config.tilemapFile);
-  const Rectangle framePlayerX = getSpriteRect(config.tileSize, config.playerXTilemapPos);
-  const Rectangle framePlayerY = getSpriteRect(config.tileSize, config.playerOTilemapPos);
-
-  // Load fonts
-  Font titleFont = LoadFont("fonts/Poppins/Poppins-Bold.ttf");
-
-
-  // Setup a camera to use in the game
-  Camera2D camera = { 0 };
-  camera.zoom = 1.0f; // Render at 1x scale
-
-  SetTargetFPS(60); // Set our game to run at 60 frames-per-second
 
 
   // Main game loop
+  SetTargetFPS(60); 
   while (!WindowShouldClose()) // Detect window close button or ESC key
   {
     // Update State
@@ -61,13 +66,13 @@ int main(void)
     camera.zoom = getCameraZoom(camera.zoom);
 
     if (currentScene == TITLE) {
-      titleState = UpdateTitleScene(titleState, config);
+      UpdateTitleScene(titleState, config);
     }
     // Mouse Clicks on Gameboard
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
       Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
-      int x = (int)(mousePos.x / (config.tileSize + GRID_PADDING));
-      int y = (int)(mousePos.y / (config.tileSize + GRID_PADDING));
+      int x = (int)(mousePos.x / (config->tileSize + GRID_PADDING));
+      int y = (int)(mousePos.y / (config->tileSize + GRID_PADDING));
       int idx = x + (y * 3);
       if (gameBoard[idx] == EMPTY) {
         gameBoard[idx] = PLAYER_X;
@@ -91,7 +96,7 @@ int main(void)
           DrawTitleScene(titleState, texturePacked, config, titleFont);
         } break;
         case GAMEPLAY: {
-          drawGameBoard(texturePacked, gameBoard, config.tileSize, GRID_PADDING,
+          drawGameBoard(texturePacked, gameBoard, config->tileSize, GRID_PADDING,
                         framePlayerX, framePlayerY);
           snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
           DrawText(buffer, 0, 0, 8, WHITE);
@@ -107,7 +112,7 @@ int main(void)
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
-  free_config(config); // Free the configuration memory
+  FreeConfig(config); // Free the configuration memory
   UnloadFont(titleFont);
   UnloadTexture(texturePacked);
   CloseWindow(); // Close window and OpenGL context
