@@ -25,6 +25,11 @@ const int xChoice = backgroundSize * 2;
 const int widthChoice = backgroundSize * 4; 
 
 
+void InitTitleScene(SceneTitle *state) {
+    state->ActiveChoice = TitleChoicePlay;
+    state->nextScene = (SceneChange){false, TITLE};
+}
+
 void UpdateTitleScene(SceneTitle *state, const Config *config) {
     int choice = state->ActiveChoice;
     bool didClick = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);

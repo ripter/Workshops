@@ -40,9 +40,17 @@ int main(void)
   // Initialize State
   // --------------------------------------------------------------------------------------
   SceneTitle *titleState = (SceneTitle *)malloc(sizeof(SceneTitle));
-  titleState->ActiveChoice = TitleChoicePlay;
+  if (titleState == NULL) {
+    fprintf(stderr, "Failed to allocate memory for titleState\n");
+    exit(1);
+  }
+  InitTitleScene(titleState);
 
   GameplayScene *gameplayState = (GameplayScene *)malloc(sizeof(GameplayScene)); 
+  if (gameplayState == NULL) {
+    fprintf(stderr, "Failed to allocate memory for gameplayState\n");
+    exit(1);
+  }
 
 
   // Gameboard state

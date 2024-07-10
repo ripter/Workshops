@@ -1,6 +1,14 @@
 #pragma once
 #include "raylib.h"
 
+/// @brief Represents the current scene.
+typedef enum {
+  TITLE=0,
+  GAMEPLAY=1,
+  QUIT=2,
+  CONFIG=3,
+} Scene;
+
 // Represents a sprite in the game.
 // id: the id of the sprite.
 // rect: the rectangle that represents the sprite in the texture.
@@ -12,6 +20,8 @@ typedef struct {
 } Sprite;
 
 
+// Game Configuration
+// loaded from a JSON file.
 typedef struct {
     int screenWidth;
     int screenHeight;
@@ -23,3 +33,9 @@ typedef struct {
     Sprite *sprites;            // Array of sprites
     int numberOfSprites;        // Number of sprites
 } Config;
+
+
+typedef struct {
+  bool hasValue;
+  Scene value;  
+} SceneChange;

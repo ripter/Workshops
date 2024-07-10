@@ -10,12 +10,6 @@ typedef enum {
     EMPTY = 0
 } TileState;
 
-typedef enum {
-  TITLE=0,
-  GAMEPLAY=1,
-  // QUIT=2,
-  // CONFIG=3,
-} Scene;
 
 
 typedef struct {
