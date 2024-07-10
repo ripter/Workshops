@@ -1,6 +1,12 @@
 #include "raylib.h"
 #include "SceneGameplay.h"
 
+
+void InitGameplayScene(GameplayScene *state) {
+  state->nextScene = (SceneChange){false, GAMEPLAY};
+}
+
+
 void UpdateGameplayScene(GameplayScene *state, const Config *config) {
 
 }

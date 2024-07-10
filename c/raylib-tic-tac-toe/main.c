@@ -122,10 +122,21 @@ int main(void)
       }
       EndMode2D();
     EndDrawing();
+
+    // Check for scene changes
+    // --------------------------------------------------------------------------------------
+    if (currentScene == TITLE) {
+      if (titleState->nextScene.hasValue) {
+        currentScene = titleState->nextScene.value;
+        titleState->nextScene.hasValue = false;
+      }
+    }
   }
 
   // De-Initialization
   //--------------------------------------------------------------------------------------
+  free(titleState);
+  free(gameplayState);
   FreeConfig(config); // Free the configuration memory
   UnloadFont(titleFont);
   UnloadTexture(texturePacked);

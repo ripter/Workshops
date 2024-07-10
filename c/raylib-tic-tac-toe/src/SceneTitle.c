@@ -65,6 +65,12 @@ void UpdateTitleScene(SceneTitle *state, const Config *config) {
         if (choice == TitleChoiceQuit) {
             CloseWindow();
         }
+        else if (choice == TitleChoiceConfig) {
+            state->nextScene = (SceneChange){true, CONFIG};
+        }
+        else if (choice == TitleChoicePlay) {
+            state->nextScene = (SceneChange){true, GAMEPLAY};
+        }
     }
 
     // Arrow keys to navigate the menu
