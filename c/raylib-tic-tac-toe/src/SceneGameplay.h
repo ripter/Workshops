@@ -2,6 +2,8 @@
 #include "raylib.h"
 #include "types.h"
 
+
+
 typedef enum {
   TileStateEmpty = 0,
   TileStatePlayerX = 1,
@@ -11,6 +13,7 @@ typedef enum {
 
 typedef struct {
   TileState gameBoard[9];
+  TileState currentPlayer;
   SceneChange nextScene;
 } GameplayScene;
 

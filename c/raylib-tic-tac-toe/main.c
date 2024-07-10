@@ -9,7 +9,11 @@
 #include "src/SceneGameplay.h"
 
 const char* configFilepath = "config.json";
-const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
+static const int GRID_PADDING = 1; // Padding value for a single side of a grid cell.
+
+
+// Buffer to hold on-screen text
+static char buffer[256] = {0};
 
 int main(void)
 {
@@ -53,17 +57,6 @@ int main(void)
   InitGameplayScene(gameplayState);
 
 
-  // // Gameboard state
-  // TileState gameBoard[] = {
-  //   EMPTY, EMPTY, EMPTY,
-  //   EMPTY, PLAYER_X, EMPTY,
-  //   PLAYER_O, EMPTY, EMPTY,
-  // };
-
-  // Buffer to hold on-screen text
-  char buffer[256] = {0};
-
-
 
 
 
@@ -81,22 +74,6 @@ int main(void)
     else if (currentScene == GAMEPLAY) {
       UpdateGameplayScene(gameplayState, config);
     }
-    // // Mouse Clicks on Gameboard
-    // if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    //   Vector2 mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
-    //   int x = (int)(mousePos.x / (config->tileSize + GRID_PADDING));
-    //   int y = (int)(mousePos.y / (config->tileSize + GRID_PADDING));
-    //   int idx = x + (y * 3);
-    //   if (gameBoard[idx] == EMPTY) {
-    //     gameBoard[idx] = PLAYER_X;
-    //   }
-    //   else if (gameBoard[idx] == PLAYER_X) {
-    //     gameBoard[idx] = PLAYER_O;
-    //   }
-    //   else if (gameBoard[idx] == PLAYER_O) {
-    //     gameBoard[idx] = EMPTY;
-    //   }
-    // }
 
 
     // Draw State
@@ -110,10 +87,6 @@ int main(void)
         } break;
         case GAMEPLAY: {
           DrawGameplayScene(gameplayState, config, texturePacked);
-          // drawGameBoard(texturePacked, gameBoard, config->tileSize, GRID_PADDING,
-          //               framePlayerX, framePlayerY);
-          // snprintf(buffer, sizeof(buffer), "Camera Zoom: %.0f", camera.zoom);
-          // DrawText(buffer, 0, 0, 8, WHITE);
         } break;
         default: {
           snprintf(buffer, sizeof(buffer), "Invalid Scene: %d", currentScene);
