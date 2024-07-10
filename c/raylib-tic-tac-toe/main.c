@@ -5,7 +5,6 @@
 #include "main.h"
 #include "src/Camera.h"
 #include "src/Config.h"
-#include "src/draw.h"
 #include "src/SceneTitle.h"
 #include "src/SceneGameplay.h"
 
@@ -51,14 +50,15 @@ int main(void)
     fprintf(stderr, "Failed to allocate memory for gameplayState\n");
     exit(1);
   }
+  InitGameplayScene(gameplayState);
 
 
-  // Gameboard state
-  TileState gameBoard[] = {
-    EMPTY, EMPTY, EMPTY,
-    EMPTY, PLAYER_X, EMPTY,
-    PLAYER_O, EMPTY, EMPTY,
-  };
+  // // Gameboard state
+  // TileState gameBoard[] = {
+  //   EMPTY, EMPTY, EMPTY,
+  //   EMPTY, PLAYER_X, EMPTY,
+  //   PLAYER_O, EMPTY, EMPTY,
+  // };
 
   // Buffer to hold on-screen text
   char buffer[256] = {0};

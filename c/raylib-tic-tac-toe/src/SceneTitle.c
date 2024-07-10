@@ -4,7 +4,7 @@
 
 #include "SceneTitle.h"
 #include "Sprite.h"
-#include "draw.h"
+#include "Draw.h"
 
 const int backgroundSize = 32;
 const int backgroundWidth = 10;
