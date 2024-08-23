@@ -1,0 +1,161 @@
+{
+  "windowTitle": "TicTacToe in C!",
+  "screenWidth":  320,
+  "screenHeight": 320,
+  "tileSize": 8,
+  "tilemapFile": "tilemap_packed.png",
+  "playerXTilemapPos": [4, 5],
+  "playerOTilemapPos": [8, 8],
+  "sprites": [
+    {
+      "id": 1, 
+      "name": "player X",
+      "pos": [4, 5],
+      "rotation": 0
+    },
+    {
+      "id": 2, 
+      "name": "player Y",
+      "pos": [8, 8],
+      "rotation": 0
+    }, 
+    {
+      "id": 3,
+      "name": "orange horz line",
+      "pos": [1, 7],
+      "rotation": 0
+    }, 
+    {
+      "id": 4,
+      "name": "orange vert line",
+      "pos": [1, 7],
+      "rotation": 90
+    }, 
+    {
+      "id": 5,
+      "name": "orange circle end right",
+      "pos": [0, 7],
+      "rotation": 0
+    }, 
+    {
+      "id": 6,
+      "name": "orange circle end down",
+      "pos": [0, 7],
+      "rotation": 90
+    }, 
+    {
+      "id": 7,
+      "name": "orange circle end left",
+      "pos": [0, 7],
+      "rotation": 180 
+    }, 
+    {
+      "id": 8,
+      "name": "orange circle end up",
+      "pos": [0, 7],
+      "rotation": 270 
+    }, 
+    {
+      "id": 9,
+      "name": "orange big arrow right",
+      "pos": [3, 7],
+      "rotation": 0
+    },
+    {
+      "id": 10,
+      "name": "orange big arrow left",
+      "pos": [3, 7],
+      "rotation": 180
+    },
+    {
+      "id": 11,
+      "name": "orange big arrow down",
+      "pos": [3, 7],
+      "rotation": 90
+    },
+    {
+      "id": 12,
+      "name": "orange big arrow up",
+      "pos": [3, 7],
+      "rotation": 270
+    },
+    {
+      "id": 13,
+      "name": "orange small arrow right",
+      "pos": [3, 6],
+      "rotation": 0
+    },
+    {
+      "id": 14,
+      "name": "orange small arrow left",
+      "pos": [3, 6],
+      "rotation": 180
+    },
+    {
+      "id": 15,
+      "name": "orange small arrow down",
+      "pos": [3, 6],
+      "rotation": 90
+    },
+    {
+      "id": 16,
+      "name": "orange small arrow up",
+      "pos": [3, 6],
+      "rotation": 270
+    },
+    {
+      "id": 17,
+      "name": "lake edge top left",
+      "pos": [11, 7],
+      "rotation": 0
+    },
+    {
+      "id": 18,
+      "name": "lake edge top",
+      "pos": [12, 7],
+      "rotation": 0
+    },
+    {
+      "id": 19,
+      "name": "lake edge top right",
+      "pos": [13, 7],
+      "rotation": 0
+    },
+    {
+      "id": 20,
+      "name": "lake edge left",
+      "pos": [11, 8],
+      "rotation": 0
+    },
+    {
+      "id": 21,
+      "name": "lake center",
+      "pos": [12, 8],
+      "rotation": 0
+    },
+    {
+      "id": 22,
+      "name": "lake edge right",
+      "pos": [13, 8],
+      "rotation": 0
+    },
+    {
+      "id": 23,
+      "name": "lake edge bottom left",
+      "pos": [11, 9],
+      "rotation": 0
+    },
+    {
+      "id": 24,
+      "name": "lake edge bottom",
+      "pos": [12, 9],
+      "rotation": 0
+    },
+    {
+      "id": 25,
+      "name": "lake edge bottom right",
+      "pos": [13, 9],
+      "rotation": 0
+    }
+  ]
+}

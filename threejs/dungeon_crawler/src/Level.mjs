@@ -29,10 +29,10 @@ export class Level {
     // this.addCenterPoints();
   }
 
-  get width() {
+  get widthInTiles() {
     return parseInt(this.config.gridWidth, 10);
   }
-  get height() {
+  get heightInTiles() {
     return parseInt(this.config.gridHeight, 10);
   }
 
@@ -46,7 +46,7 @@ export class Level {
     // Create an array of promises for loading all the models
     const loadPromises = defIds.map(async (key) => {
       const def = defs[key];
-      const model = await loadModel(def.model);
+      const model = def.model && await loadModel(def.model);
       this.defs.set(key.toString(), {
         // Default Values
         ...DEFAULT_DEF_VALUES,
@@ -66,8 +66,8 @@ export class Level {
    * Uses the x and z coordinates to find the tile ID.
    * @param {Vector3} position 
    */
-  getTile(position) {
-    const { width, height } = this;
+  getTileBy3DPosition(position) {
+    const { widthInTiles: width, heightInTiles: height } = this;
     const { map } = this;
     const x = Math.floor(position.x);
     const z = Math.floor(position.z);
@@ -81,6 +81,10 @@ export class Level {
       id: tileId,
       ...def,
     };
+  }
+
+  getTileBy2DPosition(x, y) {
+    return this.getTileBy3DPosition(new Vector3(x, 0, y));
   }
 
   /**
@@ -123,7 +127,7 @@ export class Level {
    * Add the center points of the grid to the scene.
    */
   addCenterPoints() {
-    const { width, height } = this;
+    const { widthInTiles: width, heightInTiles: height } = this;
     for (let x = 0; x < width; x++) {
       for (let z = 0; z < height; z++) {
         const point = this.createPoint({ x: x, y: 0, z: z});
@@ -142,7 +146,7 @@ export class Level {
 
 
   addMapMesh() {
-    const { width, height } = this;
+    const { widthInTiles: width, heightInTiles: height } = this;
     const { map } = this;
 
     for (let x = 0; x < width; x++) {
@@ -157,6 +161,8 @@ export class Level {
       }
     }
   }
+
+  
 
   /**
    * Loads the Level from a config file.

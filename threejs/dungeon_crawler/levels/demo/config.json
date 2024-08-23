@@ -29,6 +29,9 @@
       "model": "models/wall.glb",
       "sprite": "assets/wall1.webp",
       "impassable": true
+    }, 
+    "player": {
+      "sprite": "assets/player.webp"
     }
   }
 }

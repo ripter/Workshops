@@ -43,7 +43,7 @@ level.scene.position.set(0, 0, 0);
 scene.add(level.scene);
 
 // Create the UI
-const ui = new UI(level);
+const ui = new UI(level, player);
 await ui.init();
 window.ui = ui;
 
