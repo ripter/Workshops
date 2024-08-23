@@ -12,12 +12,12 @@
   "author": "Chris Richards",
   "license": "MIT",
   "devDependencies": {
-    "vite": "^4.5.2"
+    "vite": "^4.5.3"
   },
   "dependencies": {
     "document-register-element": "^1.14.3",
     "eslint": "^6.8.0",
     "three": "^0.137",
-    "webpack": "^4.41.4"
+    "webpack": "^5.91.0"
   }
 }
