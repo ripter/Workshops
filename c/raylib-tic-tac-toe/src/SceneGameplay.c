@@ -5,8 +5,9 @@
 #include "Sprite.h"
 
 #define TILE_SIZE 64 
-#define X_OFFSET 100
-#define Y_OFFSET 100
+#define X_OFFSET (TILE_SIZE * 1)
+#define Y_OFFSET (TILE_SIZE * 1.5)
+#define PADDING 10
 
 
 // Buffer to hold on-screen text
@@ -26,6 +27,7 @@ void InitGameplayScene(GameplayScene *state) {
   state->gameBoard[0] = TileStatePlayerO;
   state->gameBoard[4] = TileStatePlayerX;
   state->gameBoard[8] = TileStatePlayerO;
+  state->gameBoard[2] = TileStatePlayerX;
 }
 
 
