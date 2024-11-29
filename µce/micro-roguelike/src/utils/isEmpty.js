@@ -1,4 +1,3 @@
-
 // returns true/false if the object is empty `{}`
 export function isEmpty(obj) {
   if (!obj) { return null; }

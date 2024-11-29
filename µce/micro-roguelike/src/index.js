@@ -1,11 +1,10 @@
-import * as PIXI from 'pixi.js';
+// import * as PIXI from 'pixi.js';
 
-//Create a Pixi Application
+// Create a Pixi Application
 // let app = new PIXI.Application({width: 256, height: 256});
 
-//Add the canvas that Pixi automatically created for you to the HTML document
+// Add the canvas that Pixi automatically created for you to the HTML document
 // document.body.appendChild(app.view);
-
 
 //
 // Game State
