@@ -18,6 +18,6 @@
     "document-register-element": "^1.14.3",
     "eslint": "^9.33.0",
     "three": "^0.137",
-    "webpack": "^5.91.0"
+    "webpack": "^5.94.0"
   }
 }
