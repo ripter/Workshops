@@ -16,11 +16,11 @@
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.1",
+    "globals": "^17.0.0",
     "rollup": "^2.79.2",
     "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-node-resolve": "^4.2.3",
-    "eslint": "^9.39.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1"
+    "rollup-plugin-node-resolve": "^4.2.3"
   }
 }

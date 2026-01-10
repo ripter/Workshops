@@ -39,7 +39,7 @@ AFRAME.registerComponent('material-cube', {
         mesh.material[i].map = textures[i];
       }
     }).catch((err) => {
-      // eslint-disable-next-line no-console
+       
       console.error(err);
     });
 

@@ -39,15 +39,15 @@ AFRAME.registerComponent('player-hand', {
     }
   },
 
-  onCollideStart(event) {
+  // onCollideStart(event) {
     // console.log('player-hand collidestart', event);
-  },
+  // },
 
-  onCollideEnd(event) {
+  // onCollideEnd(event) {
     // console.log('player-hand collideend', event);
-  },
+  // },
 
-  ongripdown(event) {
+  ongripdown(/*event*/) {
     const { system } = this;
     // Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
@@ -59,7 +59,7 @@ AFRAME.registerComponent('player-hand', {
       this.el.setAttribute('ammo-constraint', `target: #${entityToGrab.id};`);
     }
   },
-  ongripup(event) {
+  ongripup(/*event*/) {
     // Question: this feels weird since we are player-hand, but it does trigger the update()
     this.el.setAttribute('player-hand', {
       isGrip: false,

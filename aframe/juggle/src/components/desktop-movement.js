@@ -206,7 +206,7 @@ AFRAME.registerComponent('desktop-movement', {
 });
 
 function isEmptyObject(obj) {
-  // eslint-disable-next-line guard-for-in
+   
   for (const key in obj) { return false; }
   return true;
 }

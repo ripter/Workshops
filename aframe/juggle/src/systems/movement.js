@@ -44,7 +44,7 @@ AFRAME.registerSystem('movement', {
     });
   },
 
-  checkCollision(origin, direction) {
+  checkCollision(origin, /*direction*/) {
     const { raycaster, solidObjects } = this;
     raycaster.far = 10;
     // raycaster.set(origin, direction);
@@ -71,9 +71,9 @@ AFRAME.registerSystem('movement', {
 });
 
 
-function drawRay(ray) {
+function drawRay(/*ray*/) {
   const el = window.elRayTest;
-  const { direction } = ray;
+  // const { direction } = ray;
   const origin = new THREE.Vector3();
   el.object3D.getWorldPosition(origin);
 
