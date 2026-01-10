@@ -12,7 +12,7 @@
   "author": "Chris Richards",
   "license": "MIT",
   "devDependencies": {
-    "vite": "^4.5.14"
+    "vite": "^5.4.21"
   },
   "dependencies": {
     "document-register-element": "^1.14.3",
